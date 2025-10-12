@@ -1,0 +1,5 @@
+{
+    "require": {
+        "joukhar/laravel-pixabay": "^1.1"
+    }
+}

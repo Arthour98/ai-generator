@@ -43,7 +43,7 @@ export default function Matrix({ elem, start, stop, }) {
 
         if (multiplier !== 0) setMultiplier(multiplier);
         if (heightLimit !== 0) setHeightLimit(heightLimit);
-    }, [rowsRef]);
+    }, [rowsRef, start]);
 
     useLayoutEffect(() => {
         setRows(() => Array(multiplier).fill(0));
@@ -68,7 +68,10 @@ export default function Matrix({ elem, start, stop, }) {
         return Math.floor(Math.random() * 2);
     }
 
+    if (!start) return null;
+
     return (
+
         <div className={styles.matrixContainer}>
             {
                 rows?.map((row, index) => {

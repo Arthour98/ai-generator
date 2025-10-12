@@ -57,7 +57,7 @@ export default function ThemePage() {
   const [nickname, setNickname] = useState("");
   const [age, setAge] = useState("");
   const [country, setCountry] = useState("")
-
+  const [openMatrix, setOpenMatrix] = useState(false);
   const profileRef = useRef(null);
 
 
@@ -71,15 +71,15 @@ export default function ThemePage() {
           <SettingsBar />
           <Box w="100%" position padding={4} display={"flex"} border={"1px solid black"} shadow={"md"} minH={"80vh"}>
             <VStack spacing={4} w={"50%"} align="start">
-              <ColorPicker w={"30px"} h={"30px"} label={"Background color"} alignItems={"end"} />
-              <ColorPicker w={"30px"} h={"30px"} label={"Text color"} alignItems={"end"} />
-              <CustomSwitch label="Matrix" color="white" />
+              <ColorPicker w={"25px"} h={"25px"} label={"Background color"} alignItems={"end"} />
+              <ColorPicker w={"25px"} h={"25px"} label={"Text color"} alignItems={"end"} />
+              <CustomSwitch label="Matrix" color="white" setValue={() => setOpenMatrix(!openMatrix)} />
             </VStack>
             <Box width={"50%"} >
 
               <Card height={"100%"} ref={profileRef} gap={10} overflow={"hidden"}
                 alignItems="center" zIndex={30} bg={"gray.700"} style={{ position: "relative !important" }} color={"white"} position={"relative"}>
-                <Matrix elem={profileRef} />i me
+                <Matrix elem={profileRef} start={openMatrix} />
                 <CustomAvatar shape={"circle"} zIndex={40} size={"lg"}
                   src={"https://images.saymedia-content.com/.image/t_share/MTc0OTkxMDc3NDEyNTEzNzYw/top-10-best-k-pop-girl-groups.jpg"}
                   opacity={0.6} scale={1} />

@@ -27,6 +27,11 @@ body {
 
 .layout {
   min-height: 100vh;
-  width:100%;
+  width: 100%;
   overflow-x: hidden;
+}
+
+
+.z-index-60 {
+  z-index: 60 !important;
 }

@@ -13,9 +13,10 @@
 }
 
 .verticalCol p {
-    position: "relative";
+    position: relative;
     z-index: 10 !important;
     color: green;
+
 }
 
 .rows {
@@ -35,4 +36,36 @@
     pointer-events: none;
     z-index: 10 !important;
     opacity: 0.2;
+}
+
+@keyframes fall {
+    0% {
+        transform: translateY(50%);
+
+    }
+
+    50% {}
+
+    100% {
+        transform: translateY(50%);
+
+    }
+}
+
+
+.flicker {
+    animation: flicker 1s ease-in-out infinite;
+}
+
+@keyframes flicker {
+
+    0% {
+        opacity: 0.1;
+    }
+
+
+
+    100% {
+        opacity: 1;
+    }
 }

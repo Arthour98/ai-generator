@@ -9,7 +9,7 @@ import CustomInput from "@/components/custom-components/customInput";
 import CustomAvatar from "@/components/custom-components/avatar";
 import { query } from "@/hooks/fetch";
 import Matrix from "@/components/custom-components/matrix";
-import Skeleton from "@/components/custom-components/skeleton";
+import CustomSkeleton from "@/components/custom-components/skeleton";
 
 
 
@@ -26,8 +26,9 @@ export default function ProfileSettingsPage() {
   const [loading, setLoading] = useState(true); //helper state for fallbacks skeletons
 
   useEffect(() => {
-    if (!profile) return;
-    setLoading(false);
+    if (profile !== null) {
+      setLoading(false);
+    }
   }, [profile]);
 
   const createProfile = async () => {
@@ -127,51 +128,57 @@ export default function ProfileSettingsPage() {
               </HStack>
               <Divider width={"50%"} />
               <HStack >
-                <CustomInput
-                  placeholder={"Nickname"}
-                  value={nickname}
-                  setValue={setNickname}
-                  paddingX={4}
-                  paddingY={2}
-                  label={"Nickname"}
-                  horizontal
-                  textColor={"white"}
-                  h={"30px"}
-                  bgColor={"black"}
-                  w={"300px"}
-                />
+                <CustomSkeleton w={300} h={10} loading={loading}>
+                  <CustomInput
+                    placeholder={"Nickname"}
+                    value={nickname}
+                    setValue={setNickname}
+                    paddingX={4}
+                    paddingY={2}
+                    label={"Nickname"}
+                    horizontal
+                    textColor={"white"}
+                    h={"30px"}
+                    bgColor={"black"}
+                    w={"300px"}
+                  />
+                </CustomSkeleton>
               </HStack>
               <Divider width={"50%"} />
               <HStack>
-                <CustomInput
-                  placeholder={"Age"}
-                  value={age}
-                  setValue={setAge}
-                  paddingX={4}
-                  paddingY={2}
-                  label={"Age"}
-                  horizontal
-                  textColor={"white"}
-                  h={"30px"}
-                  bgColor={"black"}
-                  w={"300px"}
-                />
+                <CustomSkeleton w={300} h={10} loading={loading}>
+                  <CustomInput
+                    placeholder={"Age"}
+                    value={age}
+                    setValue={setAge}
+                    paddingX={4}
+                    paddingY={2}
+                    label={"Age"}
+                    horizontal
+                    textColor={"white"}
+                    h={"30px"}
+                    bgColor={"black"}
+                    w={"300px"}
+                  />
+                </CustomSkeleton>
               </HStack>
               <Divider width={"50%"} />
               <HStack>
-                <CustomInput
-                  placeholder={"Country"}
-                  value={country}
-                  setValue={setCountry}
-                  paddingX={4}
-                  paddingY={2}
-                  label={"Country"}
-                  horizontal
-                  textColor={"white"}
-                  h={"30px"}
-                  bgColor={"black"}
-                  w={"300px"}
-                />
+                <CustomSkeleton w={300} h={10} loading={loading}>
+                  <CustomInput
+                    placeholder={"Country"}
+                    value={country}
+                    setValue={setCountry}
+                    paddingX={4}
+                    paddingY={2}
+                    label={"Country"}
+                    horizontal
+                    textColor={"white"}
+                    h={"30px"}
+                    bgColor={"black"}
+                    w={"300px"}
+                  />
+                </CustomSkeleton>
               </HStack>
               <Divider width={"50%"} />
               <HStack spacing={4} height={100}>
@@ -191,32 +198,39 @@ export default function ProfileSettingsPage() {
                 bg={backgroundColor ?? "gray.700"}
                 color={textColor ?? "white"}
                 ref={profileRef} zIndex={30}
+                borderRadius={12}
               >
-                {openMatrix ?
-                  <Matrix elem={profileRef} start={openMatrix} />
-                  :
-                  null
-                }
+                {openMatrix && <Matrix elem={profileRef} start={openMatrix} />}
                 <CustomAvatar shape={"circle"} size={"lg"}
                   src={imageRender(image)}
                   opacity={0.6} scale={1}
                   zIndex={60}
                 />
-                <Flex flexDirection={"column"} width={"50%"} alignItems={"center"}>
-                  <Text>{nickname}</Text>
-                  <Divider color="white" w="100%" />
-                </Flex>
 
                 <Flex flexDirection={"column"} width={"50%"} alignItems={"center"}>
-                  <Text>{age}</Text>
-                  <Divider color="white" w="100%" />
+                  <CustomSkeleton w={300} h={30} loading={loading}>
+                    <Text>{nickname}</Text>
+                    <Divider color="white" w="100%" />
+                  </CustomSkeleton>
                 </Flex>
+
+
 
                 <Flex flexDirection={"column"} width={"50%"} alignItems={"center"}>
-                  <Text>{country}</Text>
-                  <Divider color="white" w="100%" />
+                  <CustomSkeleton w={300} h={30} loading={loading}>
+                    <Text>{age}</Text>
+                    <Divider color="white" w="100%" />
+                  </CustomSkeleton>
                 </Flex>
 
+
+
+                <Flex flexDirection={"column"} width={"50%"} alignItems={"center"}>
+                  <CustomSkeleton w={300} h={30} loading={loading}>
+                    <Text >{country}</Text>
+                    <Divider color="white" w="100%" />
+                  </CustomSkeleton>
+                </Flex>
               </Card>
             </Box>
 

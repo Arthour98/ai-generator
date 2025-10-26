@@ -29,7 +29,7 @@ export default function SettingsBar({ ProfileImage }) {
 
   const [isHovering, setIsHovering] = useState(false);
   const [openDropDown, setOpenDropDown] = useState(false);
-
+  const [hasInteracted, setHasInteracted] = useState(false);
 
 
   const handleHover = () => {
@@ -37,6 +37,7 @@ export default function SettingsBar({ ProfileImage }) {
   }
 
   const openDropDownMenu = (openDropDown) => {
+    if (!hasInteracted) setHasInteracted(true);
     setOpenDropDown(!openDropDown);
   }
 
@@ -54,9 +55,11 @@ export default function SettingsBar({ ProfileImage }) {
           display={"flex"} justifyContent={"center"} flexDirection={"column"}
           gap={4} px={4} borderRadius={12} bg="white" boxShadow="md"
           backgroundColor={"purple.300"} width={200} flexWrap={"nowrap"}
-          animation={`${openDropDown ? fadeIn : fadeOut} 0.5s linear`}
-          height={openDropDown ? "150px" : "0"}
-          overflow={"hidden"} zIndex={30}
+          animation={hasInteracted ? `${openDropDown ? fadeIn : fadeOut} 0.5s linear forwards` : 'none'}
+          height={hasInteracted ? 'auto' : '0px'}
+          overflow={"hidden"}
+          zIndex={30}
+          visibility={!hasInteracted && !openDropDown ? 'hidden' : 'visible'}
         >
           <NavLink href="/settings/profile">Profile-settings</NavLink>
           <NavLink href="/settings/account">Account-settings</NavLink>

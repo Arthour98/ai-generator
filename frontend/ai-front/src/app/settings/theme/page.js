@@ -11,6 +11,7 @@ import ColorPicker from "@/components/custom-components/colorPicker";
 import { query } from "@/hooks/fetch";
 import CustomSwitch from "@/components/custom-components/customSwtich";
 import Matrix from "@/components/custom-components/matrix";
+import CustomSkeleton from "@/components/custom-components/skeleton";
 
 
 export default function ThemePage() {
@@ -18,6 +19,7 @@ export default function ThemePage() {
   const { user } = useAuth();
   const [profile, setProfile] = useState();
   const [userId, setUserId] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (user)
@@ -34,7 +36,6 @@ export default function ThemePage() {
     if (res) {
       const profile = res.profile;
       const settings = res.profile?.settings;
-      console.log(settings);
       setProfile(profile);
       setNickname(profile.nickname);
       setAge(profile.age);
@@ -43,8 +44,7 @@ export default function ThemePage() {
       setBackgroundColor(settings?.background_color);
       setTextColor(settings?.text_color);
       setOpenMatrix(settings?.matrix);
-      console.log(image);
-
+      setLoading(false);
     }
     else {
       console.log("error fetching profile");
@@ -115,11 +115,13 @@ export default function ThemePage() {
             minH={"80vh"} borderRadius={12}
           >
             <VStack spacing={4} w={"50%"} align="start">
-              <ColorPicker w={"25px"} h={"25px"} label={"Background color"} alignItems={"end"}
-                value={backgroundColor} initialColor={backgroundColor} setValue={setBackgroundColor} />
-              <ColorPicker w={"25px"} h={"25px"} label={"Text color"} alignItems={"end"}
-                value={textColor} initialColor={textColor} setValue={setTextColor} />
-              <CustomSwitch label="Matrix" color="white" value={openMatrix} setValue={() => setOpenMatrix(!openMatrix)} />
+              <CustomSkeleton loading={loading} w={400}>
+                <ColorPicker w={"25px"} h={"25px"} label={"Background color"} alignItems={"end"}
+                  value={backgroundColor} initialColor={backgroundColor} setValue={setBackgroundColor} />
+                <ColorPicker w={"25px"} h={"25px"} label={"Text color"} alignItems={"end"}
+                  value={textColor} initialColor={textColor} setValue={setTextColor} />
+                <CustomSwitch label="Matrix" color="white" value={openMatrix} setValue={() => setOpenMatrix(!openMatrix)} />
+              </CustomSkeleton>
               <HStack spacing={4} height={100}>
                 <Button onClick={handleClear} color="white" bg={"gray.400"} _hover={{ bg: "gray.600" }}>
                   Clear
@@ -134,7 +136,7 @@ export default function ThemePage() {
               <Card height={"100%"} ref={profileRef} gap={10} overflow={"hidden"}
                 alignItems="center" zIndex={30} bg={backgroundColor ?? "gray.700"}
                 style={{ position: "relative !important" }} color={"white"}
-                position={"relative"} textColor={textColor} py={10}>
+                position={"relative"} textColor={textColor} py={10} borderRadius={12}>
                 {openMatrix ?
                   <Matrix elem={profileRef} start={openMatrix} />
                   :
@@ -144,18 +146,24 @@ export default function ThemePage() {
                   src={imageRender(image)}
                   opacity={1} scale={1} />
                 <Flex className="z-index-60" position="relative" flexDirection={"column"} zIndex={40} width={"50%"} alignItems={"center"}>
-                  <Text position={"relative"}>{nickname}</Text>
-                  <Divider position={"relative"} color="white" w="100%" />
+                  <CustomSkeleton loading={loading} w={400} h={20}>
+                    <Text position={"relative"}>{nickname}</Text>
+                    <Divider position={"relative"} color="white" w="100%" />
+                  </CustomSkeleton>
                 </Flex>
 
                 <Flex position="relative" flexDirection={"column"} width={"50%"} zIndex={40} alignItems={"center"}>
-                  <Text>{age}</Text>
-                  <Divider color="white" w="100%" />
+                  <CustomSkeleton loading={loading} w={400} h={20}>
+                    <Text>{age}</Text>
+                    <Divider color="white" w="100%" />
+                  </CustomSkeleton>
                 </Flex>
 
                 <Flex position="relative" flexDirection={"column"} width={"50%"} zIndex={40} alignItems={"center"}>
-                  <Text>{country}</Text>
-                  <Divider color="white" w="100%" />
+                  <CustomSkeleton loading={loading} w={400} h={20}>
+                    <Text>{country}</Text>
+                    <Divider color="white" w="100%" />
+                  </CustomSkeleton>
                 </Flex>
               </Card>
 

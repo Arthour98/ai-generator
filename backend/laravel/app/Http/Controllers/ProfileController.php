@@ -74,6 +74,26 @@ public function update(Request $request)
     
 }
 
+public function createOrUpdateSettings(Request $request)
+{
+    $id=$request->input('user_id');
+
+    $payload=([
+        "matrix"=>$request->input('matrix'),
+        "background_color"=>$request->input("background_color"),
+        "text_color"=>$request->input("text_color")
+
+    ]);
+
+    $profile=Profile::findOrFail($id);
+    $profile->settings=$payload;
+    $profile->save();
+    if($profile)
+    {
+        return response()->json(["profile"=>$profile]);
+    }
+}
+
 
 
 }

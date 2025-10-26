@@ -13,5 +13,5 @@ Route::get('/user', [AuthController::class, 'user']);
 Route::get("/profile",[ProfileController::class,'profile']);
 Route::post("/profile/create",[ProfileController::class,'create']);
 Route::put("/profile/update",[ProfileController::class,'update']);
-
+Route::post("/profile/settings",[ProfileController::class,"createOrUpdateSettings"]);
 Route::post('/pixabay/search', [PixabayController::class, 'search']);

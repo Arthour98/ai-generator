@@ -9,7 +9,7 @@ class Profile extends Model
     protected $table = 'profile';
     public $timestamps = false;
     protected $fillable = ['user_id', 'nickname', 'age', 'country','settings','image_profile'];
-
+    protected $casts=["settings"=>"array"];
 
 
     // Link back to the user

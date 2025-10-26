@@ -9,12 +9,12 @@
     left: 0;
     width: 20px;
     height: 20px;
-    z-index: 10 !important;
+    z-index: 35 !important;
 }
 
 .verticalCol p {
     position: relative;
-    z-index: 10 !important;
+    z-index: 35 !important;
     color: green;
 
 }
@@ -22,7 +22,7 @@
 .rows {
     width: 20px;
     height: 20px;
-    z-index: 10 !important;
+    z-index: 35 !important;
     display: block;
 }
 
@@ -34,8 +34,10 @@
     height: 100%;
     display: flex;
     pointer-events: none;
-    z-index: 10 !important;
-    opacity: 0.2;
+    z-index: 35 !important;
+    opacity: 0.5;
+    background-color: transparent;
+
 }
 
 @keyframes fall {

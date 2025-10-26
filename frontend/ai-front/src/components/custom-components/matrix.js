@@ -58,8 +58,6 @@ export default function Matrix({ elem, start, stop, }) {
             }
             setCols(newCol);
         }, 500)
-        console.log(cols);
-        console.log(heightLimit);
         return () => clearTimeout(timer);
     }, [cols])
 

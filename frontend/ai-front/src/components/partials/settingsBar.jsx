@@ -25,7 +25,7 @@ const fadeOut = keyframes`
   }
 `;
 
-export default function SettingsBar() {
+export default function SettingsBar({ ProfileImage }) {
 
   const [isHovering, setIsHovering] = useState(false);
   const [openDropDown, setOpenDropDown] = useState(false);
@@ -42,7 +42,7 @@ export default function SettingsBar() {
 
   return (
     <Box height={100} w={"100%"} display={"flex"} alignItems={"center"} gap={8} >
-      <CustomAvatar shape={"circle"} size={"lg"} src={"https://images.saymedia-content.com/.image/t_share/MTc0OTkxMDc3NDEyNTEzNzYw/top-10-best-k-pop-girl-groups.jpg"} opacity={0.6} scale={1} />
+      <CustomAvatar shape={"circle"} size={"lg"} src={ProfileImage} opacity={0.6} scale={1} />
       <Box height={"50px"} display={"flex"} alignItems="center" position="relative" >
         <Icon as={IoIosSettings} width={50}
           _hover={isHovering ? { transform: "scale(1.2)", color: "gray.300" } : {}} height={40}

@@ -1,7 +1,8 @@
 "use client";
 import React from "react";
 import { Avatar, HStack } from "@chakra-ui/react"
-import { useState } from "react";
+import { useState, useEffect } from "react";
+
 
 
 
@@ -13,7 +14,9 @@ export default function CustomAvatar({ shape, size, src, opacity, scale, zIndex,
     const handleHover = () => {
         setIsHovering(true);
     };
-
+    useEffect(() => {
+        console.log(src)
+    }, [src])
 
 
     return (

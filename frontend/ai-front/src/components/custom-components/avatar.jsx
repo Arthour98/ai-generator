@@ -14,9 +14,7 @@ export default function CustomAvatar({ shape, size, src, opacity, scale, zIndex,
     const handleHover = () => {
         setIsHovering(true);
     };
-    useEffect(() => {
-        console.log(src)
-    }, [src])
+
 
 
     return (

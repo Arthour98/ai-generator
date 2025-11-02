@@ -2,16 +2,58 @@
 import Sidebar from "@/components/partials/sidebar";
 import { useAuth } from "@/contexts/auth";
 import SettingsBar from "@/components/partials/settingsBar";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { query } from "@/hooks/fetch";
-import { Box, Text, Flex, Card, VStack, Divider } from "@chakra-ui/react";
+import { Box, Text, Flex, Card, VStack, Divider, Button, filter } from "@chakra-ui/react";
+import CustomInput from "@/components/custom-components/customInput";
+import styles from "@/components/custom-components/components.module.css";
+import { Image } from "@chakra-ui/react";
+import CustomSkeleton from "@/components/custom-components/skeleton";
+import { FontAwesomeIcon, FontAwesomeIconProps } from '@fortawesome/react-fontawesome'
+import { faCircleArrowLeft, faCircleArrowRight, faFileExport } from "@fortawesome/free-solid-svg-icons";
+import { Tooltip } from "@/components/custom-components/CustomTooltip"
+import DownloadItem from "@/utils/downloadItem";
+
 
 export default function ImageGeneratorPage() {
 
     const { user } = useAuth();
     const [image, setImage] = useState("");
     const [profile, setProfile] = useState();
+    const [queryy, setQueryy] = useState("");
+    const [generated, setGenerated] = useState(null);
+    const [imageUrl, setImageUrl] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
 
+    //animations
+    const [scale, setScale] = useState(1);
+    const [opacity, setOpacity] = useState(1);
+    const [scale2, setScale2] = useState(1);
+    const [opacity2, setOpacity2] = useState(1);
+
+    //imageIndex
+    const [imgIndex, setImageIndex] = useState(0);
+
+    //tooltip
+    const [showTooltip, setShowTooltip] = useState(false);
+
+    const imageRender = (src) => {
+        if (src.startsWith("/storage")) {
+            return `http://localhost:8000${src}`;
+        }
+        else {
+            return src;
+        }
+    }
+
+    useEffect(() => {
+        if (generated) {
+            setIsLoading(false);
+        }
+        else {
+            setIsLoading(true);
+        }
+    }, [generated])
 
 
     const getProfile = async () => {
@@ -23,22 +65,76 @@ export default function ImageGeneratorPage() {
 
         if (res) {
             const profile = res.profile;
-            const settings = res.profile?.settings;
             setProfile(profile);
-            setNickname(profile.nickname);
-            setCountry(profile.country);
             setImage(profile.image_profile);
-            setBackgroundColor(settings?.background_color);
-            setTextColor(settings?.text_color);
-            setOpenMatrix(settings?.matrix);
-
-
         }
         else {
             console.log("error fetching profile");
         }
     }
+    useEffect(() => {
+        if (!user) return
+        getProfile();
+    }, [user])
 
+    const submitQuery = async () => {
+        const data = {
+            query: queryy
+        }
+        const req = await query("http://localhost:8000/api/pixabay/search", { method: "post", data: data });
+
+        setGenerated(req.hits);
+        setImageIndex(0); //reset the index on call
+
+    }
+    useEffect(() => {
+        console.log(generated)
+    }, [generated]);
+
+
+    const growLeft = () => {
+        setScale(1.5);
+        setOpacity(0.7);
+    }
+    const shrinkLeft = () => {
+        setScale(1);
+        setOpacity(1);
+    }
+    const growRight = () => {
+        setScale2(1.5);
+        setOpacity2(0.7);
+    }
+    const shrinkRight = () => {
+        setScale2(1);
+        setOpacity2(1);
+    }
+
+    const nextImage = useCallback(() => {
+        setImageIndex((index) => {
+            let newIndex = index + 1;
+            index > generated?.length - 2 ? newIndex = 0 : newIndex;
+            return newIndex
+        })
+    }, [imgIndex])
+
+    const prevImage = useCallback(() => {
+        setImageIndex((index) => {
+            let newIndex = index - 1;
+            index <= 0 ? newIndex = generated?.length - 1 : newIndex
+            return newIndex;
+        })
+    }, [imgIndex])
+
+    useEffect(() => {
+        if (generated && generated.length > 0) {
+            console.log(generated)
+            console.log("imgIndex", imgIndex)
+            setImageUrl(generated[imgIndex]?.largeImageURL)
+        }
+        else {
+            return;
+        }
+    }, [imgIndex, generated])
 
 
     return (
@@ -46,9 +142,104 @@ export default function ImageGeneratorPage() {
             <Flex direction={"row"} justifyContent={"flex-start"} overflowY="hidden" alignItems={"flex-start"} gap={20} height={"100vh"}>
                 <Sidebar userId={user?.id} />
                 <Flex direction={"column"} alignItems={"center"} width={"60%"}>
-                    <SettingsBar ProfileImage={image} />
-                    <Box w="100%" position padding={4} border={"1px solid black"} shadow={"md"} minH={"80vh"}>
+                    <SettingsBar ProfileImage={imageRender(image)} />
+                    <Box w="100%"
+                        position
+                        padding={4}
+                        display={"flex"}
+                        shadow={"md"}
+                        minH={"80vh"}
+                        flexDirection={"column"}
+                        alignItems={"center"}
+                        rowGap={10}
+                        bg={"blackAlpha.800"}
+                        borderRadius={12}
+                        color={'white'}
+                    >
+                        <Box className={styles.imageContainer}>
+                            {/*leftarrow */}
+                            {imageUrl ?
+                                <FontAwesomeIcon color={"cyan"}
+                                    icon={faCircleArrowLeft}
+                                    size={"xl"}
+                                    cursor={"pointer"}
+                                    onMouseOver={growLeft}
+                                    onMouseLeave={shrinkLeft}
+                                    style={{
+                                        transform: `scale(${scale})`,
+                                        transition: 'transform 0.5s, opacity 0.5s',
+                                    }}
+                                    opacity={opacity}
+                                    onClick={prevImage}
+                                />
+                                :
+                                null
+                            }
 
+                            {!isLoading ?
+                                <Box w={"auto"}
+                                    h={"auto"}
+                                    overflow={"hidden"}
+                                    borderRadius={12}
+                                    position="relative"
+                                >
+                                    <Image width={"300px"}
+                                        height={"400px"}
+                                        src={imageUrl}
+                                        bordeRadius={'12px'}
+                                    />
+                                    <Box className={styles.downloadTooltip}>
+                                        <Tooltip portaled showArrow content="Click to download this image">
+                                            <DownloadItem data={imageUrl} fileName={`image/`}>
+                                                <FontAwesomeIcon icon={faFileExport}
+                                                    style={{
+                                                        filter: `brightness(1) `,
+                                                        cursor: "pointer",
+                                                        background: "rgba(0,0,0,0.5)",
+                                                        padding: "0.5rem",
+                                                        borderRadius: "12px"
+                                                    }}
+                                                    size={"xl"}
+                                                />
+                                            </DownloadItem>
+
+                                        </Tooltip>
+                                    </Box>
+
+
+
+                                </Box>
+                                :
+                                <CustomSkeleton
+                                    w={'300px'}
+                                    h={'400px'}
+                                    borderRadius={'12px'}
+                                    loading={isLoading}
+                                />}
+
+                            {imageUrl ?
+                                <FontAwesomeIcon icon={faCircleArrowRight}
+                                    color={'cyan'}
+                                    size={"xl"}
+                                    cursor={"pointer"}
+                                    onMouseOver={growRight}
+                                    onMouseLeave={shrinkRight}
+                                    style={{
+                                        transform: `scale(${scale2})`,
+                                        transition: 'transform 0.5s, opacity 0.5s',
+                                    }}
+                                    opacity={opacity2}
+                                    onClick={nextImage}
+                                />
+                                :
+                                null
+                            }
+                        </Box>
+                        <CustomInput label={"Describe your image"} paddingY={5} gap={5} value={queryy} w={"60%"} setValue={setQueryy} />
+                        <Button bg={"green.600"}
+                            _hover={{ bg: "green.300" }}
+                            onClick={submitQuery}
+                        >Generate</Button>
                     </Box>
 
                 </Flex>

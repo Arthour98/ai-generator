@@ -71,3 +71,75 @@
         opacity: 1;
     }
 }
+
+.imageContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    column-gap: 20px;
+}
+
+.videoContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    column-gap: 20px;
+    height: 50vh;
+    width: 75%;
+    border: 3px solid cyan;
+    border-radius: 12px;
+}
+
+.downloadTooltip {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+}
+
+.textContainer {
+    width: 75%;
+    height: 50vh;
+    overflow: scroll;
+    scrollbar-width: none;
+}
+
+.optionStyle {
+    color: black;
+    background-color: gray;
+}
+
+.selectStyle {
+    background-color: transparent !important;
+}
+
+.selectStyle::after {
+    background-color: cyan !important;
+}
+
+.radioContainer {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+
+.searchCol {
+    display: flex;
+    flex-direction: column;
+    width: 30%;
+    flex: 0.3;
+    row-gap: 20px;
+}
+
+.displayRadio {
+    display: flex;
+    flex-direction: column;
+    width: 70%;
+    flex: 0.7;
+    row-gap: 20px;
+}
+
+.textAiStyle {
+    width: 100%;
+    box-shadow: 2px 0 2px 0 white;
+    margin: 5px 0;
+}

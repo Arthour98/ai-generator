@@ -35,24 +35,38 @@ class RadioController extends Controller
     /**
      * Get all tags
      */
-    public function tags()
-    {
-        $tags = Cache::remember('radio_tags', 86400, function () {
-            $response = Http::withHeaders([
-                'User-Agent' => 'LaravelRadioClient/1.0',
-                'Accept' => 'application/json',
-            ])->get("{$this->baseUrl}/tags");
+public function tags()
+{
+    $tags = Cache::remember('radio_tags', 86400, function () {
+        try {
+            $response = Http::retry(3, 500)
+                ->withHeaders([
+                    'User-Agent' => 'LaravelRadioClient/1.0',
+                    'Accept' => 'application/json',
+                ])
+                ->withOptions([
+                    'force_ip_resolve' => 'v4', // avoid DNS / IPv6 issues
+                    'version' => '1.1',        // avoid HTTP/2 weirdness
+                ])
+                ->connectTimeout(5)
+                ->timeout(15)
+                ->get('http://all.api.radio-browser.info/json/tags');
 
-            if ($response->ok()) {
+            if ($response->ok() && is_array($response->json())) {
                 return $response->json();
             }
 
-            return [];
-        });
+        } catch (\Throwable $e) {
+            \Log::warning('RadioBrowser tags request failed', [
+                'error' => $e->getMessage(),
+            ]);
+        }
 
-        return response()->json(["tags"=>$tags]);
-    }
+        return [];
+    });
 
+    return response()->json(['tags' => $tags]);
+}
     /**
      * Get stations by country
      */

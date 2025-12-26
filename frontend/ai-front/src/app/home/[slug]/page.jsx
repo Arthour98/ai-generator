@@ -5,7 +5,7 @@ import { cookies } from "next/headers";
 import { Flex,Box, Icon } from "@chakra-ui/react";
 import SettingsBar from "@/components/partials/settingsBar";
 // backend URL inside Docker
-const API_BASE_URL = "http://backend:8000";
+const API_BASE_URL = "http://localhost:8000";
 
 
 export default async function HomePage({ params }) {

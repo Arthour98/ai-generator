@@ -28,14 +28,17 @@ export const query = async (url, options = {}) => {
 
   const fullURL = url.startsWith("http") ? url : `${API_BASE_URL}${url}`;
 
-  const response = await axios({
-    url: fullURL,
-    method: options.method || "get",
-    data: options.data || options ,
-    params: options.params || {},
-    withCredentials: true, // send cookies (refresh token)
-  });
-  return response.data;
-
- 
+  try {
+    const response = await axios({
+      url: fullURL,
+      method: options.method || "get",
+      data: options.data || options,
+      params: options.params || {},
+      withCredentials: true, // send cookies (refresh token)
+    });
+    return response.data;
+  }
+  catch (e) {
+    console.error("[DEBUG]:Error in request")
+  }
 };

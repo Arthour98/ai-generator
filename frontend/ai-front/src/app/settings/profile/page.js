@@ -29,6 +29,9 @@ export default function ProfileSettingsPage() {
     if (profile !== null) {
       setLoading(false);
     }
+    else if (profile === "empty") {
+      setLoading(false);
+    }
   }, [profile]);
 
   const createProfile = async () => {
@@ -71,11 +74,10 @@ export default function ProfileSettingsPage() {
       setBackgroundColor(settings?.background_color);
       setTextColor(settings?.text_color);
       setOpenMatrix(settings?.matrix);
-      console.log(image);
-
     }
     else {
       console.log("error fetching profile");
+      setProfile("empty");
     }
   }
 
@@ -86,11 +88,16 @@ export default function ProfileSettingsPage() {
 
   {/* function to render image correctly whether it's a local storage path or a URL */ }
   const imageRender = (src) => {
-    if (src.startsWith("/storage")) {
-      return `http://localhost:8000${src}`;
+    if (src) {
+      if (src.startsWith("/storage")) {
+        return `http://localhost:8000${src}`;
+      }
+      else {
+        return src;
+      }
     }
     else {
-      return src;
+      return;
     }
   }
 

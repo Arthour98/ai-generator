@@ -54,6 +54,7 @@ export default function ThemePage() {
   useEffect(() => {
     if (!user) return
     getProfile();
+    console.log("profile", profile)
   }, [user]);
 
 

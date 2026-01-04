@@ -17,12 +17,17 @@ export const AuthProvider = ({ children }) => {
             name: userName,
             password: password
         }
-        const response = await axios.post("/api/login", data, { withCredentials: true });
-        if (response.data.user) {
-            setUser(response.data.user);
-            setIsLogged(true);
+        try {
+            const response = await axios.post("/api/login", data, { withCredentials: true });
+            if (response.data.user) {
+                setUser(response.data.user);
+                setIsLogged(true);
+            }
+            return response?.data;
         }
-        return response?.data
+        catch (e) {
+            return e;
+        }
     }
 
     const logout = async () => {

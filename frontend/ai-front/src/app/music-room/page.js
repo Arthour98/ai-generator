@@ -22,8 +22,6 @@ export default function RadioPage() {
 
     const { user } = useAuth();
     const [image, setImage] = useState("");
-    const [profile, setProfile] = useState();
-    const [queryy, setQueryy] = useState("");
     const [generated, setGenerated] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
 
@@ -41,7 +39,6 @@ export default function RadioPage() {
     const getAndHandleIndex = useCallback((i) => {
 
         let currentIndex = stations.findIndex(s => s.name === selStation?.name);
-
 
         let newIndex = currentIndex;
         if (newIndex >= stations.length) {
@@ -92,7 +89,6 @@ export default function RadioPage() {
 
         if (res) {
             const profile = res.profile;
-            setProfile(profile);
             setImage(profile.image_profile);
         }
         else {
@@ -132,7 +128,6 @@ export default function RadioPage() {
                 let filteredStations = stations.filter(
                     (obj, index, self) =>
                         index === self.findIndex(o => o.name === obj.name))
-
                 setStations(filteredStations);
                 setSelStation(stations[0])
             }
@@ -148,13 +143,14 @@ export default function RadioPage() {
         ]);
 
         if (req) {
-            console.log("Countries response:", req[0]);
-            console.log("Tags response:", req[1]);
-            const countries = req[0]?.countries?.map(m => m.name)
-            const tags = req[1]?.tags?.map(t => t.name).filter(t => t.includes("k-pop"))
-
+            let countries = req[0]?.countries?.slice(0, 400).map(m => m.name)
+            let tags = req[1]?.tags?.slice(0, 400).map(t => t.name)
+            countries.unshift("No country")
+            tags.unshift("No tag")
             setCountries(countries);
             setTags(tags);
+            console.log("countries", countries);
+            console.log("tags", tags);
         }
     }
     useEffect(() => {

@@ -28,16 +28,8 @@ export default function TextPage() {
 
     useEffect(() => {
         let history = JSON.parse(localStorage.getItem("history"));
-        setPrevText(history);
+        setPrevText(history ?? []);
     }, []);
-
-    useEffect(() => {
-        if (aiText !== null) {
-            let history = JSON.parse(localStorage.getItem("history")) ?? [];
-            let newHistory = [...history, aiText]
-            setPrevText(newHistory);
-        }
-    }, [aiText])
 
     //tooltip
     const [showTooltip, setShowTooltip] = useState(false);
@@ -77,6 +69,7 @@ export default function TextPage() {
             console.log("error fetching profile");
         }
     }
+
     useEffect(() => {
         if (!user) return
         getProfile();
@@ -88,17 +81,47 @@ export default function TextPage() {
 
         }
         const req = await query("http://localhost:8000/api/ai/text", { method: "post", data: data });
-        const formatedData = req?.answer?.candidates[0]?.
-            content?.parts[0]?.text;
-        console.log("answer", req?.answer?.candidates)
-        setGenerated(formatedData);
-        setAiText(null);
+        const answear = req?.answer?.candidates[0]?.content?.parts[0]?.text;
 
+        if (!answear) {
+            console.error("AI response invalid:", req);
+            return;
+        }
+
+        const question = queryy;
+        const formatedData =
+        {
+            question: question,
+            answear: answear
+        }
+        setGenerated(formatedData);
     }
+
     useEffect(() => {
+        if (!generated) return;
         setAiText(generated)
+        const oldHistory = JSON.parse(localStorage.getItem("history")) ?? [];
+        const newHistory = [...oldHistory, generated];
+        localStorage.setItem("history", JSON.stringify(newHistory));
     }, [generated]);
 
+    useEffect(() => {
+
+        if (prevText) {
+            const oldhistory = JSON.parse(localStorage.getItem("history")) ?? [];
+            setPrevText([...oldhistory, aiText]);
+        }
+
+
+    }, [aiText])
+
+    const clearHistory = () => {
+        setAiText(null);
+        setPrevText([])
+        setQueryy("");
+        setGenerated(null);
+        localStorage.removeItem("history");
+    }
     useEffect(() => {
         console.log(aiText)
         console.log("prevs:", prevText);
@@ -112,7 +135,7 @@ export default function TextPage() {
                 <Flex direction={"column"} alignItems={"center"} width={"60%"}>
                     <SettingsBar ProfileImage={imageRender(image)} />
                     <Box w="100%"
-                        position
+                        position="relative"
                         padding={4}
                         display={"flex"}
                         shadow={"md"}
@@ -132,12 +155,12 @@ export default function TextPage() {
                                         key={index}>
                                         <Text decoration="underline" lineHeight={"40px"} >
                                             {
-                                                prev.question
+                                                prev?.question
                                             }
                                         </Text>
                                         <Text paddingLeft={"1rem"} >
                                             {
-                                                prev.answear
+                                                prev?.answear
                                             }
                                         </Text>
                                     </Box>
@@ -147,6 +170,11 @@ export default function TextPage() {
                             }
 
                         </Box>
+                        <Button bg={"cyan.600"}
+                            _hover={{ bg: "cyan.300" }}
+                            onClick={clearHistory}
+                            alignSelf={"end"}
+                        >Clear History</Button>
                         <CustomInput label={"Ask a question "} paddingY={5} gap={5} value={queryy} w={"60%"} setValue={setQueryy} />
                         <Button bg={"green.600"}
                             _hover={{ bg: "green.300" }}

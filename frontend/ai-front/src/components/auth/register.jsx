@@ -1,5 +1,5 @@
 
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Box, Button, FormControl, FormLabel, Input, Heading, VStack, HStack } from "@chakra-ui/react";
 import { useAuth } from "@/contexts/auth";
@@ -28,6 +28,22 @@ const Register = ({ open, setOpen, registerPhase }) => {
     const [isRegistering, setIsRegistering] = useState(false);
 
 
+
+    useEffect(() => {
+        const handleSubmitOnEnter = (e) => {
+            if (userName !== "" && password !== "" && email !== "") {
+                if (e.key == "Enter") {
+                    handleSubmit(e);
+                }
+            }
+            return;
+        }
+        window.addEventListener('keydown', handleSubmitOnEnter);
+        return () => {
+            window.removeEventListener("keydown", handleSubmitOnEnter);
+        };
+
+    }, [userName, password, email])
 
     const validate_creds = useCallback(() => {
         let regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;

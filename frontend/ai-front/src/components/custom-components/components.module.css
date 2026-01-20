@@ -97,7 +97,7 @@
 }
 
 .textContainer {
-    width: 75%;
+    width: 90%;
     height: 50vh;
     overflow: scroll;
     scrollbar-width: none;
@@ -140,6 +140,9 @@
 
 .textAiStyle {
     width: 100%;
-    box-shadow: 2px 0 2px 0 white;
-    margin: 5px 0;
+    box-shadow: 2px 0 6px 0 white;
+    margin: 10px 0;
+    display: flex;
+    flex-direction: column;
+    padding: 0.5rem 0;
 }

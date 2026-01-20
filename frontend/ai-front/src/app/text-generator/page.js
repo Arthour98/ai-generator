@@ -7,13 +7,9 @@ import { query } from "@/hooks/fetch";
 import { Box, Text, Flex, Card, VStack, Divider, Button, filter } from "@chakra-ui/react";
 import CustomInput from "@/components/custom-components/customInput";
 import styles from "@/components/custom-components/components.module.css";
-import { AspectRatio } from "@chakra-ui/react"
 import { Image } from "@chakra-ui/react";
 import CustomSkeleton from "@/components/custom-components/skeleton";
-import { FontAwesomeIcon, FontAwesomeIconProps } from '@fortawesome/react-fontawesome'
-import { faCircleArrowLeft, faCircleArrowRight, faFileExport } from "@fortawesome/free-solid-svg-icons";
-import { Tooltip } from "@/components/custom-components/CustomTooltip"
-import DownloadItem from "@/utils/downloadItem";
+
 
 
 export default function TextPage() {
@@ -134,9 +130,14 @@ export default function TextPage() {
                                     <Box
                                         className={styles.textAiStyle}
                                         key={index}>
-                                        <Text >
+                                        <Text decoration="underline" lineHeight={"40px"} >
                                             {
-                                                prev
+                                                prev.question
+                                            }
+                                        </Text>
+                                        <Text paddingLeft={"1rem"} >
+                                            {
+                                                prev.answear
                                             }
                                         </Text>
                                     </Box>

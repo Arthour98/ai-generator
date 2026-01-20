@@ -21,6 +21,22 @@ const Login = ({ open, setOpen, loginPhase }) => {
     // loader state
     const [isLogging, setIsLogging] = useState(false);
 
+    useEffect(() => {
+        const handleSubmitOnEnter = (e) => {
+            if (userName !== "" && password !== "") {
+                if (e.key == "Enter") {
+                    handleSubmit(e);
+                }
+            }
+            return;
+        }
+        window.addEventListener('keydown', handleSubmitOnEnter);
+        return () => {
+            window.removeEventListener("keydown", handleSubmitOnEnter);
+        };
+
+    }, [userName, password])
+
     const clearErr = useCallback((err) => {
         if (err?.error == "name") {
             console.log(err?.error)
@@ -37,7 +53,7 @@ const Login = ({ open, setOpen, loginPhase }) => {
 
         const res = await login(userName, password);
         console.log(res);
-        if (res.response.data.message == "Invalid credentials" || res.status == 401) {
+        if (res.response?.data?.message == "Invalid credentials" || res.status == 401) {
             setIsLogging(false);
             setErrName(true);
             setErrPass(true);

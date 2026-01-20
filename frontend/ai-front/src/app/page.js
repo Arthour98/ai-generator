@@ -3,14 +3,18 @@
 import Image from "next/image";
 import Login from "@/components/auth/login";
 import next from "next";
-import {useRouter} from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/auth";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { Loader } from "@/components/partials/loader";
 
 
 export default function Home() {
   const { user } = useAuth();
   const router = useRouter();
+  const [loader, setLoader] = useState(true);
+
+
 
   // Redirect on landing if not authenticated
   useEffect(() => {
@@ -19,7 +23,20 @@ export default function Home() {
     }
   }, [user, router]);
 
-  if (!user) return <p>Loading...</p>; // optional loading
+  useEffect(() => {
+    if (typeof window !== 'undefined' || document.readyState !== "complete") {
+      let t = setTimeout(() => {
+        setLoader(false);
+      }, 2500)
+      return () => clearTimeout(t);
+    }
+  }, [])
 
-  return <h1>Welcome, {user.name}</h1>;
+  return (
+    <>
+      <Loader open={loader} setOpen={setLoader} />
+
+
+    </>
+  )
 }

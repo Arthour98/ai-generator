@@ -37,6 +37,9 @@ export default function ImageGeneratorPage() {
     //tooltip
     const [showTooltip, setShowTooltip] = useState(false);
 
+    //loader for request (button)
+    const [loaderQuery, setLoaderQuery] = useState(false);
+
     const imageRender = (src) => {
         if (src.startsWith("/storage")) {
             return `http://localhost:8000${src}`;
@@ -78,19 +81,23 @@ export default function ImageGeneratorPage() {
     }, [user])
 
     const submitQuery = async () => {
+        setLoaderQuery(true);
         const data = {
             query: queryy
         }
-        const req = await query("http://localhost:8000/api/pixabay/search", { method: "post", data: data });
-
-        setGenerated(req.hits);
-        setImageIndex(0); //reset the index on call
+        try {
+            const req = await query("http://localhost:8000/api/pixabay/search", { method: "post", data: data });
+            if (req?.hits) {
+                setLoaderQuery(false);
+            }
+            setGenerated(req.hits);
+            setImageIndex(0); //reset the index on call
+        }
+        catch (e) {
+            setLoaderQuery(false);
+        }
 
     }
-    useEffect(() => {
-        console.log(generated)
-    }, [generated]);
-
 
     const growLeft = () => {
         setScale(1.5);
@@ -239,6 +246,7 @@ export default function ImageGeneratorPage() {
                         <Button bg={"green.600"}
                             _hover={{ bg: "green.300" }}
                             onClick={submitQuery}
+                            isLoading={loaderQuery}
                         >Generate</Button>
                     </Box>
 

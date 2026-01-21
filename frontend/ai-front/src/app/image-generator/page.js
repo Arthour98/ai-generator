@@ -2,7 +2,7 @@
 import Sidebar from "@/components/partials/sidebar";
 import { useAuth } from "@/contexts/auth";
 import SettingsBar from "@/components/partials/settingsBar";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useEffectEvent } from "react";
 import { query } from "@/hooks/fetch";
 import { Box, Text, Flex, Card, VStack, Divider, Button, filter } from "@chakra-ui/react";
 import CustomInput from "@/components/custom-components/customInput";
@@ -13,6 +13,7 @@ import { FontAwesomeIcon, FontAwesomeIconProps } from '@fortawesome/react-fontaw
 import { faCircleArrowLeft, faCircleArrowRight, faFileExport } from "@fortawesome/free-solid-svg-icons";
 import { Tooltip } from "@/components/custom-components/CustomTooltip"
 import DownloadItem from "@/utils/downloadItem";
+import { clearInput } from "@/utils/clearInput";
 
 
 export default function ImageGeneratorPage() {
@@ -92,12 +93,26 @@ export default function ImageGeneratorPage() {
             }
             setGenerated(req.hits);
             setImageIndex(0); //reset the index on call
+            clearInput(queryy, setQueryy);
         }
         catch (e) {
             setLoaderQuery(false);
         }
 
     }
+
+    const enterQuery = useCallback((e) => {
+        if (e.key == "Enter") {
+            submitQuery();
+        }
+    }, [queryy])
+
+    useEffect(() => {
+        if (typeof window !== "undefined") {
+            window.addEventListener("keydown", enterQuery)
+            return () => window.removeEventListener("keydown", enterQuery)
+        }
+    }, [queryy])
 
     const growLeft = () => {
         setScale(1.5);

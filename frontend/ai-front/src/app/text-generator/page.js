@@ -2,13 +2,15 @@
 import Sidebar from "@/components/partials/sidebar";
 import { useAuth } from "@/contexts/auth";
 import SettingsBar from "@/components/partials/settingsBar";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { query } from "@/hooks/fetch";
 import { Box, Text, Flex, Card, VStack, Divider, Button, filter } from "@chakra-ui/react";
 import CustomInput from "@/components/custom-components/customInput";
 import styles from "@/components/custom-components/components.module.css";
 import { Image } from "@chakra-ui/react";
 import CustomSkeleton from "@/components/custom-components/skeleton";
+import { clearInput } from "@/utils/clearInput";
+
 
 
 
@@ -20,19 +22,57 @@ export default function TextPage() {
     const [queryy, setQueryy] = useState("");
     const [generated, setGenerated] = useState(null);
     const [imageUrl, setImageUrl] = useState(null);
-    const [isLoading, setIsLoading] = useState(true);
 
     const [aiText, setAiText] = useState(null);
     const [prevText, setPrevText] = useState([]);
+
+    const [loading, setLoading] = useState(false);
+
+    const textRef = useRef(null); //ref for every text , so we can scoll into the last aiText created
+
+    const bullets = new Array(4).fill(".")
+    const [bulletScale, setBulletScale] = useState([0.5, 0.5, 0.5, 0.5]);
+    const [bulletOpacity, setBulletOpacity] = useState([0.3, 0.3, 0.3, 0.3]);
+    const [activeIndex, setActiveIndex] = useState(0);
+    const [displayBullets, setDisplayBullets] = useState(false);
+    const bulletContainer = useRef(null);
+
+    useEffect(() => {
+        const container = bulletContainer?.current;
+        if (!displayBullets) return;
+        container.scrollIntoView({ behavior: "smooth", block: "end" })
+        const interval = setInterval(() => {
+            setActiveIndex(prev => (prev + 1) % 5); //use bigger length by one bicause indexing starting with +1 so last element will always exclude
+        }, 200);
+        return () => clearInterval(interval);
+    }, [displayBullets]);
+
+    useEffect(() => {
+        if (!displayBullets) return
+        const newScale = Array.from(bulletScale)
+        const newOpacity = Array.from(bulletOpacity);
+
+        newScale[activeIndex] = 1.5;
+        newOpacity[activeIndex] = 1;
+
+        if (activeIndex > 0) {
+            newScale[activeIndex - 1] = 0.75;
+            newOpacity[activeIndex - 1] = 0.6;
+        }
+        setBulletScale(newScale);
+        setBulletOpacity(newOpacity);
+    }, [activeIndex, displayBullets]) //bullets animation functionality
 
 
     useEffect(() => {
         let history = JSON.parse(localStorage.getItem("history"));
         setPrevText(history ?? []);
-    }, []);
+    }, []); //history fetcher effect
 
-    //tooltip
-    const [showTooltip, setShowTooltip] = useState(false);
+    useEffect(() => {
+        const last_text = textRef?.[prevText?.length - 1];
+        last_text?.scrollIntoView({ behavior: "smooth", block: "start" })
+    }, [prevText]) //scrolling to last text effect
 
     const imageRender = (src) => {
         if (src.startsWith("/storage")) {
@@ -44,12 +84,7 @@ export default function TextPage() {
     }
 
     useEffect(() => {
-        if (generated) {
-            setIsLoading(false);
-        }
-        else {
-            setIsLoading(true);
-        }
+
     }, [generated])
 
 
@@ -76,6 +111,8 @@ export default function TextPage() {
     }, [user])
 
     const submitQuery = async () => {
+        setDisplayBullets(true)
+        setLoading(true);
         const data = {
             prompt: queryy,
 
@@ -87,6 +124,17 @@ export default function TextPage() {
             console.error("AI response invalid:", req);
             return;
         }
+        if (!answear) {
+            let t = setTimeout(() => {
+                setLoading(false);
+                setDisplayBullets(false)
+                clearTimeout(t);
+            }, 8000)
+        }
+        else {
+            setLoading(false)
+            setDisplayBullets(false)
+        }
 
         const question = queryy;
         const formatedData =
@@ -95,7 +143,21 @@ export default function TextPage() {
             answear: answear
         }
         setGenerated(formatedData);
+        clearInput(queryy, setQueryy);
     }
+
+    const submitOnEnter = (e) => {
+        if (e.key == "Enter") {
+            submitQuery();
+        }
+    }
+
+    useEffect(() => {
+        if (typeof window !== "undefined") {
+            window.addEventListener('keydown', submitOnEnter)
+            return () => window.removeEventListener('keydown', submitOnEnter)
+        }
+    }, [queryy]);
 
     useEffect(() => {
         if (!generated) return;
@@ -106,12 +168,10 @@ export default function TextPage() {
     }, [generated]);
 
     useEffect(() => {
-
         if (prevText) {
             const oldhistory = JSON.parse(localStorage.getItem("history")) ?? [];
-            setPrevText([...oldhistory, aiText]);
+            setPrevText([...oldhistory]);
         }
-
 
     }, [aiText])
 
@@ -125,8 +185,12 @@ export default function TextPage() {
     useEffect(() => {
         console.log(aiText)
         console.log("prevs:", prevText);
+        console.log("REFS", textRef)
     }, [aiText, prevText]);
 
+    useEffect(() => {
+        bullets
+    })
 
     return (
         <>
@@ -150,35 +214,66 @@ export default function TextPage() {
                         <Box className={styles.textContainer}>
                             {Array.isArray(prevText) && prevText.length > 0 &&
                                 prevText.map((prev, index) => (
-                                    <Box
-                                        className={styles.textAiStyle}
-                                        key={index}>
-                                        <Text decoration="underline" lineHeight={"40px"} >
-                                            {
-                                                prev?.question
-                                            }
-                                        </Text>
-                                        <Text paddingLeft={"1rem"} >
-                                            {
-                                                prev?.answear
-                                            }
-                                        </Text>
-                                    </Box>
+                                    <>
+                                        <Box
+                                            className={styles.textAiStyle}
+                                            key={index}
+                                            ref={(t) => textRef[index] = t} >
+                                            <Text decoration="underline" lineHeight={"40px"} >
+                                                {
+                                                    prev?.question
+                                                }
+                                            </Text>
+                                            <Text paddingLeft={"1rem"} >
+                                                {
+                                                    prev?.answear
+                                                }
+                                            </Text>
+                                        </Box>
+                                        <Divider orientation="horizontal" />
+                                    </>
                                 ))
-
-
                             }
+                            <Box padding="10px 0" ref={bulletContainer}>
+                                {
+                                    bullets.map((bullet, index) => (
+                                        displayBullets ?
+                                            <span key={index}
+                                                style=
+                                                {{
+                                                    width: "8px",
+                                                    height: "8px",
+                                                    backgroundColor: "white",
+                                                    borderRadius: "50%",
+                                                    display: "inline-block",
+                                                    marginRight: "8px",
+                                                    transform: `scale(${bulletScale[index]})`,
+                                                    opacity: bulletOpacity[index],
+                                                    transition: 'all 0.2s ease-in-out'
+                                                }}>
+                                            </span>
+                                            :
+                                            null
+                                    ))
+                                }
+                            </Box>
+
 
                         </Box>
-                        <Button bg={"cyan.600"}
-                            _hover={{ bg: "cyan.300" }}
-                            onClick={clearHistory}
-                            alignSelf={"end"}
-                        >Clear History</Button>
+                        {prevText?.length > 0 ?
+                            <Button bg={"cyan.600"}
+                                _hover={{ bg: "cyan.300" }}
+                                onClick={clearHistory}
+                                alignSelf={"end"}
+                            >Clear History</Button>
+                            :
+                            null
+                        }
                         <CustomInput label={"Ask a question "} paddingY={5} gap={5} value={queryy} w={"60%"} setValue={setQueryy} />
                         <Button bg={"green.600"}
                             _hover={{ bg: "green.300" }}
                             onClick={submitQuery}
+                            isLoading={loading}
                         >Ask</Button>
                     </Box>
 

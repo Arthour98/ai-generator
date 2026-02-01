@@ -5,15 +5,7 @@ import SettingsBar from "@/components/partials/settingsBar";
 import { useState, useEffect, useCallback } from "react";
 import { query } from "@/hooks/fetch";
 import { Box, Text, Flex, Card, VStack, Divider, Button, filter } from "@chakra-ui/react";
-import CustomInput from "@/components/custom-components/customInput";
 import styles from "@/components/custom-components/components.module.css";
-import { AspectRatio } from "@chakra-ui/react"
-import { Image } from "@chakra-ui/react";
-import CustomSkeleton from "@/components/custom-components/skeleton";
-import { FontAwesomeIcon, FontAwesomeIconProps } from '@fortawesome/react-fontawesome'
-import { faCircleArrowLeft, faCircleArrowRight, faFileExport } from "@fortawesome/free-solid-svg-icons";
-import { Tooltip } from "@/components/custom-components/CustomTooltip"
-import DownloadItem from "@/utils/downloadItem";
 import CustomSelect from "@/components/custom-components/CustomSelect";
 import RadioElement from "@/components/custom-components/RadioElement";
 
@@ -138,7 +130,7 @@ export default function RadioPageClient({ initialCountries, initialTags }) {
 
     return (
         <>
-            <Flex direction={"row"} justifyContent={"flex-start"} overflowY="hidden" alignItems={"flex-start"} gap={20} height={"100vh"}>
+            <Flex direction={"row"} justifyContent={"flex-start"} alignItems={"flex-start"} gap={20} height="100vh" overflowY="hidden" >
                 <Sidebar userId={user?.id} />
                 <Flex direction={"column"} alignItems={"center"} width={"60%"}>
                     <SettingsBar ProfileImage={imageRender(image)} />

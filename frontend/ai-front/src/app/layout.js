@@ -22,21 +22,21 @@ const geistMono = Geist_Mono({
 
 export default function RootLayout({ children }) {
 
-    
+
 
   return (
     <html lang="en" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-      <AuthProvider>
-      <ChakraWrapper>
-        <Container   maxW="container.xxl" py={0} px={0}  bg={"gray.50"}
-         minH="100vh" bgGradient={"linear(to-t, pink.400, teal.900)" }>
-          {children}
-        </Container>
-      </ChakraWrapper>
-      </AuthProvider>
-    </body>
+        <AuthProvider>
+          <ChakraWrapper>
+            <Container maxW="container.xxl" py={0} px={0} bg={"gray.50"}
+              minH="100vh" bgGradient={"linear(to-t, pink.400, teal.900)"}>
+              {children}
+            </Container>
+          </ChakraWrapper>
+        </AuthProvider>
+      </body>
     </html>
   );
 }

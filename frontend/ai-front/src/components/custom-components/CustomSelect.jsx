@@ -38,7 +38,7 @@ export default function CustomSelect({
     const handleSelect = (item) => {
         const displayValue = typeof item === "object" ? item[name] : item;
         setSelected(displayValue);
-        setValue(item); // 👈 Pass whole object back if needed
+        setValue(item);
         if (onChange) onChange(item);
     };
 
@@ -57,7 +57,7 @@ export default function CustomSelect({
                     rightIcon={<ChevronDownIcon />}
                     bg="blackAlpha.800"
                     color="white"
-                    border="5px solid pink"
+                    border="2px solid pink"
                     _hover={{ bg: "blackAlpha.700" }}
                     _active={{ bg: "blackAlpha.900" }}
                     w={"100%"}

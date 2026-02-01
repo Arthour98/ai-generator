@@ -17,8 +17,12 @@ export default function Sidebar({ userId }) {
 
    return (
       <Flex direction={"column"} bg={"purple.300"} p={4}
-         borderTopRightRadius={"md"} borderBottomRightRadius={"md"} boxShadow={"md"} gap={8} height={"100%"}
-         minW={"200px"} maxW={"200px"} >
+         height="150%"
+         flexGrow="1"
+         flexShrink="0"
+         borderTopRightRadius={"md"} borderBottomRightRadius={"md"} boxShadow={"md"} gap={8}
+         minW={"200px"} maxW={"200px"}
+      >
 
          <NavLink href={`/home/${userId}`}>
             <Icon as={FaHome} boxSize={5} />

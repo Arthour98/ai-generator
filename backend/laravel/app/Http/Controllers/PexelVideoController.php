@@ -7,14 +7,17 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 
 
+
 class PexelVideoController extends Controller
 {
     public function searchVideos(Request $request)
     {
-        $query = $request->query("videoQuery");
-        $response = Http::get("https://api.pexels.com/videos/search",
-        [
-            'query'=>$query
+        $query = $request->input("videoQuery");
+        $response = Http::withHeaders([
+        'Authorization' => config('services.pexels.key'),
+        ])->get("https://api.pexels.com/videos/search", [
+        "query" => $query,
+        'per_page' => 80, 
         ]);
 
         if($response->successful())
@@ -27,7 +30,11 @@ class PexelVideoController extends Controller
             }
             else
             {
-                return response()->json(['error'=>"failed to fetch videos"],500);
+                return response()->json([
+                'error' => 'failed to fetch videos',
+                'status' => $response->status(),
+                'body' => $response->body()
+            ], 500);
             }
     }
 }

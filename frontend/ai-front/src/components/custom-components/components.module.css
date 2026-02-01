@@ -85,9 +85,10 @@
     align-items: center;
     column-gap: 20px;
     height: 50vh;
-    width: 75%;
+    width: 50%;
     border: 3px solid cyan;
     border-radius: 12px;
+    position: relative;
 }
 
 .downloadTooltip {
@@ -144,4 +145,8 @@
     display: flex;
     flex-direction: column;
     padding: 0.5rem 0;
+}
+
+.hiddenScroll {
+    scrollbar-width: none;
 }

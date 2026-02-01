@@ -14,6 +14,7 @@ import { FontAwesomeIcon, FontAwesomeIconProps } from '@fortawesome/react-fontaw
 import { faCircleArrowLeft, faCircleArrowRight, faFileExport } from "@fortawesome/free-solid-svg-icons";
 import { Tooltip } from "@/components/custom-components/CustomTooltip"
 import DownloadItem from "@/utils/downloadItem";
+import VideoElement from "./videoElement";
 
 
 export default function ImageGeneratorPage() {
@@ -85,49 +86,82 @@ export default function ImageGeneratorPage() {
         console.log(generated)
     }, [generated]);
 
+    //arr  = > videos
+    // image
+    //duration 
+    //url
+
+    const getSelVideo = useCallback((url) => {
+        setVideoUrl(url);
+    }, []);
+
     useEffect(() => {
-        if (generated && generated.length > 0) {
-            console.log(generated)
-            console.log("imgIndex", imgIndex)
-            setImageUrl(generated[imgIndex]?.largeImageURL)
-        }
-        else {
-            return;
-        }
-    }, [generated])
-
-
+        console.log("videoURL", videoUrl)
+    }, [videoUrl])
     return (
         <>
             <Flex direction={"row"} justifyContent={"flex-start"} overflowY="hidden" alignItems={"flex-start"} gap={20} height={"100vh"}>
                 <Sidebar userId={user?.id} />
-                <Flex direction={"column"} alignItems={"center"} width={"60%"}>
+                <Flex direction={"column"} alignItems={"center"} width={"80%"}>
                     <SettingsBar ProfileImage={imageRender(image)} />
                     <Box w="100%"
                         position
-                        padding={4}
+                        padding={"1rem 2rem"}
                         display={"flex"}
                         shadow={"md"}
                         minH={"80vh"}
-                        flexDirection={"column"}
-                        alignItems={"center"}
+                        flexDirection={"row"}
+                        alignItems={"start"}
                         rowGap={10}
                         bg={"blackAlpha.800"}
                         borderRadius={12}
                         color={'white'}
                     >
-                        <Box className={styles.videoContainer}>
+                        <Box w="100%"
+                            position
+                            padding={"1rem 2rem"}
+                            display={"flex"}
+                            minH={"80vh"}
+                            flexDirection={"column"}
+                            alignItems={"start"}
+                            rowGap={10}
+                        >
+                            <Box className={styles.videoContainer}>
 
-                            <video src={videoUrl}>
+                                <video
+                                    style={{
+                                        position: "absolute",
+                                        inset: 0,
+                                        width: "100%",
+                                        height: "100%",
+                                        objectFit: "cover",
+                                        display: "block"
+                                    }}
+                                    src={videoUrl} autoPlay={true} controls  >
 
-                            </video>
+                                </video>
 
+                            </Box>
+                            <CustomInput label={"Describe your video"} paddingY={5} gap={5} value={queryy} w={"50%"} setValue={setQueryy} />
+                            <Button bg={"green.600"}
+                                _hover={{ bg: "green.300" }}
+                                onClick={submitQuery}
+                            >Generate</Button>
                         </Box>
-                        <CustomInput label={"Describe your video"} paddingY={5} gap={5} value={queryy} w={"60%"} setValue={setQueryy} />
-                        <Button bg={"green.600"}
-                            _hover={{ bg: "green.300" }}
-                            onClick={submitQuery}
-                        >Generate</Button>
+
+                        <Flex direction="column" w="50%" h="100%" overflowY="scroll" className={styles.hiddenScroll} >
+                            {
+                                generated?.videos?.map((vid, index) =>
+                                    <VideoElement key={index} keyItem={index} width="80%"
+                                        height="30px"
+                                        image={vid?.image}
+                                        url={vid?.video_files[0]?.link}
+                                        duration={vid?.duration}
+                                        setSelVideo={getSelVideo}
+                                    />
+                                )
+                            }
+                        </Flex>
                     </Box>
 
                 </Flex>

@@ -32,14 +32,14 @@ class PixabayController extends Controller
             'key'=>env('PIXABAY_API_KEY'),
             'q'=>$query,
             'video_type'=>"all"
-        ]
+        ]);
         if($response->successful())
             {
-                return response()->json($response->json())
+                return response()->json($response->json());
             }
             else
                 {
-                    return response()->json(["error"=>"Faild to fetch videos"],500)
+                    return response()->json(["error"=>"Faild to fetch videos"],500);
                 }
     }
 }

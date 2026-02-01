@@ -74,10 +74,9 @@ export default function ImageGeneratorPage() {
 
     const submitQuery = async () => {
         const data = {
-            promt: queryy,
-            duration: 3
+            videoQuery: queryy
         }
-        const req = await query("http://localhost:8000/api/ai/video", { method: "post", data: data });
+        const req = await query("http://localhost:8000/api/pexels/videoSearch", { method: "post", data: data });
 
         setGenerated(req);
 
@@ -118,12 +117,11 @@ export default function ImageGeneratorPage() {
                         color={'white'}
                     >
                         <Box className={styles.videoContainer}>
-                            <AspectRatio ratio={1}>
-                                <iframe
-                                    src={videoUrl}
 
-                                />
-                            </AspectRatio>
+                            <video src={videoUrl}>
+
+                            </video>
+
                         </Box>
                         <CustomInput label={"Describe your video"} paddingY={5} gap={5} value={queryy} w={"60%"} setValue={setQueryy} />
                         <Button bg={"green.600"}

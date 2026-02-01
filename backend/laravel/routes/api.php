@@ -6,6 +6,7 @@ use App\Http\Controllers\PixabayController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AIController;
 use App\Http\Controllers\RadioController;
+use App\Http\Controllers\PexelVideoController;
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
@@ -17,6 +18,9 @@ Route::post("/profile/create",[ProfileController::class,'create']);
 Route::put("/profile/update",[ProfileController::class,'update']);
 Route::post("/profile/settings",[ProfileController::class,"createOrUpdateSettings"]);
 Route::post('/pixabay/search', [PixabayController::class, 'search']);
+Route::post("/pixabay/videoSearch",[PixabayController::class, 'searchVideo']);
+
+Route::post("/pexels/videoSearch",[PexelVideoController::class,"searchVideos"]);
 
 // ai api calls
 Route::post('/ai/text', [AIController::class, 'textGenerate']);

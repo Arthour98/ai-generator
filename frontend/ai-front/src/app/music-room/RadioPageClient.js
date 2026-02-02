@@ -15,7 +15,7 @@ export default function RadioPageClient({ initialCountries, initialTags }) {
     const { user } = useAuth();
     const [image, setImage] = useState("");
     const [generated, setGenerated] = useState(null);
-    const [isLoading, setIsLoading] = useState(true);
+    const [isLoading, setIsLoading] = useState(false);
 
     const [countries, setCountries] = useState(initialCountries);
     const [tags, setTags] = useState(initialTags);
@@ -62,16 +62,6 @@ export default function RadioPageClient({ initialCountries, initialTags }) {
         }
     }
 
-    useEffect(() => {
-        if (generated) {
-            setIsLoading(false);
-        }
-        else {
-            setIsLoading(true);
-        }
-    }, [generated])
-
-
     const getProfile = async () => {
         const userId = user?.id;
         const data = {
@@ -93,6 +83,7 @@ export default function RadioPageClient({ initialCountries, initialTags }) {
     }, [user])
 
     const submitQuery = async () => {
+        setIsLoading(true)
         if (selCountry !== "" && selTag === "") {
             const data = {
                 country: selCountry
@@ -107,6 +98,13 @@ export default function RadioPageClient({ initialCountries, initialTags }) {
 
                 setStations(filteredStations);
                 setSelStation(stations[0]);
+                setIsLoading(false);
+            }
+            else {
+                let t = setTimeout(() => {
+                    setIsLoading(false);
+                    clearTimeout(t);
+                }, 7000)
             }
         }
         else if (selCountry === "" && selTag !== "") {
@@ -122,15 +120,21 @@ export default function RadioPageClient({ initialCountries, initialTags }) {
                         index === self.findIndex(o => o.name === obj.name))
                 setStations(filteredStations);
                 setSelStation(stations[0])
+                setIsLoading(false);
+            }
+            else {
+                let t = setTimeout(() => {
+                    setIsLoading(false);
+                    clearTimeout(t);
+                }, 7000)
             }
         }
-
 
     }
 
     return (
         <>
-            <Flex direction={"row"} justifyContent={"flex-start"} alignItems={"flex-start"} gap={20} height="100vh" overflowY="hidden" >
+            <Flex direction={"row"} justifyContent={"flex-start"} alignItems={"flex-start"} gap={20} height="100vh" w="100%" position="fixed"  >
                 <Sidebar userId={user?.id} />
                 <Flex direction={"column"} alignItems={"center"} width={"60%"}>
                     <SettingsBar ProfileImage={imageRender(image)} />
@@ -139,7 +143,9 @@ export default function RadioPageClient({ initialCountries, initialTags }) {
                         padding={4}
                         display={"flex"}
                         shadow={"md"}
-                        minH={"80vh"}
+                        minH={"85vh"}
+                        maxH={"85vh"}
+                        h={"85vh"}
                         flexDirection={"column"}
                         alignItems={"start"}
                         rowGap={10}
@@ -165,6 +171,7 @@ export default function RadioPageClient({ initialCountries, initialTags }) {
                                     _hover={{ bg: "green.300" }}
                                     onClick={submitQuery}
                                     w={"50%"}
+                                    isLoading={isLoading}
                                 >
                                     Search stations
                                 </Button>

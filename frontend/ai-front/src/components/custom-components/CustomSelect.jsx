@@ -43,14 +43,14 @@ export default function CustomSelect({
     };
 
     return (
-        <Menu lazyBehavior="keepMounted" isLazy>
+        <Menu lazyBehavior="keepMounted" isLazy onOpen={() => { document.body.style.overflow = 'hidden'; }} onClose={() => { document.body.style.overflow = 'auto'; }}>
             <Box
                 minW={w}
                 maxW={w}
                 h={h}
                 boxSizing="border-box"
                 position="relative"
-
+                overflow="visible"
             >
                 <MenuButton
                     as={Button}
@@ -74,9 +74,8 @@ export default function CustomSelect({
                     maxH="400px"
                     overflowY="auto"
                     overflowX="hidden"
-                    scrollBehavior={"smooth"}
-                    position="absolute"
-                    top={"100%"}
+                    position="fixed"
+                    zIndex={9999}
                 >
                     {search && (
                         <Box paddingLeft="1rem">

@@ -16,14 +16,30 @@ function VideoElement({ keyItem, image, url, duration, width, height, setSelVide
             return "00:" + time;
         }
         else if (time >= 60) {
-            let incrementor = time / 60;
-            let rest = time % 60;
-            if (rest < 9) {
-                return incrementor + ":" + "0" + rest
+            let incrementor = Math.floor(time / 60);
+            let rest = Math.floor(time % 60);
+
+            if (incrementor <= 9) {
+                if (rest <= 9) {
+                    return "0" + incrementor + ":" + "0" + rest
+                }
+                else {
+                    return "0" + incrementor + ":" + rest
+                }
             }
-            return incrementor + ":" + rest
+            else {
+                if (rest <= 9) {
+                    return incrementor + ":0" + rest;
+                }
+                else {
+                    return incrementor + ":" + rest;
+                }
+            }
+
         }
+
     }
+
 
 
     return (
@@ -38,7 +54,8 @@ function VideoElement({ keyItem, image, url, duration, width, height, setSelVide
             style={{ transform: isHovering ? `scale(1.1)` : `scale(1)` }}
             onMouseEnter={() => setIsHovering(true)}
             onMouseLeave={() => setIsHovering(false)}
-            onClick={() => setSelVideo(url)}>
+            onClick={() => setSelVideo(url)}
+            zIndex={20000}>
             <Box flex="30%">
                 <Box height="100%" width="100%" aspectRatio={1} borderRadius="12px" overflow="hidden">
                     <Image src={image}

@@ -40,7 +40,11 @@ export default function TextPage() {
     useEffect(() => {
         const container = bulletContainer?.current;
         if (!displayBullets) return;
-        container.scrollIntoView({ behavior: "smooth", block: "end" })
+        // Scroll within the parent container, not the page
+        const parentContainer = container?.closest('[role="region"]') || container?.parentElement?.parentElement;
+        if (parentContainer) {
+            parentContainer.scrollTop = parentContainer.scrollHeight;
+        }
         const interval = setInterval(() => {
             setActiveIndex(prev => (prev + 1) % 5); //use bigger length by one bicause indexing starting with +1 so last element will always exclude
         }, 200);
@@ -70,8 +74,11 @@ export default function TextPage() {
     }, []); //history fetcher effect
 
     useEffect(() => {
-        const last_text = textRef?.[prevText?.length - 1];
-        last_text?.scrollIntoView({ behavior: "smooth", block: "start" })
+        if (!prevText || prevText.length === 0) return;
+        const textContainer = document.querySelector('[class*="textContainer"]');
+        if (textContainer) {
+            textContainer.scrollTop = textContainer.scrollHeight;
+        }
     }, [prevText]) //scrolling to last text effect
 
     const imageRender = (src) => {
@@ -82,11 +89,6 @@ export default function TextPage() {
             return src;
         }
     }
-
-    useEffect(() => {
-
-    }, [generated])
-
 
     const getProfile = async () => {
         const userId = user?.id;
@@ -182,28 +184,23 @@ export default function TextPage() {
         setGenerated(null);
         localStorage.removeItem("history");
     }
-    useEffect(() => {
-        console.log(aiText)
-        console.log("prevs:", prevText);
-        console.log("REFS", textRef)
-    }, [aiText, prevText]);
 
-    useEffect(() => {
-        bullets
-    })
+
 
     return (
         <>
-            <Flex direction={"row"} justifyContent={"flex-start"} overflowY="hidden" alignItems={"flex-start"} gap={20} height={"100vh"}>
+            <Flex direction={"row"} justifyContent={"flex-start"} overflow="hidden" alignItems={"flex-start"} gap={20} height={"100vh"}>
                 <Sidebar userId={user?.id} />
                 <Flex direction={"column"} alignItems={"center"} width={"60%"}>
                     <SettingsBar ProfileImage={imageRender(image)} />
                     <Box w="100%"
+                        h={"85vh"}
                         position="relative"
                         padding={4}
                         display={"flex"}
                         shadow={"md"}
-                        minH={"80vh"}
+                        minH={"85vh"}
+                        maxH={"85vh"}
                         flexDirection={"column"}
                         alignItems={"center"}
                         rowGap={10}
@@ -214,10 +211,9 @@ export default function TextPage() {
                         <Box className={styles.textContainer}>
                             {Array.isArray(prevText) && prevText.length > 0 &&
                                 prevText.map((prev, index) => (
-                                    <>
+                                    <Box key={index}>
                                         <Box
                                             className={styles.textAiStyle}
-                                            key={index}
                                             ref={(t) => textRef[index] = t} >
                                             <Text decoration="underline" lineHeight={"40px"} >
                                                 {
@@ -231,7 +227,7 @@ export default function TextPage() {
                                             </Text>
                                         </Box>
                                         <Divider orientation="horizontal" />
-                                    </>
+                                    </Box>
                                 ))
                             }
                             <Box padding="10px 0" ref={bulletContainer}>

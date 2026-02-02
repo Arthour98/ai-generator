@@ -15,6 +15,7 @@ import { faCircleArrowLeft, faCircleArrowRight, faFileExport } from "@fortawesom
 import { Tooltip } from "@/components/custom-components/CustomTooltip"
 import DownloadItem from "@/utils/downloadItem";
 import VideoElement from "./videoElement";
+import { clearInput } from "@/utils/clearInput";
 
 
 export default function ImageGeneratorPage() {
@@ -25,13 +26,9 @@ export default function ImageGeneratorPage() {
     const [queryy, setQueryy] = useState("");
     const [generated, setGenerated] = useState(null);
     const [imageUrl, setImageUrl] = useState(null);
-    const [isLoading, setIsLoading] = useState(true);
+    const [isLoading, setIsLoading] = useState(false);
 
     const [videoUrl, setVideoUrl] = useState(null);
-
-
-    //tooltip
-    const [showTooltip, setShowTooltip] = useState(false);
 
     const imageRender = (src) => {
         if (src.startsWith("/storage")) {
@@ -41,16 +38,6 @@ export default function ImageGeneratorPage() {
             return src;
         }
     }
-
-    useEffect(() => {
-        if (generated) {
-            setIsLoading(false);
-        }
-        else {
-            setIsLoading(true);
-        }
-    }, [generated])
-
 
     const getProfile = async () => {
         const userId = user?.id;
@@ -74,48 +61,71 @@ export default function ImageGeneratorPage() {
     }, [user])
 
     const submitQuery = async () => {
+        setIsLoading(true);
         const data = {
             videoQuery: queryy
         }
         const req = await query("http://localhost:8000/api/pexels/videoSearch", { method: "post", data: data });
 
-        setGenerated(req);
+        if (!req?.videos) {
+            let t = setTimeout(() => {
+                setIsLoading(false);
+                clearTimeout(t);
+            }, 8000)
+            return;
+        }
+
+        if (req?.videos) {
+            setGenerated(req);
+            setIsLoading(false);
+            clearInput(queryy, setQueryy)
+        }
 
     }
-    useEffect(() => {
-        console.log(generated)
-    }, [generated]);
 
-    //arr  = > videos
-    // image
-    //duration 
-    //url
+    useEffect(() => {
+        const submitOnEnter = (e) => {
+            if (e.key == "Enter") {
+                submitQuery();
+            }
+            else {
+                return;
+            }
+        }
+
+        if (typeof window != "undefined") {
+            window.addEventListener("keydown", submitOnEnter);
+            return () => removeEventListener("keydown", submitOnEnter);
+        }
+
+    }, [queryy])
 
     const getSelVideo = useCallback((url) => {
         setVideoUrl(url);
     }, []);
 
-    useEffect(() => {
-        console.log("videoURL", videoUrl)
-    }, [videoUrl])
+
     return (
         <>
-            <Flex direction={"row"} justifyContent={"flex-start"} overflowY="hidden" alignItems={"flex-start"} gap={20} height={"100vh"}>
+            <Flex direction={"row"} justifyContent={"flex-start"} overflow="hidden" alignItems={"flex-start"} gap={20} height={"100vh"}>
                 <Sidebar userId={user?.id} />
                 <Flex direction={"column"} alignItems={"center"} width={"80%"}>
                     <SettingsBar ProfileImage={imageRender(image)} />
                     <Box w="100%"
+                        h={"85vh"}
                         position
                         padding={"1rem 2rem"}
                         display={"flex"}
                         shadow={"md"}
-                        minH={"80vh"}
+                        minH={"85vh"}
+                        maxH={"85vh"}
                         flexDirection={"row"}
                         alignItems={"start"}
                         rowGap={10}
                         bg={"blackAlpha.800"}
                         borderRadius={12}
                         color={'white'}
+                        overflowY="hidden"
                     >
                         <Box w="100%"
                             position
@@ -125,6 +135,7 @@ export default function ImageGeneratorPage() {
                             flexDirection={"column"}
                             alignItems={"start"}
                             rowGap={10}
+                            zIndex={1000}
                         >
                             <Box className={styles.videoContainer}>
 
@@ -146,10 +157,11 @@ export default function ImageGeneratorPage() {
                             <Button bg={"green.600"}
                                 _hover={{ bg: "green.300" }}
                                 onClick={submitQuery}
+                                isLoading={isLoading}
                             >Generate</Button>
                         </Box>
 
-                        <Flex direction="column" w="50%" h="100%" overflowY="scroll" className={styles.hiddenScroll} >
+                        <Box display="flex" flexDirection="column" zIndex={30000} w="50%" maxHeight="80%" minHeight="70%" overflowY="scroll" className={styles.hiddenScroll} >
                             {
                                 generated?.videos?.map((vid, index) =>
                                     <VideoElement key={index} keyItem={index} width="80%"
@@ -161,7 +173,7 @@ export default function ImageGeneratorPage() {
                                     />
                                 )
                             }
-                        </Flex>
+                        </Box>
                     </Box>
 
                 </Flex>

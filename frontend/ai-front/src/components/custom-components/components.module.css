@@ -89,6 +89,8 @@
     border: 3px solid cyan;
     border-radius: 12px;
     position: relative;
+    background-color: red;
+
 }
 
 .downloadTooltip {
@@ -149,4 +151,5 @@
 
 .hiddenScroll {
     scrollbar-width: none;
+    overflow-y: "scroll" !important;
 }

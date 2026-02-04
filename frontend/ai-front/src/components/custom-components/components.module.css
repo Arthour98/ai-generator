@@ -101,7 +101,7 @@
 
 .textContainer {
     width: 90%;
-    height: 50vh;
+    height: 60vh;
     overflow: scroll;
     scrollbar-width: none;
 }

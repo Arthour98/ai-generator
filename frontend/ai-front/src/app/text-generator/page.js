@@ -41,7 +41,7 @@ export default function TextPage() {
         const container = bulletContainer?.current;
         if (!displayBullets) return;
         // Scroll within the parent container, not the page
-        const parentContainer = container?.closest('[role="region"]') || container?.parentElement?.parentElement;
+        const parentContainer = container?.closest('[role="region"]') || container?.parentElement
         if (parentContainer) {
             parentContainer.scrollTop = parentContainer.scrollHeight;
         }
@@ -230,7 +230,7 @@ export default function TextPage() {
                                     </Box>
                                 ))
                             }
-                            <Box padding="10px 0" ref={bulletContainer}>
+                            <Box padding="10px 0" ref={bulletContainer} className="bulletContainer">
                                 {
                                     bullets.map((bullet, index) => (
                                         displayBullets ?

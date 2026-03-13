@@ -1,5 +1,10 @@
 {
     "require": {
         "joukhar/laravel-pixabay": "^1.1"
+    },
+    "scripts":{
+        "start_front":"cd frontend/ai-front && npm run dev",
+        "start_back":"cd backend/laravel && php artisan serve"
     }
+    
 }

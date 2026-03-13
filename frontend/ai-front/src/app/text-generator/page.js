@@ -253,8 +253,6 @@ export default function TextPage() {
                                     ))
                                 }
                             </Box>
-
-
                         </Box>
                         {prevText?.length > 0 ?
                             <Button bg={"cyan.600"}

@@ -5,7 +5,7 @@ import SettingsBar from "@/components/partials/settingsBar";
 import { useState, useEffect } from "react";
 import { query } from "@/hooks/fetch";
 import { Box, Text, Flex, Card, VStack, Divider } from "@chakra-ui/react";
-
+import FriendsBar from "./friendsBar";
 export default function ChatPage() {
 
     const { user } = useAuth();
@@ -45,13 +45,16 @@ export default function ChatPage() {
         <>
             <Flex direction={"row"} justifyContent={"flex-start"} overflowY="hidden" alignItems={"flex-start"} gap={20} height={"100vh"}>
                 <Sidebar userId={user?.id} />
-                <Flex direction={"column"} alignItems={"center"} width={"60%"}>
+                <Flex direction={"column"} alignItems={"center"} width={"60%"} h="100%">
                     <SettingsBar ProfileImage={image} />
-                    <Box w="100%" position padding={4} border={"1px solid black"} shadow={"md"} minH={"80vh"}>
+                    <Box w="100%" position padding={4} border={"1px solid black"} shadow={"md"} minH={"80%"} h="100%">
 
                     </Box>
 
                 </Flex>
+                <FriendsBar open={true}>
+                    <p>Hello world</p>
+                </FriendsBar>
             </Flex>
         </>
     );

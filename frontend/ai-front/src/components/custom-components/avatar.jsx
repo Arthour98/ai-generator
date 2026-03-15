@@ -6,12 +6,13 @@ import { useState, useEffect } from "react";
 
 
 
-export default function CustomAvatar({ shape, size, src, opacity, scale, zIndex, position }) {
+export default function CustomAvatar({ shape, size, src, opacity, scale, zIndex, position, noScale }) {
 
     const [isHovering, setIsHovering] = useState(false);
 
 
     const handleHover = () => {
+        if (noScale) return;
         setIsHovering(true);
     };
 

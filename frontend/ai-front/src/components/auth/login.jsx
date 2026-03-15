@@ -60,7 +60,7 @@ const Login = ({ open, setOpen, loginPhase }) => {
             console.log("quifsa rop")
             return
         }
-        router.push(`/home/${res.user.id}`);
+        router.push(`/home/id=${res.user.id}`);
     }
 
     if (!open) return null;

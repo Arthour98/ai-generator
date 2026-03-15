@@ -205,7 +205,7 @@ export default function ImageGeneratorPage() {
                                     borderRadius={12}
                                     position="relative"
                                 >
-                                    <Image width={"300px"}
+                                    <Image width={"500px"}
                                         height={"400px"}
                                         src={imageUrl}
                                         bordeRadius={'12px'}
@@ -233,7 +233,7 @@ export default function ImageGeneratorPage() {
                                 </Box>
                                 :
                                 <CustomSkeleton
-                                    w={'300px'}
+                                    w={'500px'}
                                     h={'400px'}
                                     borderRadius={'12px'}
                                     loading={isLoading}

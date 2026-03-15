@@ -40,14 +40,8 @@ export default function Sidebar({ userId }) {
          </NavLink>
 
 
-         <NavLink href={`/text-generator`}>
-            <Icon as={IoDocumentTextSharp} boxSize={5} />
-            <Text fontSize={"md"} fontWeight={"500"}>Text generator</Text>
-         </NavLink>
-
-
          <NavLink href={`/chatbot`}>
-            <Icon as={TbMessageChatbotFilled} boxSize={5} />
+            <Icon as={IoDocumentTextSharp} boxSize={5} />
             <Text fontSize={"md"} fontWeight={"500"}>Chatbot</Text>
          </NavLink>
 

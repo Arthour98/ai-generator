@@ -27,8 +27,18 @@ public function profile(Request $request)
 
 public function create(Request $request)
 {
+
+    $image=null;
+    if(str_starts_with($request->input("image_profile"),"/storage/"))
+    {
+    $image = $profileExisting->image_profile;
+    }
+    else
+    {
     $image=imageDecoder($request->input("image_profile"),$request->input("user_id"),"profile_images");
-    
+    }
+
+    unset($existingProfile);
 
     $profile=Profile::updateOrCreate(
         ['user_id' => $request->input('user_id')],

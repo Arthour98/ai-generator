@@ -1,11 +1,12 @@
 "use client";
-import { Box, Icon } from "@chakra-ui/react";
+import { Box, Icon, Flex, Text } from "@chakra-ui/react";
 import { keyframes } from "@emotion/react";
 import CustomAvatar from "@/components/custom-components/avatar";
 import { IoIosSettings } from "react-icons/io";
 import { useState } from "react";
 import NavLink from "./NavLink";
-
+import { faRightFromBracket } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const fadeIn = keyframes`
   from {
@@ -53,7 +54,7 @@ export default function SettingsBar({ ProfileImage }) {
 
         <Box position="absolute" top="100%" left={0}
           display={"flex"} justifyContent={"center"} flexDirection={"column"}
-          gap={4} px={4} borderRadius={12} bg="white" boxShadow="md"
+          gap={1.5} px={4} borderRadius={12} bg="white" boxShadow="md"
           backgroundColor={"purple.300"} width={200} flexWrap={"nowrap"}
           animation={hasInteracted ? `${openDropDown ? fadeIn : fadeOut} 0.5s linear forwards` : 'none'}
           height={hasInteracted ? 'auto' : '0px'}
@@ -64,6 +65,11 @@ export default function SettingsBar({ ProfileImage }) {
           <NavLink href="/settings/profile">Profile-settings</NavLink>
           <NavLink href="/settings/account">Account-settings</NavLink>
           <NavLink href="/settings/theme">Theme</NavLink>
+          <Flex gap={"1rem"} alignItems="center"
+            cursor="pointer" _hover={{ color: "white" }} height="30px"
+          >
+            <Text>Logout</Text><FontAwesomeIcon icon={faRightFromBracket} />
+          </Flex>
         </Box>
 
       </Box>

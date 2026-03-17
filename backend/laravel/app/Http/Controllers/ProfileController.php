@@ -31,7 +31,7 @@ public function create(Request $request)
     $image=null;
     if(str_starts_with($request->input("image_profile"),"/storage/"))
     {
-    $image = $profileExisting->image_profile;
+    $image = $request->input("image_profile");
     }
     else
     {

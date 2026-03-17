@@ -25,6 +25,8 @@ export default function ProfileSettingsPage() {
 
   const [loading, setLoading] = useState(true); //helper state for fallbacks skeletons
 
+  const [isFocused, setIsFocused] = useState(false);
+
   useEffect(() => {
     if (profile !== null) {
       setLoading(false);
@@ -55,6 +57,21 @@ export default function ProfileSettingsPage() {
       console.log("sheni dead mothan");
     }
   }
+
+  useEffect(() => {
+    if (!isFocused) return;
+    function createOnEnter(e) {
+      if (e.key === "Enter") {
+        createProfile();
+        setIsFocused(false);
+      }
+      else {
+        return;
+      }
+    }
+    document.addEventListener("keydown", createOnEnter);
+    return () => document.removeEventListener("keydown", createOnEnter);
+  }, [isFocused])
 
   const getProfile = async () => {
     const userId = user?.id;
@@ -148,6 +165,7 @@ export default function ProfileSettingsPage() {
                     h={"30px"}
                     bgColor={"black"}
                     w={"300px"}
+                    onFocus={() => setIsFocused(true)}
                   />
                 </CustomSkeleton>
               </HStack>
@@ -166,6 +184,7 @@ export default function ProfileSettingsPage() {
                     h={"30px"}
                     bgColor={"black"}
                     w={"300px"}
+                    onFocus={() => setIsFocused(true)}
                   />
                 </CustomSkeleton>
               </HStack>
@@ -184,6 +203,7 @@ export default function ProfileSettingsPage() {
                     h={"30px"}
                     bgColor={"black"}
                     w={"300px"}
+                    onFocus={() => setIsFocused(true)}
                   />
                 </CustomSkeleton>
               </HStack>

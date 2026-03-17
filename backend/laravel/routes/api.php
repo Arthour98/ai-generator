@@ -7,6 +7,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AIController;
 use App\Http\Controllers\RadioController;
 use App\Http\Controllers\PexelVideoController;
+use App\Http\Controllers\UserController;
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
@@ -31,3 +32,6 @@ Route::get('/radio/countries', [RadioController::class, 'countries']);
 Route::get('/radio/tags', [RadioController::class, 'tags']);
 Route::post('/radio/country/sel', [RadioController::class, 'byCountry']);
 Route::post('/radio/tag/sel', [RadioController::class, 'byTag']);
+
+//user calls
+Route::post("/user/edit",[UserController::class,"EditUser"]);

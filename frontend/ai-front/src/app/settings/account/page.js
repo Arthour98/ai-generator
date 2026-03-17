@@ -3,7 +3,7 @@ import { Box, Flex, Text, HStack, VStack, Divider, Button, Card } from "@chakra-
 import SettingsBar from "@/components/partials/settingsBar";
 import Sidebar from "@/components/partials/sidebar";
 import { useAuth } from "@/contexts/auth";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import CustomInput from "@/components/custom-components/customInput";
 import { query } from "@/hooks/fetch";
 import CustomSkeleton from "@/components/custom-components/skeleton";
@@ -19,6 +19,9 @@ export default function AccountSettingsPage() {
   const [password, setPassword] = useState('');
   const [userId, setUserId] = useState();
   const [image, setImage] = useState("");
+
+  const [isLoading, setIsLoading] = useState(false); // loader for button
+  const [isFocused, setIsFocused] = useState(false)
 
   useEffect(() => {
     if (user) {
@@ -51,7 +54,51 @@ export default function AccountSettingsPage() {
   }, [user]);
 
 
+  const handleSave = useCallback(async () => {
+    setIsLoading(true)
+    const userId = user?.id;
+    const data = {
+      user_id: userId,
+      username: username,
+      email: email,
+      password: password
+    }
+    try {
+      const res = await query(`/api/user/edit`, { data: data, method: "post" });
+      if (res.ok) {
+        setIsLoading(false);
+      }
+    }
+    catch (e) {
+      console.error("[Error]->", e);
+      if (e) {
+        setIsLoading(false);
+      }
+    }
+    finally {
+      let t = setTimeout(() => {
+        setIsLoading(false);
+        return () => clearTimeout(t);
+      }, 7000);
+    }
+  }, [username, password, email]);
 
+  const submitOnEnter = useCallback((e) => {
+    if (!isFocused) return;
+    if (e.key == "Enter") {
+      handleSave();
+      setIsFocused(false);
+    }
+    else {
+      return;
+    }
+  }, [isFocused, handleSave]);
+
+  useEffect(() => {
+    if (typeof window == "undefined") return;
+    document.addEventListener("keydown", submitOnEnter);
+    return () => document.removeEventListener("keydown", submitOnEnter);
+  }, [submitOnEnter]);
 
 
 
@@ -89,9 +136,6 @@ export default function AccountSettingsPage() {
     setPassword('');
   }
 
-  const handleSave = () => {
-    console.log("saved");
-  }
 
   const imageRender = (src) => {
     if (src.startsWith("/storage")) {
@@ -127,6 +171,8 @@ export default function AccountSettingsPage() {
                       h={"30px"}
                       bgColor={"black"}
                       w={"300px"}
+                      onFocus={() => setIsFocused(true)}
+                      onBlur={() => setIsFocused(false)}
                     />
                   </CustomSkeleton>
                 </HStack>
@@ -146,6 +192,8 @@ export default function AccountSettingsPage() {
                       bgColor={"black"}
                       w={"300px"}
                       type="password"
+                      onFocus={() => setIsFocused(true)}
+                      onBlur={() => setIsFocused(false)}
                     />
                   </CustomSkeleton>
                 </HStack>
@@ -165,6 +213,8 @@ export default function AccountSettingsPage() {
                       bgColor={"black"}
                       w={"300px"}
                       type="email"
+                      onFocus={() => setIsFocused(true)}
+                      onBlur={() => setIsFocused(false)}
                     />
                   </CustomSkeleton>
                 </HStack>
@@ -173,7 +223,9 @@ export default function AccountSettingsPage() {
                   <Button onClick={handleClear} color="white" bg={"gray.400"} _hover={{ bg: "gray.600" }}>
                     Clear
                   </Button>
-                  <Button onClick={handleSave} color="white" bg={"green.400"} _hover={{ bg: "green.600" }}>
+                  <Button onClick={handleSave} color="white" bg={"green.400"} _hover={{ bg: "green.600" }}
+                    isLoading={isLoading}
+                  >
                     Save
                   </Button>
                 </HStack>

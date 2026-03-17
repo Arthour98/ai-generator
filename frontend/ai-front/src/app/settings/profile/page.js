@@ -27,6 +27,14 @@ export default function ProfileSettingsPage() {
 
   const [isFocused, setIsFocused] = useState(false);
 
+  const [image, setImage] = useState("");
+  const [nickname, setNickname] = useState("");
+  const [age, setAge] = useState("");
+  const [country, setCountry] = useState("")
+  const [openMatrix, setOpenMatrix] = useState(null);
+  const [backgroundColor, setBackgroundColor] = useState(null);
+  const [textColor, setTextColor] = useState(null)
+
   useEffect(() => {
     if (profile !== null) {
       setLoading(false);
@@ -36,7 +44,7 @@ export default function ProfileSettingsPage() {
     }
   }, [profile]);
 
-  const createProfile = async () => {
+  const createProfile = useCallback(async () => {
     let UserId = user?.id;
     console.log("UserId:", UserId);
 
@@ -56,22 +64,24 @@ export default function ProfileSettingsPage() {
     else {
       console.log("sheni dead mothan");
     }
-  }
+  }, [age, country, nickname, image]);
+
+  const submitOnEnter = useCallback((e) => {
+    if (!isFocused) return
+    if (e.key === "Enter") {
+      createProfile();
+      setIsFocused(false);
+    }
+    else {
+      return;
+    }
+  }, [isFocused, createProfile])
 
   useEffect(() => {
-    if (!isFocused) return;
-    function createOnEnter(e) {
-      if (e.key === "Enter") {
-        createProfile();
-        setIsFocused(false);
-      }
-      else {
-        return;
-      }
-    }
-    document.addEventListener("keydown", createOnEnter);
-    return () => document.removeEventListener("keydown", createOnEnter);
-  }, [isFocused])
+    if (typeof window == "undefined") return;
+    document.addEventListener("keydown", submitOnEnter);
+    return () => document.removeEventListener("keydown", submitOnEnter);
+  }, [submitOnEnter])
 
   const getProfile = async () => {
     const userId = user?.id;
@@ -118,15 +128,6 @@ export default function ProfileSettingsPage() {
     }
   }
 
-  const [image, setImage] = useState("");
-  const [nickname, setNickname] = useState("");
-  const [age, setAge] = useState("");
-  const [country, setCountry] = useState("")
-  const [openMatrix, setOpenMatrix] = useState(null);
-  const [backgroundColor, setBackgroundColor] = useState(null);
-  const [textColor, setTextColor] = useState(null)
-
-
   const handleClear = () => {
     setNickname('');
     setAge('');
@@ -166,6 +167,7 @@ export default function ProfileSettingsPage() {
                     bgColor={"black"}
                     w={"300px"}
                     onFocus={() => setIsFocused(true)}
+                    onBlur={() => setIsFocused(false)}
                   />
                 </CustomSkeleton>
               </HStack>
@@ -185,6 +187,7 @@ export default function ProfileSettingsPage() {
                     bgColor={"black"}
                     w={"300px"}
                     onFocus={() => setIsFocused(true)}
+                    onBlur={() => setIsFocused(false)}
                   />
                 </CustomSkeleton>
               </HStack>
@@ -204,6 +207,7 @@ export default function ProfileSettingsPage() {
                     bgColor={"black"}
                     w={"300px"}
                     onFocus={() => setIsFocused(true)}
+                    onBlur={() => setIsFocused(false)}
                   />
                 </CustomSkeleton>
               </HStack>

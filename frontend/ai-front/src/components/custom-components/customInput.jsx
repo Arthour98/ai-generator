@@ -3,7 +3,7 @@ import { Input, Box, FormLabel } from "@chakra-ui/react";
 
 
 export default function CustomInput({ label, value, setValue, type, placeholder,
-    bgColor, textColor, paddingX, paddingY, w, h, horizontal, vertical, placeholderColor, gap, onFocus }) {
+    bgColor, textColor, paddingX, paddingY, w, h, horizontal, vertical, placeholderColor, gap, onFocus, onBlur }) {
 
 
     return (
@@ -17,7 +17,7 @@ export default function CustomInput({ label, value, setValue, type, placeholder,
                 onChange={(e) => setValue(e.target.value)} backgroundColor={bgColor}
                 paddingX={paddingX} paddingY={paddingY} placeholder={placeholder} color={textColor}
                 _placeholder={{ color: placeholderColor ?? "gray.300" }} h={h}
-                fontSize={"1rem"} size={undefined} onFocus={() => onFocus()} />
+                fontSize={"1rem"} size={undefined} onFocus={() => onFocus?.()} onBlur={() => onBlur?.()} />
         </Box>
     )
 }

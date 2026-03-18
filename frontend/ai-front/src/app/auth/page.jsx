@@ -3,14 +3,18 @@
 import Login from "@/components/auth/login";
 import Register from "@/components/auth/register";
 import { useState } from "react";
+import { useAuth } from "@/contexts/auth";
+import { useRouter } from "next/navigation";
 
 
 
 export default function AuthPage() {
+  const router = useRouter();
   const [openLogin, setOpenLogin] = useState(true);
   const [openRegister, setOpenRegister] = useState(false);
 
   const handleOpenLogin = () => {
+    const { user } = useAuth();
     setOpenLogin(false);
     setOpenRegister(true);
   }  // switch to register form
@@ -19,6 +23,8 @@ export default function AuthPage() {
     setOpenRegister(false);
     setOpenLogin(true);
   } // switch to login form
+
+
 
   return (
     <>

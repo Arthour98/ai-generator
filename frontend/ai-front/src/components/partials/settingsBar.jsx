@@ -7,6 +7,7 @@ import { useState } from "react";
 import NavLink from "./NavLink";
 import { faRightFromBracket } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useAuth } from "@/contexts/auth";
 
 const fadeIn = keyframes`
   from {
@@ -27,7 +28,7 @@ const fadeOut = keyframes`
 `;
 
 export default function SettingsBar({ ProfileImage }) {
-
+  const { logout } = useAuth();
   const [isHovering, setIsHovering] = useState(false);
   const [openDropDown, setOpenDropDown] = useState(false);
   const [hasInteracted, setHasInteracted] = useState(false);
@@ -59,7 +60,7 @@ export default function SettingsBar({ ProfileImage }) {
           animation={hasInteracted ? `${openDropDown ? fadeIn : fadeOut} 0.5s linear forwards` : 'none'}
           height={hasInteracted ? 'auto' : '0px'}
           overflow={"hidden"}
-          zIndex={30}
+          zIndex={200}
           visibility={!hasInteracted && !openDropDown ? 'hidden' : 'visible'}
         >
           <NavLink href="/settings/profile">Profile-settings</NavLink>
@@ -67,6 +68,7 @@ export default function SettingsBar({ ProfileImage }) {
           <NavLink href="/settings/theme">Theme</NavLink>
           <Flex gap={"1rem"} alignItems="center"
             cursor="pointer" _hover={{ color: "white" }} height="30px"
+            onClick={logout}
           >
             <Text>Logout</Text><FontAwesomeIcon icon={faRightFromBracket} />
           </Flex>

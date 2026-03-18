@@ -10,7 +10,7 @@ import { Loader } from "@/components/partials/loader";
 
 
 export default function Home() {
-  const { user } = useAuth();
+  const { user, isLogged } = useAuth();
   const router = useRouter();
   const [loader, setLoader] = useState(true);
 
@@ -18,10 +18,10 @@ export default function Home() {
 
   // Redirect on landing if not authenticated
   useEffect(() => {
-    if (!user) {
+    if (!user && !isLogged) {
       router.push("/auth"); // redirect to login page
     }
-  }, [user, router]);
+  }, [user, router, isLogged]);
 
   useEffect(() => {
     if (typeof window !== 'undefined' || document.readyState !== "complete") {
@@ -35,8 +35,6 @@ export default function Home() {
   return (
     <>
       <Loader open={loader} setOpen={setLoader} />
-
-
     </>
   )
 }

@@ -2,7 +2,7 @@
 import { useState, useContext, createContext, useEffect } from "react";
 import { query } from "../hooks/fetch";
 import axios from "axios";
-
+import { useRouter } from "next/navigation";
 axios.defaults.baseURL = "http://localhost:8000"
 axios.defaults.withCredentials = true;
 
@@ -11,6 +11,7 @@ const AuthContext = createContext(null);
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [isLogged, setIsLogged] = useState(false);
+    const router = useRouter();
 
     const login = async (userName, password) => {
         const data = {
@@ -33,8 +34,10 @@ export const AuthProvider = ({ children }) => {
     const logout = async () => {
         const response = await query("/api/logout",
             { method: "post" });
-        if (response.ok) {
+        if (response) {
             setUser(null);
+            setIsLogged(false);
+            router.push('/');
         }
     }
 

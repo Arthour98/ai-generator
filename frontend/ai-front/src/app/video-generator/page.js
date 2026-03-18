@@ -135,7 +135,7 @@ export default function ImageGeneratorPage() {
                             flexDirection={"column"}
                             alignItems={"start"}
                             rowGap={10}
-                            zIndex={1000}
+                            zIndex={150}
                         >
                             <Box className={styles.videoContainer}>
 
@@ -146,7 +146,8 @@ export default function ImageGeneratorPage() {
                                         width: "100%",
                                         height: "100%",
                                         objectFit: "cover",
-                                        display: "block"
+                                        display: "block",
+
                                     }}
                                     src={videoUrl} autoPlay={true} controls  >
 

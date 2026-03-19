@@ -17,10 +17,10 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->foreignId('friend_id')->constrained('users')->cascadeOnDelete();
+            $table->foreignId("conversation_id")->constrainer("conversations")->cascadeOnDelete();
             $table->enum("status",["pending,accepted","rejected",null]);
             $table->timestamps();
-        }
-        )
+        });
     }
 
     /**
@@ -36,7 +36,6 @@ return new class extends Migration
             $table->foreignId('friend_id')->constrained('users')->cascadeOnDelete();
             $table->enum("status",["pending,accepted","rejected",null]);
             $table->timestamps();
-        }
-        )
+        });
     }
 };

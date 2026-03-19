@@ -12,13 +12,27 @@ return new class extends Migration
     public function up(): void
     {
         //
-    }
+        Schema::create("chat_messages",function(Blueprint $table)
+        {
+            $table->id();
+            $table->foreignId("friends_conversation")->consrained("conversations")->cascadeOnDelete();
+            $table->string("messsage");
+            $table->timestamps();  
+        });
 
+    }
     /**
      * Reverse the migrations.
      */
     public function down(): void
     {
         //
+        Schema::table("chat_messages",function(Blueprint $table)
+        {
+            $table->id();
+            $table->foreignId("friends_conversation")->consrained("conversations")->cascadeOnDelete();
+            $table->string("messsage");
+            $table->timestamps();  
+        });
     }
 };

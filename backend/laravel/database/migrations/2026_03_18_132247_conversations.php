@@ -12,6 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         //
+        Schema::create("conversations",function(Blueprint $table)
+        {
+            $table->id();
+        });
     }
 
     /**
@@ -20,5 +24,9 @@ return new class extends Migration
     public function down(): void
     {
         //
+        Schema::table("conversations",function(Blueprint $table)
+        {
+            $table->id();
+        });
     }
 };

@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use App\Models\Profile;
+use App\Models\ChatFriends;
 
 class User extends Authenticatable
 {
@@ -53,8 +54,12 @@ class User extends Authenticatable
     }
 
     public function profile()
-{
-    return $this->hasOne(Profile::class); 
-    
-}
+    {
+        return $this->hasOne(Profile::class);   
+    }
+
+    public function friends()
+    {
+        return $this->hasMany(ChatFriends::class);
+    }
 }

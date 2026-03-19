@@ -13,12 +13,16 @@ class ChatController extends Controller
     //
     public function getFriends($id)
     {
-        
+        $user_id = $id;
+        $friends = ChatFriends::where("user_id",$user_id)->get();
+
+        return response()->json($friends)
     }
 
     public function getMessages($id)
     {
-
+        $user_id = $id;
+        $messages = ChatMessages::where("user_id",)
     }
 
     public function sendFrientRequest(Request $request)

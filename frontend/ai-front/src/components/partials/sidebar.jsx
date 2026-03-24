@@ -22,7 +22,7 @@ export default function Sidebar({ userId }) {
          minW={"200px"} maxW={"200px"}
       >
 
-         <NavLink href={`/home/${userId}`} disabled={userId == null || userId == "undefined"}>
+         <NavLink href={`/home/${userId}`} disabled={userId == null || userId == "undefined" || userId == undefined}>
             <Icon as={FaHome} boxSize={5} />
             <Text fontSize={"md"} fontWeight={"500"}>Home</Text>
          </NavLink>

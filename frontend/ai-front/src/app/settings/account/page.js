@@ -28,6 +28,7 @@ export default function AccountSettingsPage() {
       setUsername(user?.name);
       setUserId(user?.id);
       setEmail(user?.email);
+      setLoading(false);
     }
   }, [user])
 
@@ -36,15 +37,19 @@ export default function AccountSettingsPage() {
     const data = {
       user_id: userId
     }
-    const res = await query("http://localhost:8000/api/profile", { params: data })
-    if (res) {
-      const profile = res.profile;
-      setProfile(profile);
-      setImage(profile.image_profile);
-      setLoading(false);
+    try {
+      const res = await query("http://localhost:8000/api/profile", { params: data })
+      if (res) {
+        const profile = res.profile;
+        setProfile(profile);
+        setImage(profile.image_profile);
+      }
+      else {
+        console.log("error fetching profile");
+      }
     }
-    else {
-      console.log("error fetching profile");
+    catch (e) {
+      console.error("No profile:", e)
     }
   }
 

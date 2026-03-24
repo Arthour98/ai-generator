@@ -13,6 +13,7 @@ const Register = ({ open, setOpen, registerPhase }) => {
 
     const { register, user, setUser } = useAuth();
     const router = useRouter();
+    const userId = user?.id;
 
     const [userName, setUserName] = useState("");
     const [email, setEmail] = useState("");
@@ -50,9 +51,9 @@ const Register = ({ open, setOpen, registerPhase }) => {
         let valid = true;
         if (userName === "" || userName.length < 2) {
             setErrName(true);
-            valid = false
+            valid = false;
         }
-        if (email === "" || !regex.match(email)) {
+        if (email === "" || !email.match(regex)) {
             setErrEmail(true);
             valid = false;
         }
@@ -92,7 +93,7 @@ const Register = ({ open, setOpen, registerPhase }) => {
 
         if (res && res.user) {
             setUser(res.user);
-            router.push("/home");
+            router.push(`/home/${userId}`);
         }
         setEmail("");
         setPassword("");

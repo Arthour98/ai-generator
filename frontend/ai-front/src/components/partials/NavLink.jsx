@@ -1,15 +1,16 @@
-import {useState} from "react";
-import {Flex,Link,Text} from "@chakra-ui/react";
+import { useState } from "react";
+import { Flex, Link, Text } from "@chakra-ui/react";
 import { usePathname } from "next/navigation";
 import { Icon } from "@chakra-ui/react";
 
-const NavLink = ({ href, children }) => {
+const NavLink = ({ href, children, disabled }) => {
   const [isHovered, setIsHovered] = useState(false);
   const pathname = usePathname();
 
   return (
     <Link
       href={href}
+      _disabled={disabled}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       style={{

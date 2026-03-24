@@ -40,4 +40,3 @@ Route::post("/chat/accept-friend-request",[ChatController::class,"acceptFriendRe
 Route::post("/chat/send-message",[ChatController::class,"sendMessage"]);
 Route::get("chat/friends/{id}",[ChatController::class,"getFriends"]);
 Route::get("chat/messages/{id}",[ChatController::class,"getMessages"]);
-Route::get("chat/friend-requests/{id}",[ChatController::class,"getFriendRequest"]);

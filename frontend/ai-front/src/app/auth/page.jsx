@@ -14,7 +14,6 @@ export default function AuthPage() {
   const [openRegister, setOpenRegister] = useState(false);
 
   const handleOpenLogin = () => {
-    const { user } = useAuth();
     setOpenLogin(false);
     setOpenRegister(true);
   }  // switch to register form

@@ -12,8 +12,6 @@ import NavLink from "./NavLink";
 
 
 export default function Sidebar({ userId }) {
-   const path = usePathname();
-
 
    return (
       <Flex direction={"column"} bg={"purple.300"} p={4}
@@ -24,7 +22,7 @@ export default function Sidebar({ userId }) {
          minW={"200px"} maxW={"200px"}
       >
 
-         <NavLink href={`/home/${userId}`}>
+         <NavLink href={`/home/${userId}`} disabled={userId == null || userId == "undefined"}>
             <Icon as={FaHome} boxSize={5} />
             <Text fontSize={"md"} fontWeight={"500"}>Home</Text>
          </NavLink>

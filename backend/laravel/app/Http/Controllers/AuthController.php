@@ -146,7 +146,7 @@ public function user(Request $request)
 
     public function register(Request $request)
     {
-       
+       $refreshToken = null;
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
@@ -158,6 +158,15 @@ public function user(Request $request)
             'email' => $request->input('email'),
             'password' => Hash::make($request->input('password')),
         ]);
+        
+        if($user)
+        {
+        $refreshToken = bin2hex(random_bytes(64));
+        $user->refresh_tokens()->create([
+                        'token' => $refreshToken,
+                        'expires_at' => now()->addDays(30),
+                    ]);
+        }
 
         if(!$user) {
             return response()->json(['message' => 'Registration failed'], 500);
@@ -165,6 +174,7 @@ public function user(Request $request)
         return response()->json([
             'message' => 'User registered successfully',
             'user' => $user
-        ], 201);
+        ], 201)->cookie(
+        'refresh_token', $refreshToken, 60*24, null, null, false, true);
     }
 }

@@ -35,8 +35,13 @@ Route::post("/user/edit",[UserController::class,"EditUser"]);
 
 
 //chat calls
+Route::middleware("refresh.token")->group(function()
+{
 Route::post("/chat/send-friend-request",[ChatController::class,"sendFrientRequest"]);
 Route::post("/chat/accept-friend-request",[ChatController::class,"acceptFriendRequest"]);
 Route::post("/chat/send-message",[ChatController::class,"sendMessage"]);
-Route::get("chat/friends/{id}",[ChatController::class,"getFriends"]);
-Route::get("chat/messages/{id}",[ChatController::class,"getMessages"]);
+Route::get("/chat/friends/{id}",[ChatController::class,"getFriends"]);
+Route::get("/chat/messages/{id}",[ChatController::class,"getMessages"]);
+Route::post("/profile/searchProfiles",[ProfileController::class,"getSpecificProfile"]);
+});
+

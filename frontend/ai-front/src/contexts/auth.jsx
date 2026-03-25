@@ -52,6 +52,7 @@ export const AuthProvider = ({ children }) => {
         const response = await axios.post("/api/register", data, { withCredentials: true });
         if (response.data.user) {
             setUser(response.data.user);
+            setIsLogged(true);
         }
         return response.data;
     }

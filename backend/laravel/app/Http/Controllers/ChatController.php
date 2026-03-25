@@ -10,18 +10,18 @@ use App\Models\ChatMessages;
 
 class ChatController extends Controller
 {
-    //
-    public function __construct()
-    {
-        $this->middleware("refresh.token");
-    }
-
+    
     public function getFriends($id)
     {
         $user_id = $id;
         $friends = ChatFriends::where("user_id",$user_id)->get();
 
-        return response()->json($friends)
+        if($friends->count()==0)
+        {
+            return response()->json(["data"=>[]]);
+        }
+
+        return response()->json(["data"=>$friends],200);
     }
 
     public function getMessages($id)
@@ -32,7 +32,7 @@ class ChatController extends Controller
            $q->where("user_id",$user_id); 
         })->get();
 
-        return response()->json($messages);
+        return response()->json(["data"=>$messages]);
     }
 
     public function sendFrientRequest(Request $request)
@@ -40,12 +40,12 @@ class ChatController extends Controller
         $user_id = $request->input("user_id");
         $invite_id = $request->input("friends_id");
 
-        $invitation = ChatFriends::where("user_id",$user_id)->andWhere("friends_id",$invite_id)->get();
+        $invitation = ChatFriends::where("user_id",$user_id)->where("friends_id",$invite_id)->get();
         $invitation-> status ="pending";
         $invitation-> created_at = now();
         $invitation->save();
 
-        return response()->json(json(["message"=>"Inviation sent successfully"]))
+        return response()->json(json(["message"=>"Inviation sent successfully"]));
     }
 
     public function acceptFriendRequest(Request $request)
@@ -71,7 +71,7 @@ class ChatController extends Controller
 
         $conversation = Conversations::whereHas("chat_friends", function($query) use($user_id,$receiver_id)
         {
-            $query->where("user_id",$user_id)->andWhere("friend_id",$receiver_id);
+            $query->where("user_id",$user_id)->where("friend_id",$receiver_id);
         })->get();
 
         if(!$conversation | is_null($conversation))
@@ -83,8 +83,8 @@ class ChatController extends Controller
         $newMessage = ChatMessages::create([
             "friends_conversation"=>$conversation_id,
             "message"=>$message,
-            "created_at"=>Date::now(),
-            "updated_at"=>Date::now()
+            "created_at"=>now(),
+            "updated_at"=>now()
         ]);
 
         if($newMessage)

@@ -3,15 +3,52 @@ import { Stack, HStack, VStack, Text, FormControl, FormLabel } from '@chakra-ui/
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass, faUserGroup, faPlus } from "@fortawesome/free-solid-svg-icons";
 import styles from "./components.module.css";
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
+import { query } from "@/hooks/fetch";
 
 
 
-function FriendsBar({ open, setOpen, children }) {
+function FriendsBar({ open, setOpen, children, friendsData }) {
     if (!open) return;
 
-    const [friendsMode, setFriendsMode] = useState("display_friends");
+    const [friendsMode, setFriendsMode] = useState("display_friends"); // state for showing specific tabs with the a default
 
+    const [searchAddFriend, setSearchAddFriend] = useState("");
+    const [profilesFound, setProfilesFound] = useState(null);
+
+
+    const [searchFriend, setSearchFriend] = useState("");
+
+
+    const searchFriendtoAdd = useCallback(async () => {
+        const data =
+        {
+            username: searchAddFriend
+        }
+        try {
+            const res = await query("http://localhost:8000/api/profile/searchProfiles", { data: data, method: "post" });
+            if (res) {
+                setProfilesFound(res?.profiles)
+            }
+        }
+        catch (e) {
+            console.error("ERROR:", e)
+        }
+    }, [searchAddFriend]) // function to search friend to add him , its gonna fetch the data to display later in a pool
+
+    useEffect(() => {
+        if (searchAddFriend == "") return;
+        else {
+            let r = setTimeout(() => {
+                searchFriendtoAdd();
+            }, 1500);
+            return () => clearTimeout(r); //some debouncing :p
+
+        }
+    }, [searchAddFriend, searchFriendtoAdd]);
+
+
+    
 
     return (
         <Box id="FriendsBar" width="450px" height="100vh"
@@ -61,7 +98,8 @@ function FriendsBar({ open, setOpen, children }) {
                                         <Box className={styles.searchFriendsWrapper}>
                                             <FormControl>
                                                 <FormLabel color="white">Search</FormLabel>
-                                                <Input type="search" placeholder="Search friends" color="white" />
+                                                <Input value={searchFriend} onChange={(e) => setSearchFriend(e.target.value)}
+                                                    type="search" placeholder="Search friends" color="white" />
                                             </FormControl>
                                         </Box>
                                     )
@@ -70,12 +108,15 @@ function FriendsBar({ open, setOpen, children }) {
                                             <Box className={styles.addFriendWrapper}>
                                                 <FormControl>
                                                     <FormLabel color="white">Add friend</FormLabel>
-                                                    <Input type="search" placeholder="Add new friend" color="white" />
+                                                    <Input value={searchAddFriend} onChange={(e) => setSearchAddFriend(e.target.value)} type="search" placeholder="Add new friend" color="white" />
                                                 </FormControl>
                                             </Box>
                                         ) : null
                         }
                     </Box>
+                </Box>
+                <Box className={styles.friendsPool}>
+                    <FriendAvatar imgSrc={} nickName={} status={} forAdding={} Searched={}>
                 </Box>
             </VStack>
         </Box>

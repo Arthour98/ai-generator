@@ -17,6 +17,9 @@ export default function ChatPage() {
     const [nickName, setNickname] = useState();
     const [activityStatus, setActivityStatus] = useState(false);
 
+    // data for all friends
+    const [friendsData, setFriendsData] = useState();
+
     const imageRender = (src) => {
         if (src.startsWith("/storage")) {
             return `http://localhost:8000${src}`;
@@ -49,10 +52,27 @@ export default function ChatPage() {
         }
     }
 
+    const getFriends = async () => {
+        try {
+            const res = query(`/api/chat/friends/${user?.id}`);
+            if (res) {
+                setFriendsData(res.data);
+            }
+        }
+        catch (e) {
+            console.error("ERROR:", e);
+        }
+    }
+
     useEffect(() => {
         if (!user) return;
         getProfile();
+        getFriends();
     }, [user]);
+
+    
+
+
 
 
 
@@ -98,7 +118,7 @@ export default function ChatPage() {
                     </Box>
 
                 </Flex>
-                <FriendsBar open={true}>
+                <FriendsBar open={true} friendsData={friendsData}>
                     <p>Hello world</p>
                 </FriendsBar>
             </Flex>

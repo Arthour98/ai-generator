@@ -104,6 +104,22 @@ public function createOrUpdateSettings(Request $request)
     }
 }
 
+public function getSpecificProfile(Request $request)
+{
+    $username = $request->input("username");
+
+    $profiles = Profile::where("nickname","like","%".strtolower($username)."%")->
+    orWhere("nickname",'like',"%".strtoupper($username)."%")->get();
+
+    if(!$profiles)
+    {
+    return response()->json(["message"=>"No profile was found with the specific name"],403);
+    }
+    if($profiles)
+    {
+        return response()->json(["profiles"=>$profiles],200);
+    }
+}
 
 
 }

@@ -93,7 +93,7 @@ const Register = ({ open, setOpen, registerPhase }) => {
 
         if (res && res.user) {
             setUser(res.user);
-            router.push(`/home/${userId}`);
+            router.push(`/home/${res?.user?.id}`);
         }
         setEmail("");
         setPassword("");

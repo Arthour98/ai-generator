@@ -9,6 +9,9 @@ use App\Models\ChatMessages;
 class Conversations extends Model
 {
     //
+    public $timestamps = false;
+    protected $fillable = ["user1","user2"];
+    
     public function friends()
     {
        return  $this->belongsTo(ChatFriends::class);

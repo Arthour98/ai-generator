@@ -3,22 +3,38 @@ import { Stack, HStack, VStack, Text, FormControl, FormLabel } from '@chakra-ui/
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass, faUserGroup, faPlus } from "@fortawesome/free-solid-svg-icons";
 import styles from "./components.module.css";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { query } from "@/hooks/fetch";
+import { motion } from "framer-motion";
+import FriendAvatar from "./FriendAvatar";
 
 
-
-function FriendsBar({ open, setOpen, children, friendsData }) {
+function FriendsBar({ open, setOpen, children, friendsData, user }) {
     if (!open) return;
 
     const [friendsMode, setFriendsMode] = useState("display_friends"); // state for showing specific tabs with the a default
+    const [searchAddFriend, setSearchAddFriend] = useState(""); //state for input in addfriend tab
+    const [profilesFound, setProfilesFound] = useState(null); //  results of searching of addfriends input
+    const [searchFriend, setSearchFriend] = useState(""); //state for input of search friend tab
 
-    const [searchAddFriend, setSearchAddFriend] = useState("");
-    const [profilesFound, setProfilesFound] = useState(null);
 
 
-    const [searchFriend, setSearchFriend] = useState("");
 
+    const filteredFriends = useMemo(() => {
+        let query = searchFriend;
+        if (query == "") return friendsData;
+        return friendsData?.filter(f => f?.nickname?.toLowerCase().includes(query));
+    }, [friendsData, searchFriend]);
+
+    const filteredSearch = useMemo(() => {
+        let query = searchAddFriend;
+        console.log(query);
+        return profilesFound?.filter(f => f?.nickname?.toLowerCase().includes(query));
+    }, [profilesFound, searchAddFriend]);
+
+    useEffect(() => {
+        console.log("filtred:",filteredFriends)
+    }, [filteredFriends])
 
     const searchFriendtoAdd = useCallback(async () => {
         const data =
@@ -29,6 +45,7 @@ function FriendsBar({ open, setOpen, children, friendsData }) {
             const res = await query("http://localhost:8000/api/profile/searchProfiles", { data: data, method: "post" });
             if (res) {
                 setProfilesFound(res?.profiles)
+                console.log(res?.profiles)
             }
         }
         catch (e) {
@@ -48,7 +65,7 @@ function FriendsBar({ open, setOpen, children, friendsData }) {
     }, [searchAddFriend, searchFriendtoAdd]);
 
 
-    
+
 
     return (
         <Box id="FriendsBar" width="450px" height="100vh"
@@ -116,7 +133,43 @@ function FriendsBar({ open, setOpen, children, friendsData }) {
                     </Box>
                 </Box>
                 <Box className={styles.friendsPool}>
-                    <FriendAvatar imgSrc={} nickName={} status={} forAdding={} Searched={}>
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0 }}
+                        transition={{ duration: 0.4 }}
+                        animate={{ opacity: 1, scale: 1 }}
+
+
+                    >
+                        {
+                            friendsMode == "add_friend" ?
+                                filteredSearch?.map(friend =>
+                                (
+                                    <FriendAvatar
+                                        key={friend?.id}
+                                        user_id={user?.id}
+                                        friend_id={friend?.user_id}
+                                        imgSrc={friend?.image_profile}
+                                        nickName={friend?.nickname}
+                                        status={friend.status}
+                                        forAdding={friendsMode == "add_friend" ? true : false}
+                                        view={friendsMode == "search_friend" ? true : false}
+                                    />
+                                ))
+                                :
+                                filteredFriends?.map(friend =>
+                                (
+                                    <FriendAvatar
+                                        key={friend?.id}
+                                        user_id={friend?.id}
+                                        friend_id={friend?.user_id}
+                                        imgSrc={friend?.image_profile}
+                                        nickName={friend?.nickname}
+                                        status={friend?.status}
+                                        forAdding={friendsMode == "add_friend" ? true : false}
+                                        view={friendsMode == "search_friend" ? true : false} />
+                                ))
+                        }
+                    </motion.div>
                 </Box>
             </VStack>
         </Box>

@@ -10,17 +10,29 @@ use App\Models\ChatMessages;
 
 class ChatController extends Controller
 {
-    
     public function getFriends($id)
     {
-        $user_id = $id;
-        $friends = ChatFriends::where("user_id",$user_id)->get();
+    $user_id = $id;
+    $friends = ChatFriends::with(["user.profile"])
+    ->where("user_id", $user_id)
+    ->get()
+    ->map(function ($friend) {
+        return [
+            // "id" => $friend->id,
+            // "user_id" => $friend->user_id,
+            // "friend_id" => $friend->friend_id,
+            // "conversation_id" => $friend->conversation_id,
+            // "status" => $friend->status,
+            // "created_at" => $friend->created_at,
+            // "updated_at" => $friend->updated_at,
+            "profile" => $friend->user->profile
+        ];
+    });
 
         if($friends->count()==0)
         {
             return response()->json(["data"=>[]]);
         }
-
         return response()->json(["data"=>$friends],200);
     }
 
@@ -37,15 +49,42 @@ class ChatController extends Controller
 
     public function sendFrientRequest(Request $request)
     {
+        
         $user_id = $request->input("user_id");
-        $invite_id = $request->input("friends_id");
+        $invite_id = $request->input("invite_id");
 
-        $invitation = ChatFriends::where("user_id",$user_id)->where("friends_id",$invite_id)->get();
-        $invitation-> status ="pending";
-        $invitation-> created_at = now();
-        $invitation->save();
+        //prevent existing friendships to redeclare
+        $existingFriends = ChatFriends::where(function($query) use($user_id,$invite_id)
+        {
+            $query->where("user_id",$user_id)->where("friend_id",$invite_id);
+        })->orWhere(function($query) use($user_id,$invite_id)
+        {
+            $query->where("friend_id",$user_id)->where("user_id",$invite_id);
+        })->get();
 
-        return response()->json(json(["message"=>"Inviation sent successfully"]));
+
+        if($existingFriends->isNotEmpty())
+        {
+            return response()->json(["message"=>"Already friends or request sent"],200);
+        }
+
+        $newConversation = Conversations::create([
+            "user1"=>$user_id,
+            "user2"=>$invite_id
+        ]);
+
+        $conversation=Conversations::where("user1",$user_id)->where("user2",$invite_id)->first();
+        $conversation_id = $conversation->id;
+
+        ChatFriends::create([
+            "user_id"=>$user_id,
+            "friend_id"=>$invite_id,
+            "status"=>"pending",
+            "conversation_id"=>$conversation_id,
+            'created_at' => now()
+        ]);
+
+        return response()->json(["message"=>"Inviation sent successfully"]);
     }
 
     public function acceptFriendRequest(Request $request)

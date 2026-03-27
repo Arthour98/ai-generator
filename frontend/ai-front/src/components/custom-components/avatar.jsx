@@ -6,7 +6,7 @@ import { useState, useEffect } from "react";
 
 
 
-export default function CustomAvatar({ shape, size, src, opacity, scale, zIndex, position, noScale }) {
+export default function CustomAvatar({ shape, src, opacity, scale, zIndex, position, noScale, w = "4rem", h = "4rem" }) {
 
     const [isHovering, setIsHovering] = useState(false);
 
@@ -30,8 +30,9 @@ export default function CustomAvatar({ shape, size, src, opacity, scale, zIndex,
             transition="all 0.2s ease-in-out"
             transform={isHovering ? "scale(1.3)" : `scale(${scale})`}
             cursor="pointer"
+
         >
-            <Avatar scale={isHovering ? 1.3 : 1} shape={shape} size={size} src={src} opacity={opacity} />
+            <Avatar h={h} w={w} scale={isHovering ? 1.3 : 1} shape={shape} src={src} opacity={opacity} />
         </HStack>
     );
 }

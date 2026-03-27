@@ -31,11 +31,15 @@ public function create(Request $request)
     $image=null;
     if(str_starts_with($request->input("image_profile"),"/storage/"))
     {
-    $image = $request->input("image_profile");
+        $image = $request->input("image_profile");
+    }
+    elseif($request->input("image_profile") == "")
+    {
+        $image="";
     }
     else
     {
-    $image=imageDecoder($request->input("image_profile"),$request->input("user_id"),"profile_images");
+        $image=imageDecoder($request->input("image_profile"),$request->input("user_id"),"profile_images");
     }
 
     unset($existingProfile);

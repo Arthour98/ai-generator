@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Models\User;
+use App\Models\ChatFriends;
 
 class Profile extends Model
 {
@@ -12,7 +13,7 @@ class Profile extends Model
     protected $fillable = ['user_id', 'nickname', 'age', 'country','settings','image_profile'];
     protected $casts=["settings"=>"array"];
 
-
+    
     // Link back to the user
     public function user()
     {

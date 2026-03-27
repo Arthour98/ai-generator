@@ -54,9 +54,10 @@ export default function ChatPage() {
 
     const getFriends = async () => {
         try {
-            const res = query(`/api/chat/friends/${user?.id}`);
+            const res = await query(`/api/chat/friends/${user?.id}`, { method: "get" });
             if (res) {
-                setFriendsData(res.data);
+                const profiles = res?.data?.map(d => d?.profile);
+                setFriendsData(profiles);
             }
         }
         catch (e) {
@@ -70,12 +71,9 @@ export default function ChatPage() {
         getFriends();
     }, [user]);
 
-    
-
-
-
-
-
+    useEffect(() => {
+        console.log("friends:", friendsData)
+    }, [friendsData, user])
     return (
         <>
             <Flex direction={"row"} justifyContent={"flex-start"} overflowY="hidden" alignItems={"flex-start"} gap={20} height={"100vh"}>
@@ -118,7 +116,7 @@ export default function ChatPage() {
                     </Box>
 
                 </Flex>
-                <FriendsBar open={true} friendsData={friendsData}>
+                <FriendsBar open={true} friendsData={friendsData} user={user}>
                     <p>Hello world</p>
                 </FriendsBar>
             </Flex>

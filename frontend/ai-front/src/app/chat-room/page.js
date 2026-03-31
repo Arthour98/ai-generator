@@ -19,6 +19,7 @@ export default function ChatPage() {
 
     // data for all friends
     const [friendsData, setFriendsData] = useState();
+    const [friendRequests, setFriendRequests] = useState([]);
 
     const imageRender = (src) => {
         if (src.startsWith("/storage")) {
@@ -56,8 +57,29 @@ export default function ChatPage() {
         try {
             const res = await query(`/api/chat/friends/${user?.id}`, { method: "get" });
             if (res) {
-                const profiles = res?.data?.map(d => d?.profile);
+                const profiles = res?.data?.filter(d => d.status == "accepted").map(d => {
+                    delete d.profile.id; // do the same mapping so the componenets receiving this data wont break ;)
+                    return {
+                        id: d.id,
+                        friend_id: d.friend_id,
+                        user_id: d.user_id,
+                        inviter_id: d.inviter_id,
+                        ...d?.profile  // oh god i should have  created different endpoints in api , now i am suffering af :OOO
+                    }
+                });
+                const requests = res?.data?.filter(d => d.inviter_id != user?.id && d.status == "pending").map(d => {
+                    delete d.profile.id; //delete the property of profile because its taking the id of what i really want :D
+                    return {
+                        id: d.id,
+                        friend_id: d.friend_id,
+                        user_id: d.user_id,
+                        inviter_id: d.inviter_id,
+                        ...d?.profile //mappping data so afterwards it wont bug cause have some properties that needs to be passed
+                    }
+                });
+
                 setFriendsData(profiles);
+                setFriendRequests(requests)
             }
         }
         catch (e) {
@@ -66,17 +88,20 @@ export default function ChatPage() {
     }
 
     useEffect(() => {
+        console.log("Requests:", friendRequests);
+        console.log("friends:", friendsData)
+    }, [friendRequests, friendsData])
+
+    useEffect(() => {
         if (!user) return;
         getProfile();
         getFriends();
     }, [user]);
 
-    useEffect(() => {
-        console.log("friends:", friendsData)
-    }, [friendsData, user])
+
     return (
         <>
-            <Flex direction={"row"} justifyContent={"flex-start"} overflowY="hidden" alignItems={"flex-start"} gap={20} height={"100vh"}>
+            <Flex direction={"row"} justifyContent={"flex-start"} overflow={"visible"} overflowY="hidden" alignItems={"flex-start"} gap={20} height={"100vh"}>
                 <Sidebar userId={user?.id} />
                 <Flex direction={"column"} alignItems={"center"} width={"60%"}>
                     <SettingsBar ProfileImage={imageRender(image)} />
@@ -94,6 +119,7 @@ export default function ChatPage() {
                         borderRadius={12}
                         color={'white'}
                         overflowY="hidden"
+                        overflow={"visible"}
                     >
                         <Box width="100%" height="15%" display="flex" alignItems="center" gap="1rem"
                             backgroundColor="whiteAlpha.500" borderRadius="15px" padding="0.5rem 1rem">
@@ -116,7 +142,7 @@ export default function ChatPage() {
                     </Box>
 
                 </Flex>
-                <FriendsBar open={true} friendsData={friendsData} user={user}>
+                <FriendsBar open={true} friendsData={friendsData} user={user} friendRequests={friendRequests}>
                     <p>Hello world</p>
                 </FriendsBar>
             </Flex>

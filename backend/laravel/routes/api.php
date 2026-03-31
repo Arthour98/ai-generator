@@ -43,5 +43,6 @@ Route::post("/chat/send-message",[ChatController::class,"sendMessage"]);
 Route::get("/chat/friends/{id}",[ChatController::class,"getFriends"]);
 Route::get("/chat/messages/{id}",[ChatController::class,"getMessages"]);
 Route::post("/profile/searchProfiles",[ProfileController::class,"getSpecificProfile"]);
+Route::post("/chat/delete-friend",[ChatController::class,"deleteFriend"]);
 });
 

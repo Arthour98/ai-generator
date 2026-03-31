@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\RefreshToken;
 use Illuminate\Support\Facades\Hash;
+use App\Models\Profile;
 
 class  AuthController extends Controller
 {
@@ -45,6 +46,11 @@ class  AuthController extends Controller
                 Log::error('Refresh token creation failed', ['error' => $e->getMessage()]);
                 $refreshToken = null;
             }
+            
+            Profile::updateOrCreate(["user_id"=>$user->id],
+            [
+                "status_activity"=>"online"
+            ]);
 
             // Prepare JSON response
             $response = response()->json([
@@ -69,6 +75,8 @@ class  AuthController extends Controller
     'refresh_token', $refreshToken, 60*24, null, null, false, true
 );
             }
+
+  
 
             return $response;
 
@@ -136,9 +144,14 @@ public function user(Request $request)
     {
         $refreshToken = $request->cookie('refresh_token');
 
-        if ($refreshToken) {
-            RefreshToken::where('token', $refreshToken)->delete();
-        }
+        $session = RefreshToken::where('token', $refreshToken)->first();
+        $session->delete();
+        
+
+        Profile::updateOrCreate(["user_id"=>$session->user_id],
+            [
+                "status_activity"=>"offline"
+            ]);
 
         return response()->json(['message' => 'Logged out'])
             ->cookie('refresh_token', '', -1, '/');

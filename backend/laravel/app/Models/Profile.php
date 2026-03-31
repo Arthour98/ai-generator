@@ -10,7 +10,7 @@ class Profile extends Model
 {
     protected $table = 'profile';
     public $timestamps = false;
-    protected $fillable = ['user_id', 'nickname', 'age', 'country','settings','image_profile'];
+    protected $fillable = ['user_id', 'nickname', 'age', 'country','settings','image_profile','status_activity'];
     protected $casts=["settings"=>"array"];
 
     

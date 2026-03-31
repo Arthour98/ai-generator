@@ -10,32 +10,39 @@ use App\Models\ChatMessages;
 
 class ChatController extends Controller
 {
-    public function getFriends($id)
-    {
-    $user_id = $id;
-    $friends = ChatFriends::with(["user.profile"])
-    ->where("user_id", $user_id)
+public function getFriends($id)
+{
+    $friends = ChatFriends::with(["friends.profile","user.profile"])
+    ->where("user_id", $id)
+    ->orWhere("friend_id", $id)
     ->get()
-    ->map(function ($friend) {
+    ->map(function ($friend) use ($id) {
+
+        // determine the opposite user
+        $profile = $friend->user_id == $id
+            ? $friend->friends->profile
+            : $friend->user->profile;
+
+        $friend_id = $friend->user_id == $id
+            ? $friend->friend_id
+            : $friend->user_id;
+
         return [
-            // "id" => $friend->id,
-            // "user_id" => $friend->user_id,
-            // "friend_id" => $friend->friend_id,
-            // "conversation_id" => $friend->conversation_id,
-            // "status" => $friend->status,
-            // "created_at" => $friend->created_at,
-            // "updated_at" => $friend->updated_at,
-            "profile" => $friend->user->profile
+            "id" => $friend->id,
+            "friend_id" => $friend_id,
+            "status" => $friend->status,
+            "profile" => $profile,
+            "inviter_id" => $friend->user_id
         ];
     });
+
 
         if($friends->count()==0)
         {
             return response()->json(["data"=>[]]);
         }
         return response()->json(["data"=>$friends],200);
-    }
-
+}
     public function getMessages($id)
     {
         $user_id = $id;
@@ -47,8 +54,8 @@ class ChatController extends Controller
         return response()->json(["data"=>$messages]);
     }
 
-    public function sendFrientRequest(Request $request)
-    {
+public function sendFrientRequest(Request $request)
+{
         
         $user_id = $request->input("user_id");
         $invite_id = $request->input("invite_id");
@@ -65,7 +72,7 @@ class ChatController extends Controller
 
         if($existingFriends->isNotEmpty())
         {
-            return response()->json(["message"=>"Already friends or request sent"],200);
+            return response()->json(["message"=>"failed"],200);
         }
 
         $newConversation = Conversations::create([
@@ -84,21 +91,23 @@ class ChatController extends Controller
             'created_at' => now()
         ]);
 
-        return response()->json(["message"=>"Inviation sent successfully"]);
-    }
+        return response()->json(["message"=>"sent"],200);
+}
 
     public function acceptFriendRequest(Request $request)
     {
         $user_id = $request->input("user_id");
-        $invitation_id = $request->input("invitation_id");
-        $choice ->$request->input("invitation_choice");
+        $invitation_id = $request->input("friendship_id");
+        $choice = $request->input("accept") ==true ? "accepted" : "rejected";
 
-        $invitationHandler = ChatFriends::where("id",$invitation_id)->get();
-        $invitationHandler->status=$choice;
-        $invitationHandler->updated_at = now();
-        $inviationHandler->save();
+        $invitationHandler = ChatFriends::find($invitation_id);
+        if($invitationHandler)
+            {
+                $invitationHandler->status=$choice;
+                $invitationHandler->save();
+            }
 
-        return response()->json(json(["message"=>"Invitation handled"]));
+        return response()->json(["message"=>"Invitation handled"]);
     }
 
 
@@ -127,11 +136,23 @@ class ChatController extends Controller
         ]);
 
         if($newMessage)
-            {
-                return response(401)->json(["succcess"=>true]);
-            }
+        {
+            return response(401)->json(["succcess"=>true]);
+        }
     
     }
 
- 
+    public function deleteFriend(Request $request)
+    {
+        $user_id = $request->input("user_id");
+        $friendship_id= $request->input("friendship_id");
+
+        if(!$user_id) return;
+
+        $friend = ChatFriends::find($friendship_id);
+        $friend->delete();
+
+        return response()->json(["message"=>"success"]);
+    }
+
 }

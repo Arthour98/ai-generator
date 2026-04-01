@@ -125,14 +125,16 @@ public function sendFrientRequest(Request $request)
         $newMessage = ChatMessages::create([
             "sender_id"=>$user_id,
             "friends_conversation"=>$conversation_id,
-            "message"=>$message,
+            "messages"=>$message,
             "created_at"=>now(),
             "updated_at"=>now()
         ]);
 
+
         if($newMessage)
         {
-            return response(401)->json(["succcess"=>true]);
+            $newMessages = ChatMessages::where("friends_conversation",$conversation_id)->get();
+            return response()->json(["succcess"=>true,"messages"=>$newMessages],200);
         }
     
     }

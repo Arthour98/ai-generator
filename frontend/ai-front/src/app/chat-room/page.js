@@ -2,7 +2,7 @@
 import Sidebar from "@/components/partials/sidebar";
 import { useAuth } from "@/contexts/auth";
 import SettingsBar from "@/components/partials/settingsBar";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { query } from "@/hooks/fetch";
 import { Box, Text, Flex, Card, VStack, Divider } from "@chakra-ui/react";
 import FriendsBar from "../../components/custom-components/friendsBar";
@@ -10,6 +10,7 @@ import CustomAvatar from "@/components/custom-components/avatar";
 import CustomSwitch from "@/components/custom-components/customSwtich";
 import LastChatsCol from "@/components/custom-components/LastChatsCol";
 import ChatMainCol from "@/components/custom-components/ChatMainCol";
+
 
 export default function ChatPage() {
 
@@ -128,6 +129,20 @@ export default function ChatPage() {
     }, []);
 
 
+    ////////////// openChat state
+    const [openChat, setOpenChat] = useState(true)
+
+    const selFriend = useMemo(() => {
+        let selectedFriend = friendsData?.filter(f => f.id !== friendActiveId)
+        if (selectedFriend && selectedFriend?.length != 0) {
+            return selectedFriend[0];
+        }
+        else {
+            return [];
+        }
+    }, [friendActiveId, friendsData])
+
+
 
     return (
         <>
@@ -162,14 +177,12 @@ export default function ChatPage() {
                         <Box width={"100%"} minH={"80%"}
                             display="flex" >
                             <Box flexBasis={"20%"} height="100%" backgroundColor={"blackAlpha.600"}>
-                                <LastChatsCol last_profiles={limitedProfiles} setFriendId={getFriendId}>
-
-                                </LastChatsCol>
+                                <LastChatsCol last_profiles={limitedProfiles} setFriendId={getFriendId} />
                             </Box>
                             <Box flexBasis={"80%"} height="100%" backgroundColor={"blackAlpha.700"}>
-                                <ChatMainCol user={user} friendId={friendActiveId} friends={friendsData}>
+                                <ChatMainCol open={openChat} setOpen={setOpenChat} user={user} friend={selFriend} />
 
-                                </ChatMainCol>
+
                             </Box>
                         </Box>
 

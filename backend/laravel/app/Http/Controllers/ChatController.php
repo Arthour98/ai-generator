@@ -123,7 +123,7 @@ public function sendFrientRequest(Request $request)
         $conversation_id = $request->input("conversation_id");
 
         $newMessage = ChatMessages::create([
-            "sender_id"=>$user_id
+            "sender_id"=>$user_id,
             "friends_conversation"=>$conversation_id,
             "message"=>$message,
             "created_at"=>now(),

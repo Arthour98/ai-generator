@@ -8,7 +8,7 @@ import { query } from "@/hooks/fetch";
 import { useCustomToast } from "../../hooks/CustomToast";
 
 export default function FriendAvatar({ id, user_id, friend_id, imgSrc, nickName, status, forAdding,
-    view, isRequest = false, popItem, activeId, setActiveId }) {
+    view, isRequest = false, popItem, activeId, setActiveId, setFriendId }) {
     //Note : on current component the data received is different from the time a user send invite to the time the user user gets the request and
     // being friends , since i have only one component and just 2 endpoints for fetching friends-request functionality , logic is quite complex
     // and needs caution , not ideal for big projects on production cause it can lead to bugs if managed by many devs that dont know the project !
@@ -99,6 +99,8 @@ export default function FriendAvatar({ id, user_id, friend_id, imgSrc, nickName,
     const trashIcon = useRef();
 
 
+
+
     const selectActiveId = useCallback((e) => {
         if (isRequest || forAdding) return;
         if (trashRef.current && trashRef.current.contains(e.target)) {
@@ -135,9 +137,9 @@ export default function FriendAvatar({ id, user_id, friend_id, imgSrc, nickName,
         }
     }
 
-
-
-
+    const getFriendId = (friend_id) => {
+        setFriendId(friend_id);
+    }
 
 
     return (
@@ -206,7 +208,13 @@ export default function FriendAvatar({ id, user_id, friend_id, imgSrc, nickName,
                     view &&
                     (
                         <Box display="flex" width="100%" justifyContent={"space-between"} alignItems="center" >
-                            <FontAwesomeIcon color="white" cursor="pointer" icon={faMessage} size={"12px"} />
+                            <FontAwesomeIcon
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    getFriendId(friend_id);
+                                }
+                                }
+                                color="white" cursor="pointer" icon={faMessage} size={"12px"} />
                             <Text color={status == "online" ? "green.600" : "red.600"}>
                                 {status == "online" ? "Online" : "Offline"}
                             </Text>

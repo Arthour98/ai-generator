@@ -9,6 +9,7 @@ use Illuminate\Notifications\Notifiable;
 use App\Models\Profile;
 use App\Models\ChatFriends;
 
+
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */

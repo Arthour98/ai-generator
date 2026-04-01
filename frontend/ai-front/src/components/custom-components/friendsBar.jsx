@@ -9,7 +9,7 @@ import { motion } from "framer-motion";
 import FriendAvatar from "./FriendAvatar";
 
 
-function FriendsBar({ open, setOpen, children, friendsData, user, friendRequests }) {
+function FriendsBar({ open, setOpen, children, friendsData, user, friendRequests, setFriendId }) {
     if (!open) return;
 
     const [friendsMode, setFriendsMode] = useState("display_friends"); // state for showing specific tabs with the a default
@@ -107,6 +107,10 @@ function FriendsBar({ open, setOpen, children, friendsData, user, friendRequests
     const getActiveId = useCallback((id) => {
         setActiveId(id);
     }, [activeId, setActiveId])
+
+    const getFriendId = (friend_id) => {
+        setFriendId(friend_id);
+    }
 
     return (
         <Box id="FriendsBar" width="400px" height="100vh"
@@ -237,6 +241,7 @@ function FriendsBar({ open, setOpen, children, friendsData, user, friendRequests
                                         forAdding={friendsMode == "add_friend" ? true : false}
                                         view={friendsMode == "search_friend" || friendsMode == "display_friends" ? true : false}
                                         popItem={popFriend}
+                                        setFriendId={getFriendId}
                                     />
                                 ))
                                 :
@@ -256,6 +261,7 @@ function FriendsBar({ open, setOpen, children, friendsData, user, friendRequests
                                             activeId={activeId}
                                             setActiveId={getActiveId}
                                             popItem={popFriend}
+                                            setFriendId={getFriendId}
                                         />
                                     )
                                     )

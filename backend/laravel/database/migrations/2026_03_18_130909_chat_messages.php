@@ -15,7 +15,8 @@ return new class extends Migration
         Schema::create("chat_messages",function(Blueprint $table)
         {
             $table->id();
-            $table->foreignId("friends_conversation")->consrained("conversations")->cascadeOnDelete();
+            $table->integer("sender_id");
+            $table->foreignId("friends_conversation")->consrained("chat_friends")->cascadeOnDelete();
             $table->string("messsage");
             $table->timestamps();  
         });
@@ -30,7 +31,8 @@ return new class extends Migration
         Schema::table("chat_messages",function(Blueprint $table)
         {
             $table->id();
-            $table->foreignId("friends_conversation")->consrained("conversations")->cascadeOnDelete();
+            $table->integer("sender_id");
+            $table->foreignId("friends_conversation")->consrained("chat_friends")->cascadeOnDelete();
             $table->string("messsage");
             $table->timestamps();  
         });

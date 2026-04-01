@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Conversations;
 use App\Models\ChatFriends;
 use App\Models\ChatMessages;
 
@@ -46,19 +45,27 @@ public function getFriends($id)
     public function getMessages($id)
     {
         $user_id = $id;
-        $messages = ChatMessages::where("chat_friends.conversation_id",function($query) use($user_id)
+        $messages = ChatFriends::with(["messages"])
+        ->where("user_id",$user_id)
+        ->orWhere("friend_id",$user_id)
+        ->get()
+        ->map(function($conversation)
         {
-           $q->where("user_id",$user_id); 
-        })->get();
+            return
+            [
+            "messages"=>$conversation->messages
+            ];
+        });
+
+   
 
         return response()->json(["data"=>$messages]);
     }
 
 public function sendFrientRequest(Request $request)
 {
-        
         $user_id = $request->input("user_id");
-        $invite_id = $request->input("invite_id");
+        $invite_id = $request->input("invite_id"); //the guy getting invited :p
 
         //prevent existing friendships to redeclare
         $existingFriends = ChatFriends::where(function($query) use($user_id,$invite_id)
@@ -75,19 +82,10 @@ public function sendFrientRequest(Request $request)
             return response()->json(["message"=>"failed"],200);
         }
 
-        $newConversation = Conversations::create([
-            "user1"=>$user_id,
-            "user2"=>$invite_id
-        ]);
-
-        $conversation=Conversations::where("user1",$user_id)->where("user2",$invite_id)->first();
-        $conversation_id = $conversation->id;
-
         ChatFriends::create([
             "user_id"=>$user_id,
             "friend_id"=>$invite_id,
             "status"=>"pending",
-            "conversation_id"=>$conversation_id,
             'created_at' => now()
         ]);
 
@@ -103,10 +101,17 @@ public function sendFrientRequest(Request $request)
         $invitationHandler = ChatFriends::find($invitation_id);
         if($invitationHandler)
             {
-                $invitationHandler->status=$choice;
-                $invitationHandler->save();
-            }
+                if($choice == "rejected")
+                {
+                    $invitation_handler -> delete();
+                }
+                else
+                {
+                    $invitationHandler->status=$choice;
+                    $invitationHandler->save();
+                }
 
+            }
         return response()->json(["message"=>"Invitation handled"]);
     }
 
@@ -114,21 +119,11 @@ public function sendFrientRequest(Request $request)
     public function sendMessage(Request $request)
     {
         $user_id =  $request->input("user_id");
-        $receiver_id = $request->input("receiver_id");
         $message = $request->input("message");
-
-        $conversation = Conversations::whereHas("chat_friends", function($query) use($user_id,$receiver_id)
-        {
-            $query->where("user_id",$user_id)->where("friend_id",$receiver_id);
-        })->get();
-
-        if(!$conversation | is_null($conversation))
-            {
-                return response()->json(["error"=>"You are not friends with that person"]);
-            }
-        $conversation_id = $conversation->id;
+        $conversation_id = $request->input("conversation_id");
 
         $newMessage = ChatMessages::create([
+            "sender_id"=>$user_id
             "friends_conversation"=>$conversation_id,
             "message"=>$message,
             "created_at"=>now(),
@@ -146,11 +141,10 @@ public function sendFrientRequest(Request $request)
     {
         $user_id = $request->input("user_id");
         $friendship_id= $request->input("friendship_id");
-
         if(!$user_id) return;
 
         $friend = ChatFriends::find($friendship_id);
-        $friend->delete();
+        $friend ->delete();
 
         return response()->json(["message"=>"success"]);
     }

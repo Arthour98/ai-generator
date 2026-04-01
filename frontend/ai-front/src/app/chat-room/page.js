@@ -2,12 +2,14 @@
 import Sidebar from "@/components/partials/sidebar";
 import { useAuth } from "@/contexts/auth";
 import SettingsBar from "@/components/partials/settingsBar";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { query } from "@/hooks/fetch";
 import { Box, Text, Flex, Card, VStack, Divider } from "@chakra-ui/react";
 import FriendsBar from "../../components/custom-components/friendsBar";
 import CustomAvatar from "@/components/custom-components/avatar";
 import CustomSwitch from "@/components/custom-components/customSwtich";
+import LastChatsCol from "@/components/custom-components/LastChatsCol";
+import ChatMainCol from "@/components/custom-components/ChatMainCol";
 
 export default function ChatPage() {
 
@@ -85,9 +87,18 @@ export default function ChatPage() {
         catch (e) {
             console.error("ERROR:", e);
         }
+    } // need polling
+
+    const getMessages = async () => {
+        try {
+            const res = query(`/api/chat/messages/${user?.id}`, { method: "get" })
+        }
+        catch (e) {
+            console.error(e);
+        }
     }
 
-    useEffect(() => {
+    useEffect(() => { // debugin
         console.log("Requests:", friendRequests);
         console.log("friends:", friendsData)
     }, [friendRequests, friendsData])
@@ -96,7 +107,26 @@ export default function ChatPage() {
         if (!user) return;
         getProfile();
         getFriends();
+        getMessages();
     }, [user]);
+
+    const [friendActiveId, setFriendActiveId] = useState();
+
+    const getFriendId = useCallback((friend_id) => {
+        setFriendActiveId(friend_id);
+    }, [friendActiveId])
+
+    useEffect(() => {
+        console.log("Friend_id", friendActiveId)
+    }, [friendActiveId])
+
+    const [limitedProfiles, setLimitedProfiles] = useState([]);
+
+    useEffect(() => {
+        let last_profiles = JSON.parse(localStorage.getItem('last_profiles')) ?? [];
+        setLimitedProfiles(last_profiles);
+    }, []);
+
 
 
     return (
@@ -132,17 +162,21 @@ export default function ChatPage() {
                         <Box width={"100%"} minH={"80%"}
                             display="flex" >
                             <Box flexBasis={"20%"} height="100%" backgroundColor={"blackAlpha.600"}>
+                                <LastChatsCol last_profiles={limitedProfiles} setFriendId={getFriendId}>
 
+                                </LastChatsCol>
                             </Box>
                             <Box flexBasis={"80%"} height="100%" backgroundColor={"blackAlpha.700"}>
+                                <ChatMainCol user={user} friendId={friendActiveId} friends={friendsData}>
 
+                                </ChatMainCol>
                             </Box>
                         </Box>
 
                     </Box>
 
                 </Flex>
-                <FriendsBar open={true} friendsData={friendsData} user={user} friendRequests={friendRequests}>
+                <FriendsBar open={true} friendsData={friendsData} user={user} friendRequests={friendRequests} setFriendId={getFriendId}>
                     <p>Hello world</p>
                 </FriendsBar>
             </Flex>

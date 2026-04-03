@@ -25,7 +25,7 @@ class ChatFriends extends Model
     }
     public function messages()
     {
-        return $this->hasMany(ChatMessages::class,"id");
+        return $this->hasMany(ChatMessages::class,"friends_conversation");
     }
  
 }

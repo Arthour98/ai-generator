@@ -23,6 +23,7 @@ export default function ChatPage() {
     // data for all friends
     const [friendsData, setFriendsData] = useState();
     const [friendRequests, setFriendRequests] = useState([]);
+    const [userMessages, setUserMessages] = useState([]);
 
     const imageRender = (src) => {
         if (src.startsWith("/storage")) {
@@ -92,17 +93,18 @@ export default function ChatPage() {
 
     const getMessages = async () => {
         try {
-            const res = query(`/api/chat/messages/${user?.id}`, { method: "get" })
+            const res = await query(`/api/chat/messages/${user?.id}`, { method: "get" })
+            if (res?.data) {
+                let messages = res?.data[0]?.messages
+                setUserMessages(messages);
+            }
         }
         catch (e) {
             console.error(e);
         }
     }
 
-    useEffect(() => { // debugin
-        console.log("Requests:", friendRequests);
-        console.log("friends:", friendsData)
-    }, [friendRequests, friendsData])
+
 
     useEffect(() => {
         if (!user) return;
@@ -133,16 +135,37 @@ export default function ChatPage() {
     const [openChat, setOpenChat] = useState(true)
 
     const selFriend = useMemo(() => {
-        let selectedFriend = friendsData?.filter(f => f.id !== friendActiveId)
-        if (selectedFriend && selectedFriend?.length != 0) {
+        let selectedFriend = friendsData?.filter(f => f.friend_id == friendActiveId)
+        if (selectedFriend) {
             return selectedFriend[0];
         }
         else {
-            return [];
+            return {};
         }
     }, [friendActiveId, friendsData])
 
+    const selFriendMessages = useMemo(() => {
+        // if (!selFriend || !userMessages) {
+        //     return [];
+        // }
+        // else if 
+        if (selFriend !== null && userMessages) {
+            let friendMessages = userMessages?.filter(data => data?.friends_conversation == selFriend?.id);
+            return friendMessages;
+        }
+    }, [selFriend, userMessages, friendActiveId])
 
+    const getMessageData = useCallback((data) => {
+        setUserMessages(data);
+    }, [userMessages])
+
+    useEffect(() => { // debugin
+        console.log("Requests:", friendRequests);
+        console.log("friends:", friendsData)
+        console.log("sel_friend:", selFriend);
+        console.log("user_mesages", userMessages)
+        console.log("selected_messages:", selFriendMessages)
+    }, [friendRequests, friendsData, selFriend, userMessages, selFriendMessages])
 
     return (
         <>
@@ -180,9 +203,9 @@ export default function ChatPage() {
                                 <LastChatsCol last_profiles={limitedProfiles} setFriendId={getFriendId} />
                             </Box>
                             <Box flexBasis={"80%"} height="100%" backgroundColor={"blackAlpha.700"}>
-                                <ChatMainCol open={openChat} setOpen={setOpenChat} user={user} friend={selFriend} />
-
-
+                                <ChatMainCol open={openChat} setOpen={setOpenChat} user={user}
+                                    friend={selFriend} messagesData={selFriendMessages} profile={profile}
+                                    setMessagesData={getMessageData} />
                             </Box>
                         </Box>
 

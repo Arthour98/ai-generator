@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\ChatFriends;
 use App\Models\ChatMessages;
+use App\Models\Profile;
 
 class ChatController extends Controller
 {
@@ -17,7 +18,7 @@ public function getFriends($id)
     ->get()
     ->map(function ($friend) use ($id) {
 
-        // determine the opposite user
+        // opposite user
         $profile = $friend->user_id == $id
             ? $friend->friends->profile
             : $friend->user->profile;
@@ -56,6 +57,8 @@ public function getFriends($id)
             "messages"=>$conversation->messages
             ];
         });
+
+        
 
    
 
@@ -149,6 +152,21 @@ public function sendFrientRequest(Request $request)
         $friend ->delete();
 
         return response()->json(["message"=>"success"]);
+    }
+
+    public function switchStatus(Request $request)
+    {
+        $user_id = $request->input("user_id");
+        $profile_id = $request->input("profile_id");
+        $status = $request->input("status");
+
+        $profile_status=Profile::find($profile_id);
+        if($profile_status)
+            {
+                $profile_status->status_activity = $status;
+                $profile_status->save();
+            }
+            return response()->json(["success"=>true]);
     }
 
 }

@@ -117,6 +117,24 @@ export default function FriendAvatar({ id, user_id, friend_id, imgSrc, nickName,
         }
     }, [activeId])
 
+    const hideBins = (e) => {
+        if (!trashRef.current?.contains(e.target)) {
+            console.log("ARAAAAAAAAAAAAAAAAAAAAA")
+            setOpenBin(false);
+        }
+
+    }
+
+    useEffect(() => {
+        console.log("YOOOOOOOO")
+        if (typeof window != "undefined") {
+            window.addEventListener("click", hideBins)
+        }
+        return () => {
+            window.removeEventListener("click", hideBins)
+        }
+    }, [activeId])
+
     const [isHovering, setIsHovering] = useState(false); // hovering effect state
 
     const deleteFriend = async () => {

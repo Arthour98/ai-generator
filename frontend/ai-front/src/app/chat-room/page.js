@@ -10,6 +10,7 @@ import CustomAvatar from "@/components/custom-components/avatar";
 import CustomSwitch from "@/components/custom-components/customSwtich";
 import LastChatsCol from "@/components/custom-components/LastChatsCol";
 import ChatMainCol from "@/components/custom-components/ChatMainCol";
+import Motion from "@/components/custom-components/motion";
 
 
 export default function ChatPage() {
@@ -19,6 +20,7 @@ export default function ChatPage() {
     const [profile, setProfile] = useState();
     const [nickName, setNickname] = useState();
     const [activityStatus, setActivityStatus] = useState(false);
+
 
     // data for all friends
     const [friendsData, setFriendsData] = useState();
@@ -51,11 +53,36 @@ export default function ChatPage() {
             // setBackgroundColor(settings?.background_color);
             // setTextColor(settings?.text_color);
             // setOpenMatrix(settings?.matrix);
+            if (profile.status_activity == "online") {
+                setActivityStatus(true)
+            }
+            else {
+                setActivityStatus(false);
+            }
+
         }
         else {
             console.log("error fetching profile");
         }
     }
+
+    const switchStatus = useCallback(async () => {
+        const data =
+        {
+            user_id: user?.id,
+            profile_id: profile?.id,
+            status: activityStatus == true ? "offline" : "online"
+        }
+        try {
+            const res = await query("/api/chat/status-switch", { method: "post", data: data })
+        }
+        catch (e) {
+            console.error("ERROR:", e)
+            return;
+        }
+    }, [activityStatus])
+
+
 
     const getFriends = async () => {
         try {
@@ -95,22 +122,42 @@ export default function ChatPage() {
         try {
             const res = await query(`/api/chat/messages/${user?.id}`, { method: "get" })
             if (res?.data) {
-                let messages = res?.data[0]?.messages
-                setUserMessages(messages);
+                let new_messages = res?.data?.map(d => {
+                    const obj =
+                    {
+                        conversation_id: d["messages"][0]['friends_conversation'] ?? null,
+                        messages: d.messages
+                    }
+                    return obj
+                });
+
+                setUserMessages(new_messages)
             }
         }
         catch (e) {
             console.error(e);
         }
-    }
+    } // need polling on low secs
 
 
 
     useEffect(() => {
         if (!user) return;
         getProfile();
-        getFriends();
-        getMessages();
+        let t_friends = setInterval(() => {
+            getFriends();
+        }, 10000);
+
+        let t_messages = setInterval(() => {
+            getMessages();
+        }, 3500)
+
+        return () => {
+            clearInterval(t_friends);
+            clearInterval(t_messages)
+        }
+
+
     }, [user]);
 
     const [friendActiveId, setFriendActiveId] = useState();
@@ -123,20 +170,19 @@ export default function ChatPage() {
         console.log("Friend_id", friendActiveId)
     }, [friendActiveId])
 
-    const [limitedProfiles, setLimitedProfiles] = useState([]);
 
-    useEffect(() => {
-        let last_profiles = JSON.parse(localStorage.getItem('last_profiles')) ?? [];
-        setLimitedProfiles(last_profiles);
-    }, []);
 
 
     ////////////// openChat state
-    const [openChat, setOpenChat] = useState(true)
+    const [openChat, setOpenChat] = useState(false);
 
     const selFriend = useMemo(() => {
+
         let selectedFriend = friendsData?.filter(f => f.friend_id == friendActiveId)
-        if (selectedFriend) {
+        if (friendActiveId == null) {
+            return {}
+        }
+        else if (selectedFriend && Object.keys(selectedFriend[0])?.length != 0) {
             return selectedFriend[0];
         }
         else {
@@ -150,22 +196,81 @@ export default function ChatPage() {
         // }
         // else if 
         if (selFriend !== null && userMessages) {
-            let friendMessages = userMessages?.filter(data => data?.friends_conversation == selFriend?.id);
-            return friendMessages;
+            let friendMessages = userMessages?.filter(data => data?.conversation_id == selFriend?.id);
+            return friendMessages[0]?.messages;
         }
     }, [selFriend, userMessages, friendActiveId])
 
     const getMessageData = useCallback((data) => {
-        setUserMessages(data);
+
+        if (!selFriend || !userMessages) return;
+        let new_data =
+        {
+            conversation_id: selFriend?.id,
+            messages: data
+        }
+        let selIndex = Array.from(userMessages).findIndex(m => m.conversation_id == selFriend?.id);
+        let new_messages = Array.from(userMessages).splice(selIndex, 1, new_data)
+
+        setUserMessages(new_messages);
+    }, [selFriend, userMessages]);
+
+    useEffect(() => {
+        console.log("user_messages", userMessages)
     }, [userMessages])
 
-    useEffect(() => { // debugin
-        console.log("Requests:", friendRequests);
-        console.log("friends:", friendsData)
-        console.log("sel_friend:", selFriend);
-        console.log("user_mesages", userMessages)
-        console.log("selected_messages:", selFriendMessages)
-    }, [friendRequests, friendsData, selFriend, userMessages, selFriendMessages])
+    useEffect(() => {
+        if (Object.keys(selFriend)?.length == 0) {
+            return;
+        }
+        else {
+            setOpenChat(true);
+        }
+    }, [selFriend])
+
+    const [limitedProfiles, setLimitedProfiles] = useState([]);
+
+
+
+    useEffect(() => {
+        if (!friendActiveId || typeof limitedProfiles == "undefined") return
+        let lastFriend = selFriend;
+        console.log("friendInLocal", lastFriend);
+
+        let last_friend_list = Array.from(limitedProfiles) ?? [];
+
+        let existing_item = false;
+
+        if (last_friend_list?.length > 0) {
+            if (last_friend_list.find(li => li.id == selFriend?.id)) {
+                existing_item = true;
+            }
+            else {
+                existing_item = false;
+            }
+        }
+
+        if (existing_item) {
+            return;
+        }
+        if (last_friend_list?.length < 3) {
+            last_friend_list.push(lastFriend);
+        }
+        else if (last_friend_list?.length >= 3) {
+            last_friend_list.pop();
+            last_friend_list.unshift(lastFriend);
+        }
+        localStorage.setItem("last_profiles", JSON.stringify(last_friend_list))
+        console.log("FRIENDlIST_LOCAL", last_friend_list)
+    }, [openChat, friendActiveId])
+
+    useEffect(() => {
+        let last_profiles = JSON.parse(localStorage.getItem('last_profiles')) ?? [];
+
+        setLimitedProfiles(last_profiles);
+    }, [selFriend]);
+
+
 
     return (
         <>
@@ -175,7 +280,7 @@ export default function ChatPage() {
                     <SettingsBar ProfileImage={imageRender(image)} />
                     <Box w="100%"
                         position
-                        padding={4}
+                        padding={8}
                         display={"flex"}
                         shadow={"md"}
                         minH={"85vh"}
@@ -189,23 +294,25 @@ export default function ChatPage() {
                         overflowY="hidden"
                         overflow={"visible"}
                     >
-                        <Box width="100%" height="15%" display="flex" alignItems="center" gap="1rem"
+                        <Box width="100%" height="10%" display="flex" alignItems="center" gap="1rem"
                             backgroundColor="whiteAlpha.500" borderRadius="15px" padding="0.5rem 1rem">
                             <CustomAvatar src={imageRender(image)} noScale={true} />
-                            <CustomSwitch value={activityStatus} setValue={() => setActivityStatus(!activityStatus)} />
+                            <CustomSwitch callback={switchStatus} value={activityStatus} setValue={() => setActivityStatus(prev => !prev)} />
                             <Box>Status:<Text color={activityStatus ? "green.800" : "red.800"}>{activityStatus ? "Online" : "Offline"}</Text></Box>
                         </Box>
 
                         {/* main-chat-div */}
-                        <Box width={"100%"} minH={"80%"}
-                            display="flex" >
-                            <Box flexBasis={"20%"} height="100%" backgroundColor={"blackAlpha.600"}>
+                        <Box width={"100%"} minH={"90%"} overflow="hidden"
+                            display="flex" borderBottomRadius={"12px"} >
+                            <Box flexBasis={"20%"} paddingTop={"1rem"} height="100%" backgroundColor={"blackAlpha.600"}>
                                 <LastChatsCol last_profiles={limitedProfiles} setFriendId={getFriendId} />
                             </Box>
-                            <Box flexBasis={"80%"} height="100%" backgroundColor={"blackAlpha.700"}>
-                                <ChatMainCol open={openChat} setOpen={setOpenChat} user={user}
-                                    friend={selFriend} messagesData={selFriendMessages} profile={profile}
-                                    setMessagesData={getMessageData} />
+                            <Box flexBasis={"80%"} height="100%" backgroundColor={"blackAlpha.700"} pt={"0.5rem"}>
+                                <Motion open={openChat} h={"inherit"} w="inherit" >
+                                    <ChatMainCol open={openChat} setOpen={setOpenChat} user={user}
+                                        friend={selFriend} messagesData={selFriendMessages} profile={profile}
+                                        setMessagesData={getMessageData} />
+                                </Motion>
                             </Box>
                         </Box>
 

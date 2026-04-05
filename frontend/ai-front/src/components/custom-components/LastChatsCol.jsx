@@ -5,7 +5,7 @@ import { useState, useEffect, useMemo } from "react";
 export default function LastChatsCol({ setFriendId, last_profiles }) {
 
     const imageRender = (src) => {
-        if (src.startsWith("/storage")) {
+        if (src?.startsWith("/storage")) {
             return `http://localhost:8000${src}`;
         }
         else {
@@ -22,22 +22,27 @@ export default function LastChatsCol({ setFriendId, last_profiles }) {
     }
 
     return (
-        <Box display="flex" flexDirection={"column"} w="70%" h="100px"
+        <Box display="flex" flexDirection={"column"} rowGap={"1rem"} w="90%" h="500px"
         >
             {
                 limitedProfiles.map(prof =>
                 (
-                    <Box display="flex" onClick={() => getFriendId(friend_id)}>
-                        <Box w="50%">
+                    <Box cursor="pointer" key={prof.id} display="flex" borderRadius={"7px"}
+                        onClick={() => getFriendId(prof.friend_id)} bgColor={"whiteAlpha.500"} h="2rem">
+                        <Box w="30%" display="flex" alignItems="center" justifyContent="center">
                             <CustomAvatar src={imageRender(prof?.image_profile)} noScale w="1rem" h="1rem" />
                         </Box>
-                        <Box w="50%">
-                            <Text color="green.600" fontSize="14px" fontWeight={"bold"} />
+                        <Box w="70%" display="flex" alignItems="center">
+                            <Text color="green.600" fontSize="14px" fontWeight={"bold"} >
+                                {
+                                    prof?.nickname
+                                }
+                            </Text>
                         </Box>
                     </Box>
                 )
                 )
             }
-        </Box>
+        </Box >
     )
 }

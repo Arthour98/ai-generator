@@ -34,7 +34,6 @@ export default function ChatMainCol({ friend, open, setOpen, user, messagesData,
             try {
                 const res = await query("/api/chat/send-message", { method: "post", data: data })
                 if (res.success == true) {
-                    setMessages(res.messages);
                     setMessagesData(res.messages);
                     setMessage("");
                 }
@@ -46,9 +45,6 @@ export default function ChatMainCol({ friend, open, setOpen, user, messagesData,
         }
     }, [messages, message, setMessages])
 
-    useEffect(() => {
-        console.log("messages_new:", messages)
-    }, [messages, friend_obj])
 
     const last_message_ref = useRef(null);
 
@@ -57,11 +53,11 @@ export default function ChatMainCol({ friend, open, setOpen, user, messagesData,
         last_ref?.scrollIntoView({ block: "end", behavior: "smooth" })
     }, [messages, last_message_ref]);
 
-
+    if (!open) return null;
 
     return (
         <Box display="flex" flexDirection="column" alignItems="center" justifyContent="start"
-            w={"100%"} h="100%" backgroundColor="gray.800" borderRadius="12px">
+            w={"100%"} h="100%" backgroundColor="gray.800" borderRadius="12px" >
             <Box display="flex" justifyContent="center" alignItems="center" h="10%">
                 <Text fontSize="26px" fontWeight="500" color="whiteAlpha.300">{capitalize(friend_obj?.nickname)}</Text>
             </Box>

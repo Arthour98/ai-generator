@@ -12,6 +12,7 @@ import { query } from "@/hooks/fetch";
 import CustomSwitch from "@/components/custom-components/customSwtich";
 import Matrix from "@/components/custom-components/matrix";
 import CustomSkeleton from "@/components/custom-components/skeleton";
+import { useCustomToast } from "@/hooks/CustomToast";
 
 
 export default function ThemePage() {
@@ -69,7 +70,11 @@ export default function ThemePage() {
   const [textColor, setTextColor] = useState(null);
   const [backgroundColor, setBackgroundColor] = useState(null);
 
+  const [isLoading, setIsLoading] = useState(false);
+  const showToast = useCustomToast();
+
   const handleUpdateSettings = useCallback(async () => {
+    setIsLoading(true);
     const data = {
       user_id: userId,
       profile: profile?.id,
@@ -78,13 +83,25 @@ export default function ThemePage() {
       text_color: textColor
     }
 
-    const req = await query('http://localhost:8000/api/profile/settings', { data: data, method: "post" });
+    try {
+      const req = await query('http://localhost:8000/api/profile/settings', { data: data, method: "post" });
 
-    if (req) {
-      const settings = req?.profile?.settings;
-      setTextColor(settings?.text_color);
-      setBackgroundColor(settings?.background_color);
-      setOpenMatrix(settings?.matrix);
+      if (req) {
+        const settings = req?.profile?.settings;
+        setTextColor(settings?.text_color);
+        setBackgroundColor(settings?.background_color);
+        setOpenMatrix(settings?.matrix);
+        setIsLoading(false);
+        showToast({ status: "success", content: "Theme updated!" })
+      }
+      else {
+        setIsLoading(false);
+        showToast({ status: "error", content: "Error updading theme!" })
+      }
+    }
+    catch (e) {
+      setIsLoading(false);
+      showToast({ status: "error", content: "Error updading theme!" })
     }
   }, [backgroundColor, textColor, openMatrix])
 
@@ -127,7 +144,7 @@ export default function ThemePage() {
                 <Button onClick={handleClear} color="white" bg={"gray.400"} _hover={{ bg: "gray.600" }}>
                   Clear
                 </Button>
-                <Button onClick={handleUpdateSettings} color="white" bg={"green.400"} _hover={{ bg: "green.600" }}>
+                <Button isLoading={isLoading} onClick={handleUpdateSettings} color="white" bg={"green.400"} _hover={{ bg: "green.600" }}>
                   Save
                 </Button>
               </HStack>

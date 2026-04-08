@@ -31,7 +31,7 @@ export default function RootLayout({ children }) {
         <AuthProvider>
           <ChakraWrapper>
             <Container maxW="container.xxl" py={0} px={0} bg={"gray.50"}
-              minH="100vh" bgGradient={"linear(to-t, pink.400, teal.900)"}>
+              minH="100vh" bgGradient={"linear(to-t, pink.400, teal.900)"} position="relative">
               {children}
             </Container>
           </ChakraWrapper>

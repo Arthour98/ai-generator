@@ -42,7 +42,6 @@ public function create(Request $request)
         $image=imageDecoder($request->input("image_profile"),$request->input("user_id"),"profile_images");
     }
 
-    unset($existingProfile);
 
     $profile=Profile::updateOrCreate(
         ['user_id' => $request->input('user_id')],
@@ -125,5 +124,17 @@ public function getSpecificProfile(Request $request)
     }
 }
 
+ public function viewProfile($id)
+ {
+    $profile = Profile::find($id);
+    if($profile)
+        {
+            return response()->json(["profile"=>$profile]);
+        }
+        else
+            {
+                return response()->json(["profile"=>[]]);
+            }
+ }
 
 }

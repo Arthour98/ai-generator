@@ -10,6 +10,7 @@ import CustomAvatar from "@/components/custom-components/avatar";
 import { query } from "@/hooks/fetch";
 import Matrix from "@/components/custom-components/matrix";
 import CustomSkeleton from "@/components/custom-components/skeleton";
+import { useCustomToast } from "@/hooks/CustomToast";
 
 
 
@@ -35,6 +36,10 @@ export default function ProfileSettingsPage() {
   const [backgroundColor, setBackgroundColor] = useState(null);
   const [textColor, setTextColor] = useState(null)
 
+  const [isLoading, setIsLoading] = useState(false);
+
+  const showToast = useCustomToast();
+
   useEffect(() => {
     if (profile !== null) {
       setLoading(false);
@@ -46,8 +51,7 @@ export default function ProfileSettingsPage() {
 
   const createProfile = useCallback(async () => {
     let UserId = user?.id;
-    console.log("UserId:", UserId);
-
+    setIsLoading(true);
     const data =
     {
       user_id: UserId,
@@ -59,10 +63,12 @@ export default function ProfileSettingsPage() {
     const res = await query('http://localhost:8000/api/profile/create', { data: data, method: "post" });
     if (res) {
       setProfile(res.profile)
-      console.log("user_created");
+      setIsLoading(false);
+      showToast({ status: "success", content: "Profile updated!" })
     }
     else {
-      console.log("sheni dead mothan");
+      setIsLoading(false);
+      showToast({ status: "error", content: "Error while updating profile!" })
     }
   }, [age, country, nickname, image]);
 
@@ -216,7 +222,7 @@ export default function ProfileSettingsPage() {
                 <Button onClick={handleClear} color="white" bg={"gray.400"} _hover={{ bg: "gray.600" }}>
                   Clear
                 </Button>
-                <Button onClick={createProfile} color="white" bg={"green.400"} _hover={{ bg: "green.600" }}>
+                <Button isLoading={isLoading} onClick={createProfile} color="white" bg={"green.400"} _hover={{ bg: "green.600" }}>
                   Save
                 </Button>
               </HStack>

@@ -51,7 +51,7 @@ export default function ChatMainCol({ friend, open, setOpen, user, messagesData,
     useEffect(() => {
         let last_ref = last_message_ref?.current;
         last_ref?.scrollIntoView({ block: "end", behavior: "smooth" })
-    }, [messages, last_message_ref]);
+    }, [messages?.length, last_message_ref]);
 
     if (!open) return null;
 

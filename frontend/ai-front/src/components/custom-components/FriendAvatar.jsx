@@ -1,14 +1,15 @@
 import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import CustomAvatar from "./avatar";
-import { Box, Text, Button } from "@chakra-ui/react";
+import { Box, Text, Button, Link } from "@chakra-ui/react";
 import styles from "@/components/custom-components/components.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faMessage, faCircleCheck, faXmark, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faMessage, faCircleCheck, faXmark, faTrash, faLink } from "@fortawesome/free-solid-svg-icons";
 import { query } from "@/hooks/fetch";
 import { useCustomToast } from "../../hooks/CustomToast";
+import { nameShortener } from "@/utils/nameShortener";
 
-export default function FriendAvatar({ id, user_id, friend_id, imgSrc, nickName, status, forAdding,
-    view, isRequest = false, popItem, activeId, setActiveId, setFriendId }) {
+export default function FriendAvatar({ id, user_id, friend_id, imgSrc, nickName, status, forAdding = false, isSearched = false,
+    view = false, isRequest = false, popItem, activeId, setActiveId, setFriendId, profile_id }) {
     //Note : on current component the data received is different from the time a user send invite to the time the user user gets the request and
     // being friends , since i have only one component and just 2 endpoints for fetching friends-request functionality , logic is quite complex
     // and needs caution , not ideal for big projects on production cause it can lead to bugs if managed by many devs that dont know the project !
@@ -119,7 +120,6 @@ export default function FriendAvatar({ id, user_id, friend_id, imgSrc, nickName,
 
     const hideBins = (e) => {
         if (!trashRef.current?.contains(e.target)) {
-            console.log("ARAAAAAAAAAAAAAAAAAAAAA")
             setOpenBin(false);
         }
 
@@ -159,6 +159,19 @@ export default function FriendAvatar({ id, user_id, friend_id, imgSrc, nickName,
         setFriendId(friend_id);
     }
 
+    const [openInfo, setOpenInfo] = useState(false);
+
+    useEffect(() => {
+        if (activeId == id) {
+            setOpenInfo(true)
+        }
+        else {
+            setOpenInfo(false);
+        }
+    }, [activeId])
+
+
+
 
     return (
         <Box display="flex" height="40px" borderRadius="12px" width="300px"
@@ -171,7 +184,7 @@ export default function FriendAvatar({ id, user_id, friend_id, imgSrc, nickName,
             boxShadow={isHovering ? "0 0 15px var(--chakra-colors-green-200)" : "0 0 10px var(--chakra-colors-green-400)"}
             position="relative"
             onClick={selectActiveId}
-            cursor={view ? "pointer" : "default"}
+            cursor={view || isSearched ? "pointer" : "default"}
             ref={trashRef}
         >
             {view &&
@@ -192,6 +205,24 @@ export default function FriendAvatar({ id, user_id, friend_id, imgSrc, nickName,
                 ) : null
 
             }
+            {
+                isSearched &&
+                    openInfo ?
+                    (
+                        <Link
+                            height="inherit" position="absolute"
+                            right="105%" display="flex" alignItems={"center"}
+                            opacity={openBin ? 1 : 0}
+                            transition="opacity 0.2s ease"
+                            target="_blank"
+                            href={`view-profile/${profile_id}`}
+                        >
+                            <FontAwesomeIcon icon={faLink} cursor="pointer"
+                                width="11px" height="12px" color={"white"}
+                            />
+                        </Link>
+                    ) : null
+            }
             <Box className={styles.friendImageCol} filter="brighteness(1.3)">
                 <CustomAvatar src={imageRender(imgSrc)} shape="circle" noScale w="35px" h='25px' />
             </Box>
@@ -202,7 +233,7 @@ export default function FriendAvatar({ id, user_id, friend_id, imgSrc, nickName,
                     -1px 1px 0 var(--chakra-colors-green-300),
                      1px -1px 0 var(--chakra-colors-green-300),
                      -1px -1px 0 var(--chakra-colors-green-300)" >
-                    {nickName}
+                    {nameShortener(nickName)}
                 </Text>
             </Box>
             <Box className={styles.friendActionsCol}>
@@ -223,16 +254,18 @@ export default function FriendAvatar({ id, user_id, friend_id, imgSrc, nickName,
                     )
                 }
                 {
-                    view &&
+                    (view || isSearched) &&
                     (
-                        <Box display="flex" width="100%" justifyContent={"space-between"} alignItems="center" >
-                            <FontAwesomeIcon
+                        <Box display="flex" width="100%" h="100%" justifyContent={"space-between"} alignItems="center" >
+                            <Box w="50%" h="100%" display="flex" alignItems="center" justifyContent={"center"}
                                 onClick={(e) => {
                                     e.stopPropagation();
                                     getFriendId(friend_id);
                                 }
-                                }
-                                color="white" cursor="pointer" icon={faMessage} size={"12px"} />
+                                }>
+                                <FontAwesomeIcon
+                                    color="white" cursor="pointer" icon={faMessage} size={"12px"} />
+                            </Box>
                             <Text color={status == "online" ? "green.600" : "red.600"}>
                                 {status == "online" ? "Online" : "Offline"}
                             </Text>

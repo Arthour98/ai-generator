@@ -89,6 +89,7 @@ export default function ChatPage() {
             const res = await query(`/api/chat/friends/${user?.id}`, { method: "get" });
             if (res) {
                 const profiles = res?.data?.filter(d => d.status == "accepted").map(d => {
+                    d.profile.profile_id = d?.profile?.id;
                     delete d.profile.id; // do the same mapping so the componenets receiving this data wont break ;)
                     return {
                         id: d.id,
@@ -97,6 +98,7 @@ export default function ChatPage() {
                         inviter_id: d.inviter_id,
                         ...d?.profile  // oh god i should have  created different endpoints in api , now i am suffering af :OOO
                     }
+
                 });
                 const requests = res?.data?.filter(d => d.inviter_id != user?.id && d.status == "pending").map(d => {
                     delete d.profile.id; //delete the property of profile because its taking the id of what i really want :D
@@ -125,7 +127,7 @@ export default function ChatPage() {
                 let new_messages = res?.data?.map(d => {
                     const obj =
                     {
-                        conversation_id: d["messages"][0]['friends_conversation'] ?? null,
+                        conversation_id: d["messages"][0]?.friends_conversation ?? null,
                         messages: d.messages
                     }
                     return obj
@@ -144,6 +146,8 @@ export default function ChatPage() {
     useEffect(() => {
         if (!user) return;
         getProfile();
+        getFriends(); // INITIAL
+        getMessages(); // INITIAL
         let t_friends = setInterval(() => {
             getFriends();
         }, 10000);
@@ -233,7 +237,7 @@ export default function ChatPage() {
 
 
     useEffect(() => {
-        if (!friendActiveId || typeof limitedProfiles == "undefined") return
+        if (!friendActiveId) return
         let lastFriend = selFriend;
         console.log("friendInLocal", lastFriend);
 
@@ -260,15 +264,52 @@ export default function ChatPage() {
             last_friend_list.pop();
             last_friend_list.unshift(lastFriend);
         }
+
+        console.log("result", last_friend_list)
         localStorage.setItem("last_profiles", JSON.stringify(last_friend_list))
-        console.log("FRIENDlIST_LOCAL", last_friend_list)
-    }, [openChat, friendActiveId])
+    }, [openChat, friendActiveId, friendsData, limitedProfiles])
+
+    useEffect(() => {
+        console.log("lim_profiles:", limitedProfiles);
+        console.log("friends_data", friendsData)
+    }, [limitedProfiles, friendsData])
+
+    const [triggerUpdate, setTriggerUpdate] = useState(false);
 
     useEffect(() => {
         let last_profiles = JSON.parse(localStorage.getItem('last_profiles')) ?? [];
-
         setLimitedProfiles(last_profiles);
-    }, [selFriend]);
+        console.log("render_count1")
+    }, []);
+
+    useEffect(() => {
+        console.log("friendsData", friendsData)
+        console.log("limnitedProfiles", limitedProfiles)
+    }, [friendsData, limitedProfiles])
+
+    useEffect(() => { // an updater effect to update the local storage when it detectects changes in
+        // friendsData so profiles from friendsData match with the profiles in local Storage
+        if (friendsData?.length == 0 || !friendsData || !limitedProfiles) return;
+        let last_friend_list = [...limitedProfiles];
+        let obj = {};
+        let ref_obj = {};
+        for (let i = 0; i < last_friend_list?.length; i++) {
+            obj = last_friend_list[i];
+            ref_obj = Array?.from(friendsData).find(d => d?.friend_id == obj?.friend_id);
+            for (let key in obj) {
+                if (JSON.stringify(obj[key]) != JSON?.stringify(ref_obj[key])) {
+                    obj[key] = ref_obj[key]
+                }
+                else {
+                    obj[key] = obj[key];
+                }
+            }
+            last_friend_list[i] = obj;
+            obj = null;
+            ref_obj = null;
+        }
+        localStorage.setItem("last_profiles", JSON.stringify(last_friend_list))
+    }, [limitedProfiles, friendsData])
 
 
 

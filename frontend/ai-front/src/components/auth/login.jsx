@@ -57,10 +57,9 @@ const Login = ({ open, setOpen, loginPhase }) => {
             setIsLogging(false);
             setErrName(true);
             setErrPass(true);
-            console.log("quifsa rop")
             return
         }
-        router.push(`/home/${res.user.id}`);
+        router.push(`/image-generator`);
     }
 
     if (!open) return null;

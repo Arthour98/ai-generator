@@ -13,5 +13,5 @@ export const clearInput = (input, setInput) => {
             }
         }
         )
-    }, 50);
+    }, 30);
 }

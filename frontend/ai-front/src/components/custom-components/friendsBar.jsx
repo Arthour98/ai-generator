@@ -69,11 +69,6 @@ function FriendsBar({ open, setOpen, children, friendsData, user, friendRequests
     }, [friends]);
 
 
-
-    useEffect(() => {
-        console.log("filtred:", filteredFriends)
-    }, [filteredFriends])
-
     const searchFriendtoAdd = useCallback(async () => {
         const data =
         {
@@ -111,6 +106,10 @@ function FriendsBar({ open, setOpen, children, friendsData, user, friendRequests
     const getFriendId = (friend_id) => {
         setFriendId(friend_id);
     }
+
+    const requestCount = useMemo(() => {
+        return requests?.length;
+    })
 
     return (
         <Box id="FriendsBar" width="400px" height="100vh"
@@ -167,7 +166,7 @@ function FriendsBar({ open, setOpen, children, friendsData, user, friendRequests
                                         >
                                             Friends
                                         </Text>
-                                        <Text color={"white"} backgroundColor={"gray.800"}
+                                        <Box color={"white"} backgroundColor={"gray.800"}
                                             padding="0.5rem" borderRadius={"12px"}
                                             cursor="pointer"
                                             _hover={{ backgroundColor: "gray.700" }}
@@ -175,9 +174,21 @@ function FriendsBar({ open, setOpen, children, friendsData, user, friendRequests
                                             style={{
                                                 backgroundColor: friendsMode == "display_friends-requests_view" ? "rgba(0,0,0,0.2" : "transparent",
                                             }}
+                                            position="relative"
                                         >
-                                            Pending Requests
-                                        </Text>
+                                            <Text>
+                                                Pending Requests
+                                            </Text>
+                                            {requestCount > 0 ?
+                                                <Box w="1.3rem" h="1.3rem" borderRadius={"50%"} position="absolute" right="-0.5rem" top="-0.5rem" backgroundColor="red.600">
+                                                    <Text w="100%" h="100%" display="flex" alignItems="center" justifyContent={"center"} fontSize="11px" color="white">
+                                                        {requestCount}
+                                                    </Text>
+                                                </Box >
+                                                :
+                                                null
+                                            }
+                                        </Box>
                                     </Box>
                                 ) :
                                 friendsMode == "search_friend" ?
@@ -238,10 +249,14 @@ function FriendsBar({ open, setOpen, children, friendsData, user, friendRequests
                                         imgSrc={friend?.image_profile}
                                         nickName={friend?.nickname}
                                         status={friend?.status_activity}
+                                        profile_id={friend?.profile_id}
                                         forAdding={friendsMode == "add_friend" ? true : false}
-                                        view={friendsMode == "search_friend" || friendsMode == "display_friends" ? true : false}
+                                        view={friendsMode == "display_friends" ? true : false}
+                                        isSearched={friendsMode == "search_friend" ? true : false}
                                         popItem={popFriend}
                                         setFriendId={getFriendId}
+                                        setActiveId={getActiveId}
+                                        activeId={activeId}
                                     />
                                 ))
                                 :
@@ -256,12 +271,14 @@ function FriendsBar({ open, setOpen, children, friendsData, user, friendRequests
                                             imgSrc={friend?.image_profile}
                                             nickName={friend?.nickname}
                                             status={friend?.status_activity}
+                                            profile_id={friend?.profile_id}
                                             forAdding={friendsMode == "add_friend" ? true : false}
-                                            view={friendsMode == "search_friend" || friendsMode == "display_friends" ? true : false}
+                                            view={friendsMode == "display_friends" ? true : false}
                                             activeId={activeId}
                                             setActiveId={getActiveId}
                                             popItem={popFriend}
                                             setFriendId={getFriendId}
+
                                         />
                                     )
                                     )

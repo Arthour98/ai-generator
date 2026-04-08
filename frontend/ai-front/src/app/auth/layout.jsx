@@ -1,14 +1,14 @@
 "use client";
 import react from "react";
-import {useState,useRef,useEffect} from "react";
-import {Box} from "@chakra-ui/react";
+import { useState, useRef, useEffect } from "react";
+import { Box } from "@chakra-ui/react";
 import { useTheme } from "@chakra-ui/react";
 
 
 export default function Layout({ children }) {
-const theme = useTheme();
-const boxRef=useRef(null);
-const [linearGradient, setLinearGradient] = useState(
+  const theme = useTheme();
+  const boxRef = useRef(null);
+  const [linearGradient, setLinearGradient] = useState(
     `linear-gradient(to bottom right, ${theme.colors.teal[500]} 30%, ${theme.colors.blue[500]} 100%)`
   );
 
@@ -30,8 +30,7 @@ const [linearGradient, setLinearGradient] = useState(
     );
   };
 
-  const resetGradient=(e)=>
-  {
+  const resetGradient = (e) => {
     setLinearGradient(
       `linear-gradient(to bottom right, ${theme.colors.teal[500]} 30%, ${theme.colors.blue[500]} 100%)`
     );
@@ -39,7 +38,7 @@ const [linearGradient, setLinearGradient] = useState(
 
   return (
     <Box
-    ref={boxRef}
+      ref={boxRef}
       w="50%"
       minH="75vh"
       mx="auto"
@@ -49,9 +48,13 @@ const [linearGradient, setLinearGradient] = useState(
       p={4}
       onMouseMove={handleGradientChange}
       onMouseLeave={resetGradient}
-      bg={linearGradient} 
+      bg={linearGradient}
       borderRadius="30px"
       boxShadow="0px 10px 400px rgba(49, 130, 206, 0.6)"
+      position="absolute"
+      top="50%"
+      left="50%"
+      transform="translate(-50%,-50%)"
     >
       {children}
     </Box>

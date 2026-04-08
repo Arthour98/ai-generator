@@ -13,17 +13,16 @@ export const MessageRow = memo(forwardRef(({ user, content, sender_id, created_a
         <Box
             display="flex"
             width="80%"
-            marginLeft={isOwnMessage ? "0" : "50px"}
             borderBottom="1px solid"
             borderColor="whiteAlpha.50"
             paddingBottom="0.5rem"
             ref={ref}
         >
-            <Box display="flex" justifyContent="center" alignItems="center" w="20%">
+            <Box display="flex" justifyContent={"center"} alignItems="center" w={"20%"} pl={isOwnMessage ? "0" : "3rem"}>
                 <CustomAvatar src={imageRender(imgSrc)} noScale h="3rem" w="3rem" />
             </Box>
 
-            <Box display="flex" flexDirection="column" w="80%">
+            <Box display="flex" flexDirection="column" w="80%" pt={"1rem"} pl={isOwnMessage ? "0" : "1.5rem"}>
                 <Text color="green.400" fontSize="14px" wordBreak="break-all">
                     {content}
                 </Text>
@@ -31,7 +30,7 @@ export const MessageRow = memo(forwardRef(({ user, content, sender_id, created_a
                     {dateFormater(created_at)}
                 </Text>
             </Box>
-        </Box>
+        </Box >
     );
 })
 );

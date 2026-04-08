@@ -8,13 +8,13 @@ import { Box, Text, Flex, Card, VStack, Divider, Button, filter } from "@chakra-
 import styles from "@/components/custom-components/components.module.css";
 import CustomSelect from "@/components/custom-components/CustomSelect";
 import RadioElement from "@/components/custom-components/RadioElement";
+import Motion from "@/components/custom-components/motion";
 
 
 export default function RadioPageClient({ initialCountries, initialTags }) {
 
     const { user } = useAuth();
     const [image, setImage] = useState("");
-    const [generated, setGenerated] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
 
     const [countries, setCountries] = useState(initialCountries);
@@ -26,6 +26,8 @@ export default function RadioPageClient({ initialCountries, initialTags }) {
     const [stations, setStations] = useState([]);
 
     const [selStation, setSelStation] = useState({});
+
+    const [hasStations, setHasStations] = useState(false);
 
 
     const getAndHandleIndex = useCallback((i) => {
@@ -45,13 +47,6 @@ export default function RadioPageClient({ initialCountries, initialTags }) {
         setSelStation(stations[newIndex])
     }, [stations, selStation])
 
-    useEffect(() => {
-        console.log("stations:", stations)
-    }, [stations])
-
-
-    //tooltip
-    const [showTooltip, setShowTooltip] = useState(false);
 
     const imageRender = (src) => {
         if (src.startsWith("/storage")) {
@@ -98,6 +93,7 @@ export default function RadioPageClient({ initialCountries, initialTags }) {
 
                 setStations(filteredStations);
                 setSelStation(stations[0]);
+                setHasStations(true);
                 setIsLoading(false);
             }
             else {
@@ -120,6 +116,7 @@ export default function RadioPageClient({ initialCountries, initialTags }) {
                         index === self.findIndex(o => o.name === obj.name))
                 setStations(filteredStations);
                 setSelStation(stations[0])
+                setHasStations(true);
                 setIsLoading(false);
             }
             else {
@@ -184,17 +181,24 @@ export default function RadioPageClient({ initialCountries, initialTags }) {
                                     h={"400px"}
                                     setIndex={getAndHandleIndex}
                                 />
+
+
                                 <Flex direction={"column"} rowGap={"5px"}>
-                                    <Text>Choose station</Text>
-                                    <CustomSelect
-                                        w="50%"
-                                        data={stations}
-                                        name="name"
-                                        setValue={(station) => setSelStation({ url: station.url_resolved, name: station.name })}
-                                        placeholder="Select station"
-                                        value={selStation?.name}
-                                    />
+                                    <Motion
+                                        open={hasStations}>
+                                        <Text>Choose station</Text>
+                                        <CustomSelect
+                                            w="50%"
+                                            data={stations}
+                                            name="name"
+                                            setValue={(station) => setSelStation({ url: station.url_resolved, name: station.name })}
+                                            placeholder="Select station"
+                                            value={selStation?.name}
+                                        />
+                                    </Motion>
                                 </Flex>
+
+
                             </Box>
 
 
@@ -202,7 +206,7 @@ export default function RadioPageClient({ initialCountries, initialTags }) {
                     </Box>
 
                 </Flex>
-            </Flex>
+            </Flex >
         </>
     );
 

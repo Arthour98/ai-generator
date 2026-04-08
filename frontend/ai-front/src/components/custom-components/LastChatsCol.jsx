@@ -1,6 +1,7 @@
 import { Box, Text } from "@chakra-ui/react";
 import CustomAvatar from "./avatar";
 import { useState, useEffect, useMemo } from "react";
+import { nameShortener } from "@/utils/nameShortener";
 
 export default function LastChatsCol({ setFriendId, last_profiles }) {
 
@@ -35,7 +36,7 @@ export default function LastChatsCol({ setFriendId, last_profiles }) {
                         <Box w="70%" display="flex" alignItems="center">
                             <Text color="green.600" fontSize="14px" fontWeight={"bold"} >
                                 {
-                                    prof?.nickname
+                                    nameShortener(prof?.nickname)
                                 }
                             </Text>
                         </Box>

@@ -47,7 +47,9 @@ export default function RadioElement({
             display={"flex"}
             flexDirection={"column"}
             position="relative"
-            boxShadow="0 0 10px 2px white">
+            boxShadow="0 0 10px 2px white"
+            borderRadius="12px"
+            overflow="hidden">
             {error && <Text color="red.400">Cannot play this stream.</Text>}
             <Image src={"/space.webp"}
                 w={"full"} h={"full"}

@@ -7,6 +7,7 @@ import { useState, useEffect, useCallback } from "react";
 import CustomInput from "@/components/custom-components/customInput";
 import { query } from "@/hooks/fetch";
 import CustomSkeleton from "@/components/custom-components/skeleton";
+import { useCustomToast } from "@/hooks/CustomToast";
 
 
 export default function AccountSettingsPage() {
@@ -22,6 +23,8 @@ export default function AccountSettingsPage() {
 
   const [isLoading, setIsLoading] = useState(false); // loader for button
   const [isFocused, setIsFocused] = useState(false)
+
+  const showToast = useCustomToast();
 
   useEffect(() => {
     if (user) {
@@ -70,14 +73,20 @@ export default function AccountSettingsPage() {
     }
     try {
       const res = await query(`/api/user/edit`, { data: data, method: "post" });
-      if (res.ok) {
+      if (res) {
         setIsLoading(false);
+        showToast({ status: "success", content: "Account updated!" })
+      }
+      else {
+        setIsLoading(false);
+        showToast({ status: "error", content: "Error while updating account!" })
       }
     }
     catch (e) {
       console.error("[Error]->", e);
       if (e) {
         setIsLoading(false);
+        showToast({ status: "error", content: "Error while updating account!" })
       }
     }
     finally {

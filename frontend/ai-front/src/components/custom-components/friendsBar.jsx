@@ -12,8 +12,6 @@ import { IoMdClose } from "react-icons/io";
 
 function FriendsBar({ open, setOpen, children, friendsData,
     user, friendRequests, setFriendId, isMobile, openInMobile }) {
-    if (!open) return;
-
     const [friendsMode, setFriendsMode] = useState("display_friends"); // state for showing specific tabs with the a default
     const [searchAddFriend, setSearchAddFriend] = useState(""); //state for input in addfriend tab
     const [profilesFound, setProfilesFound] = useState(null); //  results of searching of addfriends input
@@ -115,12 +113,14 @@ function FriendsBar({ open, setOpen, children, friendsData,
 
 
     if (isMobile && !openInMobile) return null;
+    if (!open) return null;
 
     const closeFriendBar = (data) => {
         if (data == false) {
             setOpen(false);
         }
     }
+
 
     return (
         <Box id="FriendsBar" width={{ base: "100%", md: "30%", lg: "20%" }} height="100vh"

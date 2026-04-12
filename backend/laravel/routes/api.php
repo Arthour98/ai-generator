@@ -12,10 +12,10 @@ use App\Http\Controllers\ChatController;
 
 //user calls
 Route::post("/user/edit",[UserController::class,"EditUser"]);
-Route::post('/register', [AuthController::class, 'register']);
-Route::post('/login', [AuthController::class, 'login']);
+Route::post('/register', [AuthController::class, 'register'])->middleware("throttle:3,1");
+Route::post('/login', [AuthController::class, 'login'])->middleware("throttle:5,1");
 Route::post('/logout', [AuthController::class, 'logout']);
-Route::post('/refresh', [AuthController::class, 'refresh']);
+Route::post('/refresh', [AuthController::class, 'refresh'])->middleware('throttle:7,1');
 Route::get('/user', [AuthController::class, 'user']);
 
 //profiles calls
@@ -26,16 +26,16 @@ Route::post("/profile/settings",[ProfileController::class,"createOrUpdateSetting
 Route::get("/profile-view/{id}",[ProfileController::class,"viewProfile"]);
 
 //pixabay api calls
-Route::post('/pixabay/search', [PixabayController::class, 'search']);
-Route::post("/pixabay/videoSearch",[PixabayController::class, 'searchVideo']);
-Route::post("/pexels/videoSearch",[PexelVideoController::class,"searchVideos"]);
+Route::post('/pixabay/search', [PixabayController::class, 'search'])->middleware("throttle:30,1");
+Route::post("/pixabay/videoSearch",[PixabayController::class, 'searchVideo'])->middleware("throttle:20,1");
+Route::post("/pexels/videoSearch",[PexelVideoController::class,"searchVideos"])->middleware("throttle:20,1");
 // ai api calls
-Route::post('/ai/text', [AIController::class, 'textGenerate']);
+Route::post('/ai/text', [AIController::class, 'textGenerate'])->middleware("throttle:10,1");
 //radio api calls
 Route::get('/radio/countries', [RadioController::class, 'countries']);
 Route::get('/radio/tags', [RadioController::class, 'tags']);
-Route::post('/radio/country/sel', [RadioController::class, 'byCountry']);
-Route::post('/radio/tag/sel', [RadioController::class, 'byTag']);
+Route::post('/radio/country/sel', [RadioController::class, 'byCountry'])->middleware("throttle:15,1");
+Route::post('/radio/tag/sel', [RadioController::class, 'byTag'])->middleware("throttle:15,1");
 
 
 

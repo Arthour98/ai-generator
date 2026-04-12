@@ -123,7 +123,6 @@ export default function TextPage() {
         const answear = req?.answer?.candidates[0]?.content?.parts[0]?.text;
 
         if (!answear) {
-            console.error("AI response invalid:", req);
             return;
         }
         if (!answear) {
@@ -189,21 +188,24 @@ export default function TextPage() {
 
     return (
         <>
-            <Flex direction={"row"} justifyContent={"flex-start"} overflow="hidden" alignItems={"flex-start"} gap={20} height={"100vh"}>
+            <Flex direction={{ base: "column", lg: "row" }} justifyContent={"flex-start"} overflow="hidden"
+                alignItems={{ base: "center", lg: "start" }} height={{ base: "auto", lg: "100vh" }}
+                columnGap={20}
+            >
                 <Sidebar userId={user?.id} />
-                <Flex direction={"column"} alignItems={"center"} width={"60%"}>
+                <Flex direction={"column"} alignItems={"center"} width={{ base: "90%", lg: "60%" }}>
                     <SettingsBar ProfileImage={imageRender(image)} />
                     <Box w="100%"
-                        h={"85vh"}
+                        h={{ base: "auto", lg: "85vh" }}
                         position="relative"
-                        padding={4}
+                        padding={{ base: 2, lg: 4 }}
                         display={"flex"}
                         shadow={"md"}
-                        minH={"85vh"}
-                        maxH={"85vh"}
+                        minH={{ base: "80vh", lg: "85vh" }}
+                        maxH={{ base: "80vh", lg: "85vh" }}
                         flexDirection={"column"}
                         alignItems={"center"}
-                        rowGap={10}
+                        rowGap={{ base: 2, lg: 10 }}
                         bg={"blackAlpha.800"}
                         borderRadius={12}
                         color={'white'}
@@ -259,11 +261,14 @@ export default function TextPage() {
                                 _hover={{ bg: "cyan.300" }}
                                 onClick={clearHistory}
                                 alignSelf={"end"}
+                                p={1}
                             >Clear History</Button>
                             :
                             null
                         }
-                        <CustomInput label={"Ask a question "} paddingY={5} gap={5} value={queryy} w={"60%"} setValue={setQueryy} />
+                        <CustomInput label={"Ask a question "} h={{ base: "5px", lg: "10px" }}
+                            paddingY={{ base: 1, lg: 2 }} gap={5} value={queryy}
+                            w={{ base: "100%", md: "80%", lg: "60%" }} setValue={setQueryy} />
                         <Button bg={"green.600"}
                             _hover={{ bg: "green.300" }}
                             onClick={submitQuery}

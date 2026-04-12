@@ -74,18 +74,18 @@ export default function RadioElement({
                 flexDirection={"row"}
                 justifyContent={"center"}
                 alignItems={"center"}
-                h={"20%"}
+                h={{ base: "30%", lg: "20%" }}
                 bg={"blackAlpha.700"}
                 zIndex={30}
                 columnGap={"20px"}
             >
-                <Button mt={2} bg="green.300 " onClick={() => setIndex(-1)} _hover={{ bg: "green.500" }}>
+                <Button h={{ base: "50%", lg: "60%" }} mt={2} bg="green.300 " onClick={() => setIndex(-1)} _hover={{ bg: "green.500" }}>
                     <FontAwesomeIcon icon={faCircleArrowLeft} color="white" />
                 </Button>
-                <Button mt={2} onClick={togglePlay} bg="green.300 " _hover={{ bg: "green.500" }}>
+                <Button h={{ base: "50%", lg: "60%" }} mt={2} onClick={togglePlay} bg="green.300 " _hover={{ bg: "green.500" }}>
                     <FontAwesomeIcon icon={playing ? faPause : faPlay} color="white" />
                 </Button>
-                <Button mt={2} bg="green.300 " onClick={() => setIndex(+1)} _hover={{ bg: "green.500" }}>
+                <Button h={{ base: "50%", lg: "60%" }} mt={2} bg="green.300 " onClick={() => setIndex(+1)} _hover={{ bg: "green.500" }}>
                     <FontAwesomeIcon icon={faCircleArrowRight} color="white" />
                 </Button>
             </Box>

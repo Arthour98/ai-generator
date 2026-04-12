@@ -58,15 +58,15 @@ export default function ViewClient({ profile, profSettings }) {
 
     return (
         <>
-            <Flex direction={"row"} justifyContent={"center"} alignItems="center" overflow={"visible"} overflowY="hidden" height={"100vh"}>
-                <Flex direction={"column"} alignItems={"center"} width={"60%"}>
+            <Flex direction={{ base: "column", lg: "row" }} justifyContent={"center"} alignItems="center" overflow={{ base: "visible", lg: "visible" }} overflowY="hidden" height={{ base: "auto", lg: "100vh" }}>
+                <Flex direction={"column"} alignItems={"center"} width={{ base: "100%", lg: "60%" }}>
                     <Box w="100%"
                         position
-                        padding={8}
+                        padding={{ base: 4, lg: 8 }}
                         display={"flex"}
                         shadow={"md"}
-                        minH={"85vh"}
-                        height={"85vh"}
+                        minH={{ base: "auto", lg: "85vh" }}
+                        height={{ base: "auto", lg: "85vh" }}
                         flexDirection={"column"}
                         alignItems={"center"}
                         justifyContent={"start"}
@@ -75,7 +75,7 @@ export default function ViewClient({ profile, profSettings }) {
                         borderRadius={12}
                         color={'white'}
                         overflowY="hidden"
-                        overflow={"visible"}
+                        overflow={{ base: "visible", lg: "visible" }}
                     >
 
                         <Card height={"100%"}
@@ -96,21 +96,21 @@ export default function ViewClient({ profile, profSettings }) {
                                 zIndex={60}
                             />
 
-                            <Flex flexDirection={"column"} width={"50%"} alignItems={"center"}>
+                            <Flex flexDirection={"column"} width={{ base: "80%", md: "60%", lg: "50%" }} alignItems={"center"}>
                                 <Text>Name: {nickname}</Text>
                                 <Divider color="white" w="100%" />
                             </Flex>
 
 
 
-                            <Flex flexDirection={"column"} width={"50%"} alignItems={"center"}>
+                            <Flex flexDirection={"column"} width={{ base: "80%", md: "60%", lg: "50%" }} alignItems={"center"}>
                                 <Text>Age: {age}</Text>
                                 <Divider color="white" w="100%" />
                             </Flex>
 
 
 
-                            <Flex flexDirection={"column"} width={"50%"} alignItems={"center"}>
+                            <Flex flexDirection={"column"} width={{ base: "80%", md: "60%", lg: "50%" }} alignItems={"center"}>
                                 <Text >Country: {country}</Text>
                                 <Divider color="white" w="100%" />
                             </Flex>

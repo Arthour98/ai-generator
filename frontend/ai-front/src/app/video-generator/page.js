@@ -7,13 +7,6 @@ import { query } from "@/hooks/fetch";
 import { Box, Text, Flex, Card, VStack, Divider, Button, filter } from "@chakra-ui/react";
 import CustomInput from "@/components/custom-components/customInput";
 import styles from "@/components/custom-components/components.module.css";
-import { AspectRatio } from "@chakra-ui/react"
-import { Image } from "@chakra-ui/react";
-import CustomSkeleton from "@/components/custom-components/skeleton";
-import { FontAwesomeIcon, FontAwesomeIconProps } from '@fortawesome/react-fontawesome'
-import { faCircleArrowLeft, faCircleArrowRight, faFileExport } from "@fortawesome/free-solid-svg-icons";
-import { Tooltip } from "@/components/custom-components/CustomTooltip"
-import DownloadItem from "@/utils/downloadItem";
 import VideoElement from "./videoElement";
 import { clearInput } from "@/utils/clearInput";
 
@@ -107,19 +100,23 @@ export default function ImageGeneratorPage() {
 
     return (
         <>
-            <Flex direction={"row"} justifyContent={"flex-start"} overflow="hidden" alignItems={"flex-start"} gap={20} height={"100vh"}>
+            <Flex direction={{ base: "column", lg: "row" }} justifyContent={"start"} overflowY="hidden"
+                alignItems={{ base: "center", lg: "start" }} gap={{ base: 2, lg: 20 }} height={{ base: "auto", lg: "100vh" }}
+                w="100%"
+            >
                 <Sidebar userId={user?.id} />
-                <Flex direction={"column"} alignItems={"center"} width={"80%"}>
+                <Flex direction={"column"} alignItems={{ base: "center", lg: "start" }} width={{ base: "90%", lg: "90%" }}
+                    rowGap={{ base: "20px", lg: "20px" }} p={2}>
                     <SettingsBar ProfileImage={imageRender(image)} />
-                    <Box w="100%"
-                        h={"85vh"}
+                    <Box w={{ base: "100%", lg: "90%" }}
+                        h={{ base: "85vh", lg: "85vh" }}
                         position
-                        padding={"1rem 2rem"}
+                        padding={{ base: 6, lg: 4 }}
                         display={"flex"}
                         shadow={"md"}
-                        minH={"85vh"}
-                        maxH={"85vh"}
-                        flexDirection={"row"}
+                        minH={{ base: "auto", lg: "85vh" }}
+                        maxH={{ base: "none", lg: "85vh" }}
+                        flexDirection={{ base: "column", lg: "row" }}
                         alignItems={"start"}
                         rowGap={10}
                         bg={"blackAlpha.800"}
@@ -128,13 +125,12 @@ export default function ImageGeneratorPage() {
                         overflowY="hidden"
                     >
                         <Box w="100%"
-                            position
-                            padding={"1rem 2rem"}
+                            padding={{ base: "0.5rem 1rem", lg: "1rem 2rem" }}
                             display={"flex"}
-                            minH={"80vh"}
+                            minH={{ base: "70%", lg: "80vh" }}
                             flexDirection={"column"}
                             alignItems={"start"}
-                            rowGap={10}
+                            rowGap={{ base: "1.3rem", lg: "1rem" }}
                             zIndex={150}
                         >
                             <Box className={styles.videoContainer}>
@@ -154,18 +150,19 @@ export default function ImageGeneratorPage() {
                                 </video>
 
                             </Box>
-                            <CustomInput label={"Describe your video"} paddingY={5} gap={5} value={queryy} w={"50%"} setValue={setQueryy} />
+                            <CustomInput label={"Describe your video"} paddingY={{ base: 1, lg: 2 }} gap={5} value={queryy} w={{ base: "90%", md: "70%", lg: "50%" }} setValue={setQueryy} />
                             <Button bg={"green.600"}
                                 _hover={{ bg: "green.300" }}
                                 onClick={submitQuery}
                                 isLoading={isLoading}
+                                p={'1rem'}
                             >Generate</Button>
                         </Box>
 
-                        <Box display="flex" flexDirection="column" zIndex={30000} w="50%" maxHeight="80%" minHeight="70%" overflowY="scroll" className={styles.hiddenScroll} >
+                        <Box display="flex" flexDirection="column" zIndex={30000} w={{ base: "100%", lg: "50%" }} maxHeight={{ base: "auto", lg: "80%" }} minHeight={{ base: "auto", lg: "70%" }} overflowY="scroll" className={styles.hiddenScroll} >
                             {
                                 generated?.videos?.map((vid, index) =>
-                                    <VideoElement key={index} keyItem={index} width="80%"
+                                    <VideoElement key={index} keyItem={index} width={{ base: "100%", lg: "80%" }}
                                         height="30px"
                                         image={vid?.image}
                                         url={vid?.video_files[0]?.link}

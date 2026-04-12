@@ -4,6 +4,9 @@ import { Geist, Geist_Mono } from "next/font/google";
 import ChakraWrapper from "@/contexts/chakra";
 import { AuthProvider, useAuth } from "@/contexts/auth";
 import { Container } from "@chakra-ui/react";
+import "@fortawesome/fontawesome-svg-core/styles.css";
+import { config } from "@fortawesome/fontawesome-svg-core";
+config.autoAddCss = false;
 
 
 import "./globals.css";

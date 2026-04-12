@@ -4,12 +4,13 @@ import { useRouter } from "next/navigation";
 import { Box, Button, FormControl, FormLabel, Input, Heading, VStack, HStack } from "@chakra-ui/react";
 import { useAuth } from "@/contexts/auth";
 import Motion from "../custom-components/motion";
-
+import { useCustomToast } from "@/hooks/CustomToast";
 
 
 const Login = ({ open, setOpen, loginPhase }) => {
     const { login, setUser } = useAuth();
     const router = useRouter();
+    const toast = useCustomToast();
 
     const [userName, setUserName] = useState("");
     const [password, setPassword] = useState("");
@@ -50,13 +51,17 @@ const Login = ({ open, setOpen, loginPhase }) => {
     const handleSubmit = async (e) => {
         setIsLogging(true);
         e.preventDefault();
-
+        let nameInput = document.getElementById("userName");
+        let passInput = document.getElementById("password");
+        nameInput.blur();
+        passInput.blur();
         const res = await login(userName, password);
         console.log(res);
         if (res.response?.data?.message == "Invalid credentials" || res.status == 401) {
             setIsLogging(false);
             setErrName(true);
             setErrPass(true);
+            toast({ status: "error", content: "Wrong credentials" })
             return
         }
         router.push(`/image-generator`);
@@ -76,7 +81,8 @@ const Login = ({ open, setOpen, loginPhase }) => {
                                 required _focus={{ borderColor: "white" }} color={"white"} variant={"outline"}
                                 _complete={{ backgroundColor: "transparent !important" }}
                                 isInvalid={errName} errorBorderColor="red.600"
-                                onFocus={() => clearErr({ error: "name" })} />
+                                onFocus={() => clearErr({ error: "name" })}
+                            />
                         </FormControl>
                         <FormControl>
                             <FormLabel htmlFor="password">Password</FormLabel>

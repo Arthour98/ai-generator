@@ -3,7 +3,13 @@ import CustomAvatar from "./avatar";
 import { useState, useEffect, useMemo } from "react";
 import { nameShortener } from "@/utils/nameShortener";
 
-export default function LastChatsCol({ setFriendId, last_profiles }) {
+
+export default function LastChatsCol({ setFriendId, last_profiles, mobile }) {
+
+
+    useEffect(() => {
+        console.log("mobile:", mobile)
+    }, [mobile])
 
     const imageRender = (src) => {
         if (src?.startsWith("/storage")) {
@@ -23,20 +29,24 @@ export default function LastChatsCol({ setFriendId, last_profiles }) {
     }
 
     return (
-        <Box display="flex" flexDirection={"column"} rowGap={"1rem"} w="90%" h="500px"
+        <Box display="flex" flexDirection={{ base: "row", md: "row", lg: "column" }}
+            rowGap={"1rem"} w={{ base: '100%', md: "100%" }} px={{ base: 2, md: 4 }} h={{ base: "10%", md: "10%", lg: "400px" }}
+            columnGap={{ base: "10px", lg: "0" }}
         >
             {
                 limitedProfiles.map(prof =>
                 (
                     <Box cursor="pointer" key={prof.id} display="flex" borderRadius={"7px"}
-                        onClick={() => getFriendId(prof.friend_id)} bgColor={"whiteAlpha.500"} h="2rem">
+                        onClick={() => getFriendId(prof.friend_id)} bgColor={"whiteAlpha.500"}
+                        h="2rem" flexShrink={{ base: "0", md: "1" }} w={{ base: "30%", md: "90%", lg: "100%" }}
+                    >
                         <Box w="30%" display="flex" alignItems="center" justifyContent="center">
                             <CustomAvatar src={imageRender(prof?.image_profile)} noScale w="1rem" h="1rem" />
                         </Box>
                         <Box w="70%" display="flex" alignItems="center">
                             <Text color="green.600" fontSize="14px" fontWeight={"bold"} >
                                 {
-                                    nameShortener(prof?.nickname)
+                                    mobile ? nameShortener(prof?.nickname, 7) : nameShortener(prof?.nickname)
                                 }
                             </Text>
                         </Box>

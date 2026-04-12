@@ -131,80 +131,83 @@ export default function RadioPageClient({ initialCountries, initialTags }) {
 
     return (
         <>
-            <Flex direction={"row"} justifyContent={"flex-start"} alignItems={"flex-start"} gap={20} height="100vh" w="100%" position="fixed"  >
+            <Flex direction={{ base: "column", lg: "row" }} justifyContent={"flex-start"} overflowY="hidden"
+                alignItems={"flex-start"} gap={{ base: 2, lg: 20 }} height={{ base: "140vh", lg: "100vh" }} p={{ base: 2, lg: 0 }}>
                 <Sidebar userId={user?.id} />
-                <Flex direction={"column"} alignItems={"center"} width={"60%"}>
-                    <SettingsBar ProfileImage={imageRender(image)} />
-                    <Box w="100%"
-                        position
-                        padding={4}
-                        display={"flex"}
-                        shadow={"md"}
-                        minH={"85vh"}
-                        maxH={"85vh"}
-                        h={"85vh"}
-                        flexDirection={"column"}
-                        alignItems={"start"}
-                        rowGap={10}
-                        bg={"blackAlpha.800"}
-                        borderRadius={12}
-                        color={'white'}
-                    >
-                        <Box className={styles.radioContainer}>
-                            <Box className={styles.searchCol}>
-                                <Flex direction={"column"} rowGap={"5px"}>
-                                    <Text>Search by Country</Text>
-                                    <CustomSelect data={countries} value={selCountry}
-                                        setValue={setSelCountry} search w={"90%"}
-                                    />
-                                </Flex>
-                                <Flex direction="column" rowGap={"5px"}>
-                                    <Text>Search by Tag</Text>
-                                    <CustomSelect data={tags} value={selTag} w={"90%"}
-                                        setValue={setSelTag} search
-                                    />
-                                </Flex>
-                                <Button bg={"green.600"}
-                                    _hover={{ bg: "green.300" }}
-                                    onClick={submitQuery}
-                                    w={"50%"}
-                                    isLoading={isLoading}
-                                >
-                                    Search stations
-                                </Button>
-                            </Box>
-                            <Box className={styles.displayRadio}>
-                                <RadioElement
-                                    name={selStation?.name}
-                                    url={selStation?.url}
-                                    w={"80%"}
-                                    h={"400px"}
-                                    setIndex={getAndHandleIndex}
-                                />
-
-
-                                <Flex direction={"column"} rowGap={"5px"}>
-                                    <Motion
-                                        open={hasStations}>
-                                        <Text>Choose station</Text>
-                                        <CustomSelect
-                                            w="50%"
-                                            data={stations}
-                                            name="name"
-                                            setValue={(station) => setSelStation({ url: station.url_resolved, name: station.name })}
-                                            placeholder="Select station"
-                                            value={selStation?.name}
+                <Flex direction={"column"} alignItems={"center"} width={{ base: "100%", lg: "60%" }}
+                    rowGap={{ base: "20px", lg: "20px" }}>
+                    <Flex direction={"column"} alignItems={"center"} h="100%" width={{ base: "100%", lg: "100%" }}>
+                        <SettingsBar ProfileImage={imageRender(image)} />
+                        <Box w="100%"
+                            position
+                            padding={4}
+                            display={"flex"}
+                            shadow={"md"}
+                            minH={{ base: "90vh", lg: "85vh" }}
+                            maxH={{ base: "90vh", lg: "85vh" }}
+                            h={{ base: "90vh", lg: "85vh" }}
+                            flexDirection={"column"}
+                            alignItems={"start"}
+                            rowGap={{ base: 3, lg: 10 }}
+                            bg={"blackAlpha.800"}
+                            borderRadius={12}
+                            color={'white'}
+                        >
+                            <Box className={styles.radioContainer}>
+                                <Box className={styles.searchCol}>
+                                    <Flex direction={"column"} rowGap={"5px"}>
+                                        <Text>Search by Country</Text>
+                                        <CustomSelect data={countries} value={selCountry}
+                                            setValue={setSelCountry} search w={"90%"}
                                         />
-                                    </Motion>
-                                </Flex>
+                                    </Flex>
+                                    <Flex direction="column" rowGap={"5px"}>
+                                        <Text>Search by Tag</Text>
+                                        <CustomSelect data={tags} value={selTag} w={"90%"}
+                                            setValue={setSelTag} search
+                                        />
+                                    </Flex>
+                                    <Button bg={"green.600"}
+                                        _hover={{ bg: "green.300" }}
+                                        onClick={submitQuery}
+                                        w={"50%"}
+                                        isLoading={isLoading}
+                                    >
+                                        Search stations
+                                    </Button>
+                                </Box>
+                                <Box className={styles.displayRadio}>
+                                    <RadioElement
+                                        name={selStation?.name}
+                                        url={selStation?.url}
+                                        w={{ base: "100%", lg: "80%" }}
+                                        h={{ base: "100%", lg: "100%" }}
+                                        setIndex={getAndHandleIndex}
+                                    />
+
+
+                                    <Flex direction={"column"} rowGap={"5px"}>
+                                        <Motion
+                                            open={hasStations}>
+                                            <Text>Choose station</Text>
+                                            <CustomSelect
+                                                w="50%"
+                                                data={stations}
+                                                name="name"
+                                                setValue={(station) => setSelStation({ url: station.url_resolved, name: station.name })}
+                                                placeholder="Select station"
+                                                value={selStation?.name}
+                                            />
+                                        </Motion>
+                                    </Flex>
+
+
+                                </Box>
 
 
                             </Box>
-
-
                         </Box>
-                    </Box>
-
+                    </Flex>
                 </Flex>
             </Flex >
         </>

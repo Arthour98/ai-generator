@@ -1,5 +1,5 @@
 import { Box, Input } from "@chakra-ui/react";
-import { Stack, HStack, VStack, Text, FormControl, FormLabel } from '@chakra-ui/react'
+import { Stack, HStack, VStack, Text, FormControl, FormLabel, Icon } from '@chakra-ui/react'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass, faUserGroup, faPlus } from "@fortawesome/free-solid-svg-icons";
 import styles from "./components.module.css";
@@ -7,9 +7,11 @@ import { useState, useEffect, useCallback, useMemo } from "react";
 import { query } from "@/hooks/fetch";
 import { motion } from "framer-motion";
 import FriendAvatar from "./FriendAvatar";
+import { IoMdClose } from "react-icons/io";
 
 
-function FriendsBar({ open, setOpen, children, friendsData, user, friendRequests, setFriendId }) {
+function FriendsBar({ open, setOpen, children, friendsData,
+    user, friendRequests, setFriendId, isMobile, openInMobile }) {
     if (!open) return;
 
     const [friendsMode, setFriendsMode] = useState("display_friends"); // state for showing specific tabs with the a default
@@ -111,11 +113,33 @@ function FriendsBar({ open, setOpen, children, friendsData, user, friendRequests
         return requests?.length;
     })
 
+
+    if (isMobile && !openInMobile) return null;
+
+    const closeFriendBar = (data) => {
+        if (data == false) {
+            setOpen(false);
+        }
+    }
+
     return (
-        <Box id="FriendsBar" width="400px" height="100vh"
-            position="fixed" background={"blackAlpha.500"}
+        <Box id="FriendsBar" width={{ base: "100%", md: "30%", lg: "20%" }} height="100vh"
+            position="fixed" background={isMobile ? "black" : "blackAlpha.500"}
             top="0" right="0"
         >
+            {isMobile &&
+                <Icon
+                    as={IoMdClose}
+                    boxSize={6}
+                    cursor="pointer"
+                    onClick={() => closeFriendBar(false)}
+                    _hover={{ color: "white" }}
+                    position="absolute"
+                    top="20px"
+                    right="20px"
+                    color="white"
+                />
+            }
             <VStack gap="0px" width="full" height="full" alignItems={"start"} >
                 <Box className={styles.iconAndActionWrapper}>
                     <Box className={styles.iconBar}>
@@ -235,6 +259,7 @@ function FriendsBar({ open, setOpen, children, friendsData, user, friendRequests
                                     forAdding={friendsMode == "add_friend" ? true : false}
                                     view={friendsMode == "search_friend" ? true : false}
                                     popItem={getItemToPop}
+                                    isMobile={isMobile}
                                 />
                             ))
                             :
@@ -257,6 +282,7 @@ function FriendsBar({ open, setOpen, children, friendsData, user, friendRequests
                                         setFriendId={getFriendId}
                                         setActiveId={getActiveId}
                                         activeId={activeId}
+                                        isMobile={isMobile}
                                     />
                                 ))
                                 :
@@ -278,6 +304,7 @@ function FriendsBar({ open, setOpen, children, friendsData, user, friendRequests
                                             setActiveId={getActiveId}
                                             popItem={popFriend}
                                             setFriendId={getFriendId}
+                                            isMobile={isMobile}
 
                                         />
                                     )
@@ -295,6 +322,7 @@ function FriendsBar({ open, setOpen, children, friendsData, user, friendRequests
                                             view={false}
                                             isRequest={true}
                                             popItem={popRequest}
+                                            isMobile={isMobile}
                                         />
                                     )
                                     )

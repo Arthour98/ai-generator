@@ -53,11 +53,11 @@ export default function HomePage() {
 
   return (
     <>
-      <Flex direction={"row"} justifyContent={"flex-start"} overflowY="hidden" alignItems={"flex-start"} gap={20} height={"100vh"}>
+      <Flex direction={{ base: "column", lg: "row" }} justifyContent={"flex-start"} overflowY="hidden" alignItems={"flex-start"} gap={{ base: 2, lg: 20 }} height={{ base: "auto", lg: "100vh" }}>
         <Sidebar userId={userId} />
-        <Flex direction={"column"} alignItems={"center"} width={"60%"}>
+        <Flex direction={"column"} alignItems={"center"} width={{ base: "100%", lg: "60%" }}>
           <SettingsBar ProfileImage={imageRender(image)} />
-          <Box w="100%" position padding={4} border={"1px solid black"} shadow={"md"} minH={"80vh"}>
+          <Box w="100%" position padding={{ base: 2, lg: 4 }} border={"1px solid black"} shadow={"md"} minH={{ base: "auto", lg: "80vh" }}>
 
           </Box>
 

@@ -1,11 +1,11 @@
 
-export const nameShortener = (str) => {
+export const nameShortener = (str, length = "9") => {
     let newStr;
-    if (str.length >= 12) {
-        let newStr = str?.slice(1, 9) + "...";
+    if (str?.length >= 12) {
+        let newStr = str?.slice(1, length - 1) + "...";
         return newStr
     }
     else {
-        return str;
+        return str?.slice(1, length - 1);
     }
 }

@@ -2,7 +2,7 @@
 import Sidebar from "@/components/partials/sidebar";
 import { useAuth } from "@/contexts/auth";
 import SettingsBar from "@/components/partials/settingsBar";
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useCallback, useMemo, useLayoutEffect } from "react";
 import { query } from "@/hooks/fetch";
 import { Box, Text, Flex, Card, VStack, Divider } from "@chakra-ui/react";
 import FriendsBar from "../../components/custom-components/friendsBar";
@@ -11,9 +11,12 @@ import CustomSwitch from "@/components/custom-components/customSwtich";
 import LastChatsCol from "@/components/custom-components/LastChatsCol";
 import ChatMainCol from "@/components/custom-components/ChatMainCol";
 import Motion from "@/components/custom-components/motion";
+import { isMobile } from "@/hooks/isMobile";
 
 
 export default function ChatPage() {
+
+    const mobile = isMobile();
 
     const { user } = useAuth();
     const [image, setImage] = useState("");
@@ -170,12 +173,6 @@ export default function ChatPage() {
         setFriendActiveId(friend_id);
     }, [friendActiveId])
 
-    useEffect(() => {
-        console.log("Friend_id", friendActiveId)
-    }, [friendActiveId])
-
-
-
 
     ////////////// openChat state
     const [openChat, setOpenChat] = useState(false);
@@ -220,10 +217,6 @@ export default function ChatPage() {
     }, [selFriend, userMessages]);
 
     useEffect(() => {
-        console.log("user_messages", userMessages)
-    }, [userMessages])
-
-    useEffect(() => {
         if (Object.keys(selFriend)?.length == 0) {
             return;
         }
@@ -239,10 +232,7 @@ export default function ChatPage() {
     useEffect(() => {
         if (!friendActiveId) return
         let lastFriend = selFriend;
-        console.log("friendInLocal", lastFriend);
-
         let last_friend_list = Array.from(limitedProfiles) ?? [];
-
         let existing_item = false;
 
         if (last_friend_list?.length > 0) {
@@ -264,28 +254,13 @@ export default function ChatPage() {
             last_friend_list.pop();
             last_friend_list.unshift(lastFriend);
         }
-
-        console.log("result", last_friend_list)
         localStorage.setItem("last_profiles", JSON.stringify(last_friend_list))
     }, [openChat, friendActiveId, friendsData, limitedProfiles])
 
     useEffect(() => {
-        console.log("lim_profiles:", limitedProfiles);
-        console.log("friends_data", friendsData)
-    }, [limitedProfiles, friendsData])
-
-    const [triggerUpdate, setTriggerUpdate] = useState(false);
-
-    useEffect(() => {
         let last_profiles = JSON.parse(localStorage.getItem('last_profiles')) ?? [];
         setLimitedProfiles(last_profiles);
-        console.log("render_count1")
     }, []);
-
-    useEffect(() => {
-        console.log("friendsData", friendsData)
-        console.log("limnitedProfiles", limitedProfiles)
-    }, [friendsData, limitedProfiles])
 
     useEffect(() => { // an updater effect to update the local storage when it detectects changes in
         // friendsData so profiles from friendsData match with the profiles in local Storage
@@ -311,21 +286,62 @@ export default function ChatPage() {
         localStorage.setItem("last_profiles", JSON.stringify(last_friend_list))
     }, [limitedProfiles, friendsData])
 
+    const [openMobile, setOpenMobile] = useState(false); // state that works on mobiles 
+    // and responsible for rendering the friendsBar
+
+    const getOpenRequest = useCallback((bool) => {
+        if (bool == true) {
+            setOpenMobile(true)
+        }
+    }, [openMobile]);
+
+    const getOpen = useCallback((data) => {
+        if (data == false) {
+            setOpenMobile(false);
+        }
+    }, [openMobile])
+
+    const [openBar, setOpenBar] = useState(false);
+
+    useLayoutEffect(() => {
+        if (!isMobile) {
+            let r = setTimeout(() => {
+                setOpenBar(true)
+                clearTimeout(r);
+            }, 2000)
+        }
+        else {
+            setTimeout(() => {
+                let r = setTimeout(() => {
+                    setOpenBar(() => {
+                        setOpenBar(true);
+                        clearTimeout(r)
+                    })
+                })
+            })
+        }
+    }, [isMobile])
+
+    useEffect(() => {
+        console.log("openMobile:", openMobile)
+    }, [openMobile])
 
 
     return (
         <>
-            <Flex direction={"row"} justifyContent={"flex-start"} overflow={"visible"} overflowY="hidden" alignItems={"flex-start"} gap={20} height={"100vh"}>
+            <Flex direction={{ base: "column", lg: "row" }} justifyContent={"flex-start"} overflow={{ base: "visible", lg: "hidden" }} overflowY="hidden" alignItems={"flex-start"} gap={{ base: 2, lg: 20 }} height={{ base: "auto", lg: "100vh" }}>
                 <Sidebar userId={user?.id} />
-                <Flex direction={"column"} alignItems={"center"} width={"60%"}>
-                    <SettingsBar ProfileImage={imageRender(image)} />
-                    <Box w="100%"
+                <Flex direction={"column"} alignItems={"start"} p={2}
+                    width={{ base: "100%", md: "70%", lg: "80%", xl: "80%" }}>
+                    <SettingsBar ProfileImage={imageRender(image)}
+                        openMobileFriendsBar={getOpenRequest} />
+                    <Box w={{ base: "100%", md: "100%", lg: "70%", xl: "70%" }}
                         position
-                        padding={8}
+                        padding={{ base: 4, lg: 8 }}
                         display={"flex"}
                         shadow={"md"}
-                        minH={"85vh"}
-                        height={"85vh"}
+                        minH={{ base: "80vh", lg: "85vh" }}
+                        height={{ base: "80vh", lg: "85vh" }}
                         flexDirection={"column"}
                         alignItems={"center"}
                         rowGap={3}
@@ -333,22 +349,27 @@ export default function ChatPage() {
                         borderRadius={12}
                         color={'white'}
                         overflowY="hidden"
-                        overflow={"visible"}
+                        overflow={{ base: "visible", lg: "visible" }}
                     >
-                        <Box width="100%" height="10%" display="flex" alignItems="center" gap="1rem"
+                        <Box width="100%" height={{ base: "5%", md: "5%", lg: "10%" }} display="flex" alignItems="center" gap="1rem"
                             backgroundColor="whiteAlpha.500" borderRadius="15px" padding="0.5rem 1rem">
-                            <CustomAvatar src={imageRender(image)} noScale={true} />
+                            <CustomAvatar src={imageRender(image)} w={{ base: 6, md: 6, lg: 12 }} h={{ base: 6, md: 6, lg: 12 }} noScale={true} />
                             <CustomSwitch callback={switchStatus} value={activityStatus} setValue={() => setActivityStatus(prev => !prev)} />
-                            <Box>Status:<Text color={activityStatus ? "green.800" : "red.800"}>{activityStatus ? "Online" : "Offline"}</Text></Box>
+                            <Box display="flex" columnGap={"1rem"}>
+                                <Text>Status:</Text>
+                                <Text color={activityStatus ? "green.800" : "red.800"}>{activityStatus ? "Online" : "Offline"}</Text></Box>
                         </Box>
 
                         {/* main-chat-div */}
-                        <Box width={"100%"} minH={"90%"} overflow="hidden"
-                            display="flex" borderBottomRadius={"12px"} >
-                            <Box flexBasis={"20%"} paddingTop={"1rem"} height="100%" backgroundColor={"blackAlpha.600"}>
-                                <LastChatsCol last_profiles={limitedProfiles} setFriendId={getFriendId} />
+                        <Box width={"100%"} borderRadius="12px" minH={{ base: "90%", md: "90%", lg: "90%" }} overflow="hidden"
+                            display="flex" flexDirection={{ base: "column", md: "row", lg: "row" }} borderBottomRadius={"12px"} >
+                            <Box flexBasis={{ base: "10%", md: "30%", lg: "20%" }}
+                                paddingTop={"1rem"} height={{ base: "auto", lg: "100%" }}
+                                backgroundColor={"blackAlpha.600"}
+                            >
+                                <LastChatsCol last_profiles={limitedProfiles} setFriendId={getFriendId} mobile={mobile} />
                             </Box>
-                            <Box flexBasis={"80%"} height="100%" backgroundColor={"blackAlpha.700"} pt={"0.5rem"}>
+                            <Box flexBasis={{ base: "90%", lg: "80%" }} height={{ base: "100%", lg: "100%" }} backgroundColor={"blackAlpha.700"} pt={"0.5rem"}>
                                 <Motion open={openChat} h={"inherit"} w="inherit" >
                                     <ChatMainCol open={openChat} setOpen={setOpenChat} user={user}
                                         friend={selFriend} messagesData={selFriendMessages} profile={profile}
@@ -360,7 +381,11 @@ export default function ChatPage() {
                     </Box>
 
                 </Flex>
-                <FriendsBar open={true} friendsData={friendsData} user={user} friendRequests={friendRequests} setFriendId={getFriendId}>
+                <FriendsBar
+                    open={openBar} friendsData={friendsData} user={user}
+                    friendRequests={friendRequests} setFriendId={getFriendId}
+                    isMobile={mobile} openInMobile={openMobile} setOpen={getOpen}
+                >
                     <p>Hello world</p>
                 </FriendsBar>
             </Flex>

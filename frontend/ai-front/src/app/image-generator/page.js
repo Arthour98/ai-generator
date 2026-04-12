@@ -149,8 +149,6 @@ export default function ImageGeneratorPage() {
 
     useEffect(() => {
         if (generated && generated.length > 0) {
-            console.log(generated)
-            console.log("imgIndex", imgIndex)
             setImageUrl(generated[imgIndex]?.largeImageURL)
         }
         else {
@@ -161,13 +159,15 @@ export default function ImageGeneratorPage() {
 
     return (
         <>
-            <Flex direction={"row"} justifyContent={"flex-start"} overflowY="hidden" alignItems={"flex-start"} gap={20} height={"100vh"}>
+            <Flex direction={{ base: "column", lg: "row" }} justifyContent={"flex-start"} overflowY="hidden"
+                alignItems={"flex-start"} gap={{ base: 2, lg: 20 }} height={{ base: "auto", lg: "100vh" }}
+            >
                 <Sidebar userId={user?.id} />
-                <Flex direction={"column"} alignItems={"center"} width={"60%"}>
+                <Flex direction={"column"} alignItems={"center"} width={{ base: "100%", lg: "60%" }} p={2   }
+                    rowGap={{ base: "20px", lg: "20px" }}>
                     <SettingsBar ProfileImage={imageRender(image)} />
-                    <Box w="100%"
-                        position
-                        padding={4}
+                    <Box w={{ base: "90%", lg: "100%" }}
+                        padding={{ base: 6, lg: 4 }}
                         display={"flex"}
                         shadow={"md"}
                         minH={"80vh"}
@@ -197,7 +197,6 @@ export default function ImageGeneratorPage() {
                                 :
                                 null
                             }
-
                             {!isLoading ?
                                 <Box w={"auto"}
                                     h={"auto"}
@@ -205,8 +204,8 @@ export default function ImageGeneratorPage() {
                                     borderRadius={12}
                                     position="relative"
                                 >
-                                    <Image width={"500px"}
-                                        height={"400px"}
+                                    <Image width={{ base: "280px", sm: "350px", md: "450px", lg: "500px" }}
+                                        height={{ base: "220px", sm: "280px", md: "360px", lg: "400px" }}
                                         src={imageUrl}
                                         bordeRadius={'12px'}
                                     />
@@ -224,17 +223,13 @@ export default function ImageGeneratorPage() {
                                                     size={"xl"}
                                                 />
                                             </DownloadItem>
-
                                         </Tooltip>
                                     </Box>
-
-
-
                                 </Box>
                                 :
                                 <CustomSkeleton
-                                    w={'500px'}
-                                    h={'400px'}
+                                    w={{ base: '280px', sm: '350px', md: '450px', lg: '500px' }}
+                                    h={{ base: '220px', sm: '280px', md: '360px', lg: '400px' }}
                                     borderRadius={'12px'}
                                     loading={isLoading}
                                 />}
@@ -257,7 +252,7 @@ export default function ImageGeneratorPage() {
                                 null
                             }
                         </Box>
-                        <CustomInput label={"Describe your image"} paddingY={5} gap={5} value={queryy} w={"60%"} setValue={setQueryy} />
+                        <CustomInput label={"Describe your image"} paddingY={5} gap={5} value={queryy} w={{ base: "90%", md: "70%", lg: "60%" }} setValue={setQueryy} />
                         <Button bg={"green.600"}
                             _hover={{ bg: "green.300" }}
                             onClick={submitQuery}

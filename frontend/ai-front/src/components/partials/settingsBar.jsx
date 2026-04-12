@@ -3,11 +3,16 @@ import { Box, Icon, Flex, Text } from "@chakra-ui/react";
 import { keyframes } from "@emotion/react";
 import CustomAvatar from "@/components/custom-components/avatar";
 import { IoIosSettings } from "react-icons/io";
-import { useState } from "react";
+import { useLayoutEffect, useState } from "react";
 import NavLink from "./NavLink";
-import { faRightFromBracket } from "@fortawesome/free-solid-svg-icons";
+import { faRightFromBracket, faBars, faUserGroup } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useAuth } from "@/contexts/auth";
+import { isMobile } from "@/hooks/isMobile";
+import MobileSidebar from "./mobileNav";
+import { usePathname } from "next/navigation";
+
+
 
 const fadeIn = keyframes`
   from {
@@ -27,12 +32,13 @@ const fadeOut = keyframes`
   }
 `;
 
-export default function SettingsBar({ ProfileImage }) {
+export default function SettingsBar({ ProfileImage, openMobileFriendsBar }) {
   const { logout } = useAuth();
   const [isHovering, setIsHovering] = useState(false);
   const [openDropDown, setOpenDropDown] = useState(false);
   const [hasInteracted, setHasInteracted] = useState(false);
-
+  const pathname = usePathname();
+  const mobile = isMobile();
 
   const handleHover = () => {
     setIsHovering(true);
@@ -42,6 +48,25 @@ export default function SettingsBar({ ProfileImage }) {
     if (!hasInteracted) setHasInteracted(true);
     setOpenDropDown(!openDropDown);
   }
+
+  const [menuHover, setMenuHover] = useState(false);
+  const [openMenu, setOpenMenu] = useState(false);
+
+  const [renderFriendIcon, setRenderFriendIcon] = useState(false);
+  const [renderFriendBar, setRenderFriendBar] = useState(false);
+
+  useLayoutEffect(() => {
+    if (mobile && pathname == "/chat-room") {
+      setRenderFriendIcon(true);
+    }
+  }, [mobile, pathname]);
+
+  const handleOpen = (data) => {
+    if (data) {
+      openMobileFriendsBar(data)
+    }
+  }
+
 
   return (
     <Box height={100} w={"100%"} display={"flex"} alignItems={"center"} gap={8} >
@@ -75,6 +100,39 @@ export default function SettingsBar({ ProfileImage }) {
         </Box>
 
       </Box>
+      {mobile ?
+        <Box
+          onMouseEnter={() => setMenuHover(true)}
+          onMouseLeave={() => setMenuHover(false)}
+          onClick={() => setOpenMenu(true)}
+        >
+          <FontAwesomeIcon icon={faBars} style={{
+            width: "2.5rem",
+            height: "2.5rem",
+            color: "white",
+            cursor: "pointer",
+            opacity: menuHover ? "0.7" : "1"
+          }} />
+        </Box>
+        : null
+      }
+      {
+        renderFriendIcon ?
+          <FontAwesomeIcon
+            onClick={() => handleOpen(true)}
+            icon={faUserGroup} onMouseEnter={(e) => e.currentTarget.style.transform = "scale(1.2)"}
+            onMouseLeave={e => e.currentTarget.style.transform = "scale(1)"}
+            width={"50px"} height="50px" cursor="pointer" color="gray"
+            style={{
+              padding: "0.3rem",
+              backgroundColor: "transparent",
+              borderRadius: "6px",
+              color: "white",
+              height: "2.3rem",
+              width: "2.3rem"
+            }} /> : null
+      }
+      <MobileSidebar isOpen={openMenu} onClose={() => setOpenMenu(false)} />
     </Box>
   )
 }

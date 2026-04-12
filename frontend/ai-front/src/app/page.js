@@ -1,8 +1,4 @@
 "use client";
-
-import Image from "next/image";
-import Login from "@/components/auth/login";
-import next from "next";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/auth";
 import { useEffect, useState } from "react";

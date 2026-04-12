@@ -39,17 +39,17 @@ export default function Layout({ children }) {
   return (
     <Box
       ref={boxRef}
-      w="50%"
+      w={{ base: "90%", sm: "85%", md: "70%", lg: "50%" }}
       minH="75vh"
       mx="auto"
       display="flex"
       justifyContent="center"
       alignItems="center"
-      p={4}
+      p={{ base: 3, sm: 4, md: 4 }}
       onMouseMove={handleGradientChange}
       onMouseLeave={resetGradient}
       bg={linearGradient}
-      borderRadius="30px"
+      borderRadius={{ base: "20px", md: "30px" }}
       boxShadow="0px 10px 400px rgba(49, 130, 206, 0.6)"
       position="absolute"
       top="50%"

@@ -163,16 +163,19 @@ export default function AccountSettingsPage() {
 
   return (
     <>
-      <Flex direction={"row"} justifyContent={"flex-start"} overflowY="hidden" alignItems={"flex-start"} gap={20} height={"100vh"}>
+      <Flex direction={{ base: "column", lg: "row" }} justifyContent={"flex-start"} overflowY="hidden"
+        alignItems={"flex-start"} gap={{ base: 2, lg: 20 }} height={{ base: "auto", lg: "100vh" }}>
         <Sidebar userId={userId} />
-        <Flex direction={"column"} alignItems={"center"} width={"60%"}>
+        <Flex direction={"column"} alignItems={"center"} width={{ base: "100%", lg: "60%" }}
+          rowGap={{ base: "20px", lg: "20px" }}>
           <SettingsBar ProfileImage={imageRender(image)} />
-          <Box w="100%" borderRadius={12} padding={4} color={"white"} bg={"blackAlpha.800"} display={"flex"} border={"1px solid black"} shadow={"md"} minH={"80vh"}>
-            <VStack spacing={4} w={"100%"} align="center">
+          <Box w={{ base: "90%", lg: "100%" }} borderRadius={12} padding={{ base: 2, lg: 4 }} color={"white"} bg={"blackAlpha.800"}
+            display={"flex"} border={"1px solid black"} justifyContent={{ base: "center" }} shadow={"md"} minH={{ base: "70vh", lg: "60vh" }}>
+            <VStack spacing={4} w={"100%"} align="center" justifyContent={{ base: "center", lg: "start" }}>
               <Text fontSize="2xl" fontWeight="bold">Account Settings</Text>
               <VStack spacing={4} w="100%" align="center">
-                <HStack>
-                  <CustomSkeleton loading={loading} w={300} h={10}>
+                <HStack flexWrap={{ base: "wrap", lg: "nowrap" }} justifyContent="center">
+                  <CustomSkeleton loading={loading} w={{ base: "90%", md: "300px" }} h={10}>
                     <CustomInput
                       placeholder={"Username"}
                       value={username}
@@ -184,15 +187,15 @@ export default function AccountSettingsPage() {
                       textColor={"white"}
                       h={"30px"}
                       bgColor={"black"}
-                      w={"300px"}
+                      w={{ base: "90%", md: "300px" }}
                       onFocus={() => setIsFocused(true)}
                       onBlur={() => setIsFocused(false)}
                     />
                   </CustomSkeleton>
                 </HStack>
-                <Divider width={"50%"} />
-                <HStack>
-                  <CustomSkeleton loading={loading} w={300} h={10}>
+                <Divider width={{ base: "90%", md: "50%" }} />
+                <HStack flexWrap={{ base: "wrap", lg: "nowrap" }} justifyContent="center">
+                  <CustomSkeleton loading={loading} w={{ base: "90%", md: "300px" }} h={10}>
                     <CustomInput
                       placeholder={"Password"}
                       value={password}
@@ -204,16 +207,16 @@ export default function AccountSettingsPage() {
                       textColor={"white"}
                       h={"30px"}
                       bgColor={"black"}
-                      w={"300px"}
+                      w={{ base: "90%", md: "300px" }}
                       type="password"
                       onFocus={() => setIsFocused(true)}
                       onBlur={() => setIsFocused(false)}
                     />
                   </CustomSkeleton>
                 </HStack>
-                <Divider width={"50%"} />
-                <HStack>
-                  <CustomSkeleton loading={loading} w={300} h={10}>
+                <Divider width={{ base: "90%", md: "50%" }} />
+                <HStack flexWrap={{ base: "wrap", lg: "nowrap" }} justifyContent="center">
+                  <CustomSkeleton loading={loading} w={{ base: "90%", md: "300px" }} h={10}>
                     <CustomInput
                       placeholder={"Email"}
                       value={email}
@@ -225,15 +228,15 @@ export default function AccountSettingsPage() {
                       textColor={"white"}
                       h={"30px"}
                       bgColor={"black"}
-                      w={"300px"}
+                      w={{ base: "90%", md: "300px" }}
                       type="email"
                       onFocus={() => setIsFocused(true)}
                       onBlur={() => setIsFocused(false)}
                     />
                   </CustomSkeleton>
                 </HStack>
-                <Divider width={"50%"} />
-                <HStack spacing={4} height={100}>
+                <Divider width={{ base: "90%", md: "50%" }} />
+                <HStack spacing={4} height={{ base: "auto", lg: 100 }} flexWrap={{ base: "wrap", lg: "nowrap" }} justifyContent="center">
                   <Button onClick={handleClear} color="white" bg={"gray.400"} _hover={{ bg: "gray.600" }}>
                     Clear
                   </Button>

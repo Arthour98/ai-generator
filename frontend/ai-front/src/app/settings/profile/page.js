@@ -109,7 +109,6 @@ export default function ProfileSettingsPage() {
       setOpenMatrix(settings?.matrix);
     }
     else {
-      console.log("error fetching profile");
       setProfile("empty");
     }
   }
@@ -146,20 +145,25 @@ export default function ProfileSettingsPage() {
 
   return (
     <>
-      <Flex direction={"row"} justifyContent={"flex-start"} overflowY="hidden" alignItems={"flex-start"} gap={20} height={"100vh"}>
+      <Flex direction={{ base: "column", lg: "row" }} justifyContent={"flex-start"}
+        overflowY="hidden" alignItems={"flex-start"} gap={{ base: 2, lg: 20 }} height={{ base: "auto", lg: "100vh" }}>
         <Sidebar userId={userId} />
-        <Flex direction={"column"} alignItems={"center"} width={"60%"}>
+        <Flex direction={"column"} alignItems={"center"} width={{ base: "100%", lg: "60%" }}
+        rowGap={{ base: "20px", lg: "20px" }}>
           <SettingsBar ProfileImage={imageRender(image)} />
-          <Box w="100%" position padding={4} display={"flex"} borderRadius={12} color={"white"} bg={"blackAlpha.800"} border={"1px solid black"} shadow={"md"} minH={"80vh"}>
-            <VStack spacing={4} w={"50%"} align="start">
+          <Box w={{ base: "90%", lg: "100%" }} position padding={{ base: 6, lg: 4 }} rowGap={{ base: "20px" }}
+            display={"flex"} flexDirection={{ base: "column", lg: "row" }}
+            borderRadius={12} color={"white"} bg={"blackAlpha.800"} border={"1px solid black"} shadow={"md"}
+            minH={{ base: "auto", lg: "80vh" }}>
+            <VStack spacing={4} w={{ base: "100%", lg: "50%" }} align="start">
               <Text fontSize="2xl" fontWeight="bold">Profile Settings</Text>
               <HStack spacing={4} align="center">
                 <Text fontSize="lg" fontWeight="semibold">Image profile </Text>
                 <ImageUploader value={imageRender(image)} setValue={setImage} shape="circle" />
               </HStack>
-              <Divider width={"50%"} />
-              <HStack >
-                <CustomSkeleton w={300} h={10} loading={loading}>
+              <Divider width={{ base: "90%", md: "50%" }} />
+              <HStack flexWrap={{ base: "wrap", lg: "nowrap" }}>
+                <CustomSkeleton w={{ base: "90%", md: "300px" }} h={10} loading={loading}>
                   <CustomInput
                     placeholder={"Nickname"}
                     value={nickname}
@@ -171,15 +175,15 @@ export default function ProfileSettingsPage() {
                     textColor={"white"}
                     h={"30px"}
                     bgColor={"black"}
-                    w={"300px"}
+                    w={{ base: "90%", md: "300px" }}
                     onFocus={() => setIsFocused(true)}
                     onBlur={() => setIsFocused(false)}
                   />
                 </CustomSkeleton>
               </HStack>
-              <Divider width={"50%"} />
-              <HStack>
-                <CustomSkeleton w={300} h={10} loading={loading}>
+              <Divider width={{ base: "90%", md: "50%" }} />
+              <HStack flexWrap={{ base: "wrap", lg: "nowrap" }}>
+                <CustomSkeleton w={{ base: "90%", md: "300px" }} h={10} loading={loading}>
                   <CustomInput
                     placeholder={"Age"}
                     value={age}
@@ -191,15 +195,15 @@ export default function ProfileSettingsPage() {
                     textColor={"white"}
                     h={"30px"}
                     bgColor={"black"}
-                    w={"300px"}
+                    w={{ base: "90%", md: "300px" }}
                     onFocus={() => setIsFocused(true)}
                     onBlur={() => setIsFocused(false)}
                   />
                 </CustomSkeleton>
               </HStack>
-              <Divider width={"50%"} />
-              <HStack>
-                <CustomSkeleton w={300} h={10} loading={loading}>
+              <Divider width={{ base: "90%", md: "50%" }} />
+              <HStack flexWrap={{ base: "wrap", lg: "nowrap" }}>
+                <CustomSkeleton w={{ base: "90%", md: "300px" }} h={10} loading={loading}>
                   <CustomInput
                     placeholder={"Country"}
                     value={country}
@@ -211,14 +215,14 @@ export default function ProfileSettingsPage() {
                     textColor={"white"}
                     h={"30px"}
                     bgColor={"black"}
-                    w={"300px"}
+                    w={{ base: "90%", md: "300px" }}
                     onFocus={() => setIsFocused(true)}
                     onBlur={() => setIsFocused(false)}
                   />
                 </CustomSkeleton>
               </HStack>
-              <Divider width={"50%"} />
-              <HStack spacing={4} height={100}>
+              <Divider width={{ base: "90%", md: "50%" }} />
+              <HStack spacing={4} height={{ base: "auto", lg: 100 }} flexWrap={{ base: "wrap", lg: "nowrap" }}>
                 <Button onClick={handleClear} color="white" bg={"gray.400"} _hover={{ bg: "gray.600" }}>
                   Clear
                 </Button>
@@ -227,7 +231,7 @@ export default function ProfileSettingsPage() {
                 </Button>
               </HStack>
             </VStack>
-            <Box width={"50%"} >
+            <Box width={{ base: "100%", lg: "50%" }} >
               <Card height={"100%"}
                 py={10} gap={10}
                 overflow={"hidden"}
@@ -244,8 +248,8 @@ export default function ProfileSettingsPage() {
                   zIndex={60}
                 />
 
-                <Flex flexDirection={"column"} width={"50%"} alignItems={"center"}>
-                  <CustomSkeleton w={300} h={30} loading={loading}>
+                <Flex flexDirection={"column"} width={{ base: "80%", md: "60%", lg: "50%" }} alignItems={"center"}>
+                  <CustomSkeleton w={{ base: "90%", md: "300px" }} h={30} loading={loading}>
                     <Text>{nickname}</Text>
                     <Divider color="white" w="100%" />
                   </CustomSkeleton>
@@ -253,8 +257,8 @@ export default function ProfileSettingsPage() {
 
 
 
-                <Flex flexDirection={"column"} width={"50%"} alignItems={"center"}>
-                  <CustomSkeleton w={300} h={30} loading={loading}>
+                <Flex flexDirection={"column"} width={{ base: "80%", md: "60%", lg: "50%" }} alignItems={"center"}>
+                  <CustomSkeleton w={{ base: "90%", md: "300px" }} h={30} loading={loading}>
                     <Text>{age}</Text>
                     <Divider color="white" w="100%" />
                   </CustomSkeleton>
@@ -262,8 +266,8 @@ export default function ProfileSettingsPage() {
 
 
 
-                <Flex flexDirection={"column"} width={"50%"} alignItems={"center"}>
-                  <CustomSkeleton w={300} h={30} loading={loading}>
+                <Flex flexDirection={"column"} width={{ base: "80%", md: "60%", lg: "50%" }} alignItems={"center"}>
+                  <CustomSkeleton w={{ base: "90%", md: "300px" }} h={30} loading={loading}>
                     <Text >{country}</Text>
                     <Divider color="white" w="100%" />
                   </CustomSkeleton>

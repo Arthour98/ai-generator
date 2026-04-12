@@ -23,10 +23,6 @@ async function getData(id) {
 export default async function ViewProfile({ params }) {
 
     const { profile, settings } = await getData(params.id);
-
-    console.log("PROFILE:", profile);
-    console.log("settings", settings)
-
     return (
         <ViewClient profile={profile} profSettings={settings} />
     )

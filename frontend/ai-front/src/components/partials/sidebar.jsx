@@ -19,7 +19,8 @@ export default function Sidebar({ userId }) {
          flexGrow="1"
          flexShrink="0"
          borderTopRightRadius={"md"} borderBottomRightRadius={"md"} boxShadow={"md"} gap={8}
-         minW={"200px"} maxW={"200px"}
+         minW={{ base: "0px", lg: "200px" }} maxW={{ base: "0px", lg: "200px" }}
+         display={{ base: "none", lg: "flex" }}  
       >
 
          {/* <NavLink href={`/home/${userId}`} disabled={userId == null || userId == "undefined" || userId == undefined}>

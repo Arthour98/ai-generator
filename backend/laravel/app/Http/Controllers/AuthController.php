@@ -48,7 +48,7 @@ class  AuthController extends Controller
             }
             
             
-            $profile = Profile::where("user_id",$user_id)->first();
+            $profile = Profile::where("user_id",$user->id)->first();
             if($profile)
                 {
                     $profile->status_activity = "online";

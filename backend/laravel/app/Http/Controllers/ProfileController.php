@@ -44,7 +44,7 @@ public function create(Request $request)
 
 
     $existing_profile = Profile::where("user_id",$user_id)->first();
-    if(existing_profile)
+    if($existing_profile)
     {
         return;
     }

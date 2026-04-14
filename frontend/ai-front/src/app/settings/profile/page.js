@@ -60,7 +60,7 @@ export default function ProfileSettingsPage() {
       country: country,
       image_profile: image
     }
-    if (profile == null) {
+    if (profile == 'empty') {
       const res = await query('/api/profile/create', { data: data, method: "post" });
       if (res) {
         setProfile(res.profile)
@@ -72,7 +72,7 @@ export default function ProfileSettingsPage() {
         showToast({ status: "error", content: "Error while creating profile!" })
       }
     }
-    else if (profile) {
+    else if (profile !== "empty") {
       const res = await query('/api/profile/update', { data: data, method: "post" });
       if (res) {
         setProfile(res.profile)
@@ -84,7 +84,7 @@ export default function ProfileSettingsPage() {
         showToast({ status: "error", content: "Error while updating profile!" })
       }
     }
-  }, [age, country, nickname, image,profile]);
+  }, [age, country, nickname, image, profile]);
 
   const submitOnEnter = useCallback((e) => {
     if (!isFocused) return

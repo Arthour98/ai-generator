@@ -84,7 +84,7 @@ export default function ProfileSettingsPage() {
         showToast({ status: "error", content: "Error while updating profile!" })
       }
     }
-  }, [age, country, nickname, image]);
+  }, [age, country, nickname, image,profile]);
 
   const submitOnEnter = useCallback((e) => {
     if (!isFocused) return

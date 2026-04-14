@@ -21,7 +21,7 @@ Route::get('/user', [AuthController::class, 'user']);
 //profiles calls
 Route::get("/profile",[ProfileController::class,'profile']);
 Route::post("/profile/create",[ProfileController::class,'create']);
-Route::put("/profile/update",[ProfileController::class,'update']);
+Route::post("/profile/update",[ProfileController::class,'update']);
 Route::post("/profile/settings",[ProfileController::class,"createOrUpdateSettings"]);
 Route::get("/profile-view/{id}",[ProfileController::class,"viewProfile"]);
 

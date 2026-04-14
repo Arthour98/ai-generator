@@ -27,7 +27,7 @@ public function profile(Request $request)
 
 public function create(Request $request)
 {
-    $user_id = $request -> inpuit("user_id");
+    $user_id = $request -> input("user_id");
     $image=null;
     if(str_starts_with($request->input("image_profile"),"/storage/"))
     {

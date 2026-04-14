@@ -72,7 +72,7 @@ class  AuthController extends Controller
                     "email" => $user->email,
                 ],
 ])->cookie(
-    'refresh_token', $refreshToken, 60*24, null, true, true, false,"None"
+    'refresh_token', $refreshToken, 60*24,'/', null, true, true, false,"None"
 );
             }
 
@@ -188,7 +188,7 @@ public function user(Request $request)
             'message' => 'User registered successfully',
             'user' => $user
         ], 201)->cookie(
-        'refresh_token', $refreshToken, 60*24, null, true, true, false,"None"
+        'refresh_token', $refreshToken, 60*24,'/' null, true, true, false,"None"
         );
     }
 }

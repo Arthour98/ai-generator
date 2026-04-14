@@ -27,7 +27,7 @@ public function profile(Request $request)
 
 public function create(Request $request)
 {
-
+    $user_id = $request -> inpuit("user_id");
     $image=null;
     if(str_starts_with($request->input("image_profile"),"/storage/"))
     {
@@ -43,13 +43,20 @@ public function create(Request $request)
     }
 
 
-    $profile=Profile::updateOrCreate(
-        ['user_id' => $request->input('user_id')],
-        ["nickname"=>$request->input("nickname"),
+    $existing_profile = Profile::where("user_id",$user_id)->first();
+    if(existing_profile)
+    {
+        return;
+    }
+
+    $profile=Profile::create([
+        'user_id' => $request->input('user_id'),
+        "nickname"=>$request->input("nickname"),
         "age"=>$request->input("age"),
         "country"=>$request->input("country"),
         "settings"=>'{}',
-        "image_profile"=>$image
+        "image_profile"=>$image,
+        "status_activity"=>"online"
     ]);
 
     if($profile)

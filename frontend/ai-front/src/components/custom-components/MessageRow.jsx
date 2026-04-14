@@ -2,12 +2,12 @@ import React, { forwardRef, memo } from "react";
 import { Box, Text } from "@chakra-ui/react"
 import CustomAvatar from "./avatar";
 import { dateFormater } from "@/utils/dateFormater";
+import { imageRender } from "@/utils/imageRender";
 
 export const MessageRow = memo(forwardRef(({ user, content, sender_id, created_at, imgSrc }, ref) => {
     const isOwnMessage = user?.id === sender_id;
 
-    const imageRender = (src) =>
-        src.startsWith("/storage") ? `http://localhost:8000${src}` : src;
+
 
     return (
         <Box

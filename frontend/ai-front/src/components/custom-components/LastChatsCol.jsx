@@ -2,26 +2,11 @@ import { Box, Text } from "@chakra-ui/react";
 import CustomAvatar from "./avatar";
 import { useState, useEffect, useMemo } from "react";
 import { nameShortener } from "@/utils/nameShortener";
+import { imageRender } from "@/utils/imageRender";
 
 
 export default function LastChatsCol({ setFriendId, last_profiles, mobile }) {
-
-
-    useEffect(() => {
-        console.log("mobile:", mobile)
-    }, [mobile])
-
-    const imageRender = (src) => {
-        if (src?.startsWith("/storage")) {
-            return `http://localhost:8000${src}`;
-        }
-        else {
-            return src;
-        }
-    }
-
     const limitedProfiles = useMemo(() => { return last_profiles }, [last_profiles])// the state that gonna hold the profiles fetched from local storage
-
 
 
     const getFriendId = (friend_id) => {

@@ -71,6 +71,13 @@ public function sendFrientRequest(Request $request)
         $invite_id = $request->input("invite_id"); //the guy getting invited :p
 
         //prevent existing friendships to redeclare
+
+        $profile = Profile::find($user_id);
+        if(!$profle)
+        {
+            return response()->json(["message"=>"no-profile"])
+        }
+
         $existingFriends = ChatFriends::where(function($query) use($user_id,$invite_id)
         {
             $query->where("user_id",$user_id)->where("friend_id",$invite_id);
@@ -78,6 +85,7 @@ public function sendFrientRequest(Request $request)
         {
             $query->where("friend_id",$user_id)->where("user_id",$invite_id);
         })->get();
+
 
 
         if($existingFriends->isNotEmpty())

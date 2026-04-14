@@ -14,6 +14,7 @@ import { faCircleArrowLeft, faCircleArrowRight, faFileExport } from "@fortawesom
 import { Tooltip } from "@/components/custom-components/CustomTooltip"
 import DownloadItem from "@/utils/downloadItem";
 import { clearInput } from "@/utils/clearInput";
+import { imageRender } from "@/utils/imageRender";
 
 
 export default function ImageGeneratorPage() {
@@ -41,15 +42,6 @@ export default function ImageGeneratorPage() {
     //loader for request (button)
     const [loaderQuery, setLoaderQuery] = useState(false);
 
-    const imageRender = (src) => {
-        if (src.startsWith("/storage")) {
-            return `http://localhost:8000${src}`;
-        }
-        else {
-            return src;
-        }
-    }
-
     useEffect(() => {
         if (generated) {
             setIsLoading(false);
@@ -65,7 +57,7 @@ export default function ImageGeneratorPage() {
         const data = {
             user_id: userId
         }
-        const res = await query("http://localhost:8000/api/profile", { params: data })
+        const res = await query("/api/profile", { params: data })
 
         if (res) {
             const profile = res.profile;
@@ -87,7 +79,7 @@ export default function ImageGeneratorPage() {
             query: queryy
         }
         try {
-            const req = await query("http://localhost:8000/api/pixabay/search", { method: "post", data: data });
+            const req = await query("/api/pixabay/search", { method: "post", data: data });
             if (req?.hits) {
                 setLoaderQuery(false);
             }
@@ -163,7 +155,7 @@ export default function ImageGeneratorPage() {
                 alignItems={"flex-start"} gap={{ base: 2, lg: 20 }} height={{ base: "auto", lg: "100vh" }}
             >
                 <Sidebar userId={user?.id} />
-                <Flex direction={"column"} alignItems={"center"} width={{ base: "100%", lg: "60%" }} p={2   }
+                <Flex direction={"column"} alignItems={"center"} width={{ base: "100%", lg: "60%" }} p={2}
                     rowGap={{ base: "20px", lg: "20px" }}>
                     <SettingsBar ProfileImage={imageRender(image)} />
                     <Box w={{ base: "90%", lg: "100%" }}

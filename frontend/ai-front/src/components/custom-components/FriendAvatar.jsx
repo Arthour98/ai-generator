@@ -7,6 +7,7 @@ import { faMessage, faCircleCheck, faXmark, faTrash, faLink } from "@fortawesome
 import { query } from "@/hooks/fetch";
 import { useCustomToast } from "../../hooks/CustomToast";
 import { nameShortener } from "@/utils/nameShortener";
+import { imageRender } from "@/utils/imageRender";
 
 export default function FriendAvatar({ id, user_id, friend_id, imgSrc, nickName, status, forAdding = false, isSearched = false,
     view = false, isRequest = false, popItem, activeId, setActiveId, setFriendId, profile_id, isMobile }) {
@@ -15,15 +16,6 @@ export default function FriendAvatar({ id, user_id, friend_id, imgSrc, nickName,
     // and needs caution , not ideal for big projects on production cause it can lead to bugs if managed by many devs that dont know the project !
     const CustomToast = useCustomToast();
     const [scale, setScale] = useState(1);
-
-    const imageRender = (src) => {
-        if (src?.startsWith("/storage")) {
-            return `http://localhost:8000${src}`;
-        }
-        else {
-            return src;
-        }
-    }
 
     const sendInvite = async (id) => {
         const data =
@@ -39,6 +31,10 @@ export default function FriendAvatar({ id, user_id, friend_id, imgSrc, nickName,
             }
             else if (res.message === "failed") {
                 CustomToast({ content: "Your invitation failed", status: "error" });
+                popItem(id);
+            }
+            else if (res.message === "no-profile") {
+                CustomToast({ content: "You need to set up your profile first!", status: "error" });
                 popItem(id);
             }
         }

@@ -11,7 +11,7 @@ import { query } from "@/hooks/fetch";
 import Matrix from "@/components/custom-components/matrix";
 import CustomSkeleton from "@/components/custom-components/skeleton";
 import { useCustomToast } from "@/hooks/CustomToast";
-
+import { imageRender } from "@/utils/imageRender";
 
 
 
@@ -94,7 +94,7 @@ export default function ProfileSettingsPage() {
     const data = {
       user_id: userId
     }
-    const res = await query("http://localhost:8000/api/profile", { params: data })
+    const res = await query("/api/profile", { params: data })
 
     if (res) {
       const profile = res.profile;
@@ -118,20 +118,7 @@ export default function ProfileSettingsPage() {
     getProfile();
   }, [user]);
 
-  {/* function to render image correctly whether it's a local storage path or a URL */ }
-  const imageRender = (src) => {
-    if (src) {
-      if (src.startsWith("/storage")) {
-        return `http://localhost:8000${src}`;
-      }
-      else {
-        return src;
-      }
-    }
-    else {
-      return;
-    }
-  }
+
 
   const handleClear = () => {
     setNickname('');
@@ -149,7 +136,7 @@ export default function ProfileSettingsPage() {
         overflowY="hidden" alignItems={"flex-start"} gap={{ base: 2, lg: 20 }} height={{ base: "auto", lg: "100vh" }}>
         <Sidebar userId={userId} />
         <Flex direction={"column"} alignItems={"center"} width={{ base: "100%", lg: "60%" }}
-        rowGap={{ base: "20px", lg: "20px" }}>
+          rowGap={{ base: "20px", lg: "20px" }}>
           <SettingsBar ProfileImage={imageRender(image)} />
           <Box w={{ base: "90%", lg: "100%" }} position padding={{ base: 6, lg: 4 }} rowGap={{ base: "20px" }}
             display={"flex"} flexDirection={{ base: "column", lg: "row" }}

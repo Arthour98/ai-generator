@@ -3,7 +3,7 @@ import ViewClient from "../viewClient"
 
 async function getData(id) {
 
-    const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:8000";
 
     const res = await fetch(`${baseUrl}/api/profile-view/${id}`, {
         cache: "no-store"

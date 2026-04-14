@@ -10,7 +10,7 @@ import styles from "@/components/custom-components/components.module.css";
 import { Image } from "@chakra-ui/react";
 import CustomSkeleton from "@/components/custom-components/skeleton";
 import { clearInput } from "@/utils/clearInput";
-
+import { imageRender } from "@/utils/imageRender";
 
 
 
@@ -81,21 +81,14 @@ export default function TextPage() {
         }
     }, [prevText]) //scrolling to last text effect
 
-    const imageRender = (src) => {
-        if (src.startsWith("/storage")) {
-            return `http://localhost:8000${src}`;
-        }
-        else {
-            return src;
-        }
-    }
+
 
     const getProfile = async () => {
         const userId = user?.id;
         const data = {
             user_id: userId
         }
-        const res = await query("http://localhost:8000/api/profile", { params: data })
+        const res = await query("/api/profile", { params: data })
 
         if (res) {
             const profile = res.profile;
@@ -119,7 +112,7 @@ export default function TextPage() {
             prompt: queryy,
 
         }
-        const req = await query("http://localhost:8000/api/ai/text", { method: "post", data: data });
+        const req = await query("/api/ai/text", { method: "post", data: data });
         const answear = req?.answer?.candidates[0]?.content?.parts[0]?.text;
 
         if (!answear) {

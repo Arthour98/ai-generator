@@ -13,7 +13,7 @@ import CustomSwitch from "@/components/custom-components/customSwtich";
 import Matrix from "@/components/custom-components/matrix";
 import CustomSkeleton from "@/components/custom-components/skeleton";
 import { useCustomToast } from "@/hooks/CustomToast";
-
+import { imageRender } from "@/utils/imageRender";
 
 export default function ThemePage() {
 
@@ -32,7 +32,7 @@ export default function ThemePage() {
     const data = {
       user_id: userId
     }
-    const res = await query("http://localhost:8000/api/profile", { params: data })
+    const res = await query("/api/profile", { params: data })
 
     if (res) {
       const profile = res.profile;
@@ -83,7 +83,7 @@ export default function ThemePage() {
     }
 
     try {
-      const req = await query('http://localhost:8000/api/profile/settings', { data: data, method: "post" });
+      const req = await query('/api/profile/settings', { data: data, method: "post" });
 
       if (req) {
         const settings = req?.profile?.settings;
@@ -110,14 +110,7 @@ export default function ThemePage() {
     setOpenMatrix(false);
   }
 
-  const imageRender = (src) => {
-    if (src.startsWith("/storage")) {
-      return `http://localhost:8000${src}`;
-    }
-    else {
-      return src;
-    }
-  }
+
 
 
   return (

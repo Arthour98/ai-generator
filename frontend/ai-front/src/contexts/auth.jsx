@@ -3,7 +3,8 @@ import { useState, useContext, createContext, useEffect } from "react";
 import { query } from "../hooks/fetch";
 import axios from "axios";
 import { useRouter } from "next/navigation";
-axios.defaults.baseURL = "http://localhost:8000"
+const API_BASE_URL = process.env.NEXT_PUBLIC_APP_URL;
+axios.defaults.baseURL = API_BASE_URL;
 axios.defaults.withCredentials = true;
 
 const AuthContext = createContext(null);
@@ -59,7 +60,7 @@ export const AuthProvider = ({ children }) => {
 
     useEffect(() => {
         const fetchUser = async () => {
-            const res = await fetch("http://localhost:8000/api/user", { credentials: "include" });
+            const res = await fetch(`${API_BASE_URL}/api/user`, { credentials: "include" });
             if (res.ok) {
                 const data = await res.json();
                 setUser(data);

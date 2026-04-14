@@ -2,7 +2,7 @@ import RadioPageClient from "./RadioPageClient";
 
 async function getRadioData() {
     try {
-        const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+        const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:8000";
 
         const [countriesRes, tagsRes] = await Promise.all([
             fetch(`${baseUrl}/api/radio/countries`, { next: { revalidate: 3600 } }),

@@ -3,7 +3,7 @@ import axios from "axios";
 // Store in module scope (not React state) so it persists across components
 let accessToken = null;
 let accessTokenExpiry = null; // timestamp in ms
-const API_BASE_URL = "http://localhost:8000";
+const API_BASE_URL = process.env.NEXT_PUBLIC_APP_URL;
 
 axios.defaults.baseURL = API_BASE_URL;
 axios.defaults.withCredentials = true; // send cookies (refresh token)
@@ -17,7 +17,7 @@ export const setAccessToken = (token, expiresInSec) => {
 const getValidAccessToken = async () => {
   // If no token or expired → refresh
   if (!accessToken || Date.now() >= accessTokenExpiry) {
-    const res = await axios.post(`http://localhost:8000/api/refresh`, {}, { withCredentials: true });
+    const res = await axios.post(`${API_BASE_URL}/api/refresh`, {}, { withCredentials: true });
     setAccessToken(res.data.access_token, res.data.expires_in);
   }
   return accessToken;

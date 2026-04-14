@@ -8,6 +8,7 @@ import CustomInput from "@/components/custom-components/customInput";
 import { query } from "@/hooks/fetch";
 import CustomSkeleton from "@/components/custom-components/skeleton";
 import { useCustomToast } from "@/hooks/CustomToast";
+import { imageRender } from "@/utils/imageRender";
 
 
 export default function AccountSettingsPage() {
@@ -149,17 +150,6 @@ export default function AccountSettingsPage() {
     setUsername('');
     setPassword('');
   }
-
-
-  const imageRender = (src) => {
-    if (src.startsWith("/storage")) {
-      return `http://localhost:8000${src}`;
-    }
-    else {
-      return src;
-    }
-  }
-
 
   return (
     <>

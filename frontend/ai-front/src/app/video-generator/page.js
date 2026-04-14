@@ -9,7 +9,7 @@ import CustomInput from "@/components/custom-components/customInput";
 import styles from "@/components/custom-components/components.module.css";
 import VideoElement from "./videoElement";
 import { clearInput } from "@/utils/clearInput";
-
+import { imageRender } from "@/utils/imageRender";
 
 export default function ImageGeneratorPage() {
 
@@ -23,21 +23,12 @@ export default function ImageGeneratorPage() {
 
     const [videoUrl, setVideoUrl] = useState(null);
 
-    const imageRender = (src) => {
-        if (src.startsWith("/storage")) {
-            return `http://localhost:8000${src}`;
-        }
-        else {
-            return src;
-        }
-    }
-
     const getProfile = async () => {
         const userId = user?.id;
         const data = {
             user_id: userId
         }
-        const res = await query("http://localhost:8000/api/profile", { params: data })
+        const res = await query("/api/profile", { params: data })
 
         if (res) {
             const profile = res.profile;
@@ -58,7 +49,7 @@ export default function ImageGeneratorPage() {
         const data = {
             videoQuery: queryy
         }
-        const req = await query("http://localhost:8000/api/pexels/videoSearch", { method: "post", data: data });
+        const req = await query("/api/pexels/videoSearch", { method: "post", data: data });
 
         if (!req?.videos) {
             let t = setTimeout(() => {

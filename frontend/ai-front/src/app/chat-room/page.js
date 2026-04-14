@@ -12,7 +12,7 @@ import LastChatsCol from "@/components/custom-components/LastChatsCol";
 import ChatMainCol from "@/components/custom-components/ChatMainCol";
 import Motion from "@/components/custom-components/motion";
 import { isMobile } from "@/hooks/isMobile";
-
+import { imageRender } from "@/utils/imageRender";
 
 export default function ChatPage() {
 
@@ -30,21 +30,12 @@ export default function ChatPage() {
     const [friendRequests, setFriendRequests] = useState([]);
     const [userMessages, setUserMessages] = useState([]);
 
-    const imageRender = (src) => {
-        if (src.startsWith("/storage")) {
-            return `http://localhost:8000${src}`;
-        }
-        else {
-            return src;
-        }
-    }
-
     const getProfile = async () => {
         const userId = user?.id;
         const data = {
             user_id: userId
         }
-        const res = await query("http://localhost:8000/api/profile", { params: data })
+        const res = await query("/api/profile", { params: data })
 
         if (res) {
             const profile = res.profile;
@@ -321,10 +312,6 @@ export default function ChatPage() {
             })
         }
     }, [isMobile])
-
-    useEffect(() => {
-        console.log("openMobile:", openMobile)
-    }, [openMobile])
 
 
     return (

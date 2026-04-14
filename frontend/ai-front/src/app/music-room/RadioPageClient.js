@@ -9,6 +9,7 @@ import styles from "@/components/custom-components/components.module.css";
 import CustomSelect from "@/components/custom-components/CustomSelect";
 import RadioElement from "@/components/custom-components/RadioElement";
 import Motion from "@/components/custom-components/motion";
+import { imageRender } from "@/utils/imageRender";
 
 
 export default function RadioPageClient({ initialCountries, initialTags }) {
@@ -48,21 +49,12 @@ export default function RadioPageClient({ initialCountries, initialTags }) {
     }, [stations, selStation])
 
 
-    const imageRender = (src) => {
-        if (src.startsWith("/storage")) {
-            return `http://localhost:8000${src}`;
-        }
-        else {
-            return src;
-        }
-    }
-
     const getProfile = async () => {
         const userId = user?.id;
         const data = {
             user_id: userId
         }
-        const res = await query("http://localhost:8000/api/profile", { params: data })
+        const res = await query("/api/profile", { params: data })
 
         if (res) {
             const profile = res.profile;
@@ -83,7 +75,7 @@ export default function RadioPageClient({ initialCountries, initialTags }) {
             const data = {
                 country: selCountry
             }
-            const req = await query(`http://localhost:8000/api/radio/country/sel`, { method: "post", data: data });
+            const req = await query(`/api/radio/country/sel`, { method: "post", data: data });
             if (req) {
 
                 let stations = req?.data;
@@ -108,7 +100,7 @@ export default function RadioPageClient({ initialCountries, initialTags }) {
             {
                 tag: selTag
             }
-            const req = await query('http://localhost:8000/api/radio/tag/sel', { method: "post", data: data })
+            const req = await query('/api/radio/tag/sel', { method: "post", data: data })
             if (req) {
                 let stations = req?.data;
                 let filteredStations = stations.filter(

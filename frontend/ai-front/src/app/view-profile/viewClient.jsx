@@ -3,25 +3,13 @@ import { useRef, useState, useEffect } from "react";
 import { Box, Flex, Text, Image, VStack, Divider, Card } from "@chakra-ui/react";
 import CustomAvatar from "@/components/custom-components/avatar";
 import Matrix from "@/components/custom-components/matrix";
-
+import { imageRender } from "@/utils/imageRender";
 export default function ViewClient({ profile, profSettings }) {
 
-    const imageRender = (src) => {
-        if (src) {
-            if (src?.startsWith("/storage")) {
-                return `http://localhost:8000${src}`;
-            }
-            else {
-                return src;
-            }
-        }
-        else {
-            return;
-        }
-    }
+
 
     const profileRef = useRef();
-    const [openMatrix, setOpenMatrix] = useState(profile?.matrix);
+    const [openMatrix, setOpenMatrix] = useState();
     const [backgroundColor, setBackgroundColor] = useState();
     const [textColor, setTextColor] = useState();
     const [age, setAge] = useState()

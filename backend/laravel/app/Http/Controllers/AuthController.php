@@ -47,10 +47,13 @@ class  AuthController extends Controller
                 $refreshToken = null;
             }
             
-            Profile::updateOrCreate(["user_id"=>$user->id],
-            [
-                "status_activity"=>"online"
-            ]);
+            
+            $profile = Profile::where("user_id",$user_id)->first();
+            if($profile)
+                {
+                    $profile->status_activity = "online";
+                    $profile->save();
+                }
 
             // Prepare JSON response
             $response = response()->json([

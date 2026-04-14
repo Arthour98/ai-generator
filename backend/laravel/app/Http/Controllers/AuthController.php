@@ -61,24 +61,9 @@ class  AuthController extends Controller
                 ],
                 'access_token' => $accessToken,
                 'expires_in' => 900
-            ]);
+            ])->cookie(
+    'refresh_token', $refreshToken, 60*24,'/', null, true, true, false,"None");
 
-            // Attach cookie if refresh token exists
-            if ($refreshToken) {
-                    return response()->json([
-                    "user" => [
-                    "id" => $user->id,
-                    "name" => $user->name,
-                    "email" => $user->email,
-                ],
-])->cookie(
-    'refresh_token', $refreshToken, 60*24,'/', null, true, true, false,"None"
-);
-            }
-
-  
-
-            return $response;
 
         } catch (\Throwable $e) {
             Log::error('Login error', ['error' => $e->getMessage()]);

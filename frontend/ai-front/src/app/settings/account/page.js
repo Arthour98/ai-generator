@@ -42,7 +42,7 @@ export default function AccountSettingsPage() {
       user_id: userId
     }
     try {
-      const res = await query("http://localhost:8000/api/profile", { params: data })
+      const res = await query("/api/profile", { params: data })
       if (res) {
         const profile = res.profile;
         setProfile(profile);

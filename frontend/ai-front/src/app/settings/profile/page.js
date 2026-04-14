@@ -60,15 +60,29 @@ export default function ProfileSettingsPage() {
       country: country,
       image_profile: image
     }
-    const res = await query('http://localhost:8000/api/profile/create', { data: data, method: "post" });
-    if (res) {
-      setProfile(res.profile)
-      setIsLoading(false);
-      showToast({ status: "success", content: "Profile updated!" })
+    if (profile == null) {
+      const res = await query('/api/profile/create', { data: data, method: "post" });
+      if (res) {
+        setProfile(res.profile)
+        setIsLoading(false);
+        showToast({ status: "success", content: "Profile created!" })
+      }
+      else {
+        setIsLoading(false);
+        showToast({ status: "error", content: "Error while creating profile!" })
+      }
     }
-    else {
-      setIsLoading(false);
-      showToast({ status: "error", content: "Error while updating profile!" })
+    else if (profile) {
+      const res = await query('/api/profile/update', { data: data, method: "post" });
+      if (res) {
+        setProfile(res.profile)
+        setIsLoading(false);
+        showToast({ status: "success", content: "Profile updated!" })
+      }
+      else {
+        setIsLoading(false);
+        showToast({ status: "error", content: "Error while updating profile!" })
+      }
     }
   }, [age, country, nickname, image]);
 

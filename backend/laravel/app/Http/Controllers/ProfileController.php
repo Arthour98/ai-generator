@@ -39,7 +39,7 @@ public function create(Request $request)
     }
     else
     {
-        $image=imageDecoder($request->input("image_profile"),$request->input("user_id"),"profile_images");
+        $image=imageDecoder($request->input("image_profile"),$user_id,"profile_images");
     }
 
 
@@ -73,7 +73,21 @@ public function create(Request $request)
 public function update(Request $request)
 {
     $id=$request->input('id');
-    $image=imageDecoder($request->input("image_profile"),$id,"profile_images");
+    $user_id = $request -> input("user_id");
+    $image=null;
+    if(str_starts_with($request->input("image_profile"),"/storage/"))
+    {
+        $image = $request->input("image_profile");
+    }
+    elseif($request->input("image_profile") == "")
+    {
+        $image="";
+    }
+    else
+    {
+        $image=imageDecoder($request->input("image_profile"),$user_id,"profile_images");
+    }
+
 
     $profile=Profile::findOrFail($id);
 
@@ -83,7 +97,10 @@ public function update(Request $request)
         $profile->age=$request->input("age");
         $profile->country=$request->input("country");
         $profile->image_profile->$image;
-
+        $profile->$user_id = $profile->user_id;
+        $profile->status_activity = $profile->status_activity;
+        $profile->settings = $profile->settings ?? null;
+        $profile->save();
         return response(200)->json(["status"=>"success","profile"=>$profile]);
     }
     else

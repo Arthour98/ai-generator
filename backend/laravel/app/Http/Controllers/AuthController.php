@@ -67,7 +67,8 @@ class  AuthController extends Controller
             ])->cookie(
     'refresh_token', $refreshToken, 60*24,'/', null, true, true, false,"None");
 
-
+    return $response;
+    
         } catch (\Throwable $e) {
             Log::error('Login error', ['error' => $e->getMessage()]);
             return response()->json([

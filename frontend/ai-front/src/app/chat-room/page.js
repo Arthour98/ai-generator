@@ -255,7 +255,7 @@ export default function ChatPage() {
 
     useEffect(() => { // an updater effect to update the local storage when it detectects changes in
         // friendsData so profiles from friendsData match with the profiles in local Storage
-        if (friendsData?.length == 0 || !friendsData || !limitedProfiles) return;
+        if (friendsData?.length == 0 || !friendsData || !limitedProfiles?.length) return;
         let last_friend_list = [...limitedProfiles];
         let obj = {};
         let ref_obj = {};

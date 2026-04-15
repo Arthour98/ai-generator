@@ -75,7 +75,7 @@ function FriendsBar({ open, setOpen, children, friendsData,
             username: searchAddFriend
         }
         try {
-            const res = await query("http://localhost:8000/api/profile/searchProfiles", { data: data, method: "post" });
+            const res = await query("/api/profile/searchProfiles", { data: data, method: "post" });
             if (res) {
                 setProfilesFound(res?.profiles)
                 console.log(res?.profiles)

@@ -295,7 +295,7 @@ export default function ChatPage() {
     const [openBar, setOpenBar] = useState(false);
 
     useLayoutEffect(() => {
-        if (!isMobile) {
+        if (!mobile) {
             let r = setTimeout(() => {
                 setOpenBar(true)
                 clearTimeout(r);
@@ -311,7 +311,7 @@ export default function ChatPage() {
                 })
             })
         }
-    }, [isMobile])
+    }, [mobile])
 
 
     return (

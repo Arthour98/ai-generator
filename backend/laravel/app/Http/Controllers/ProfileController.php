@@ -84,7 +84,6 @@ public function create(Request $request)
 
 public function update(Request $request)
 {
-    $id=$request->input('id');
     $user_id = $request -> input("user_id");
     $image=null;
     try
@@ -103,7 +102,7 @@ public function update(Request $request)
     }
 
 
-    $profile=Profile::findOrFail($id);
+    $profile=Profile::where("user_id",$user_id)->first();
 
     if($profile)
     {

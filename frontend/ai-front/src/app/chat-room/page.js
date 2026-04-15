@@ -221,7 +221,7 @@ export default function ChatPage() {
 
 
     useEffect(() => {
-        if (!friendActiveId) return
+        if (!friendActiveId) return;
         let lastFriend = selFriend;
         let last_friend_list = Array.from(limitedProfiles) ?? [];
         let existing_item = false;
@@ -246,7 +246,8 @@ export default function ChatPage() {
             last_friend_list.unshift(lastFriend);
         }
         localStorage.setItem("last_profiles", JSON.stringify(last_friend_list))
-    }, [openChat, friendActiveId, friendsData, limitedProfiles])
+        setLimitedProfiles(last_friend_list);
+    }, [friendActiveId, friendsData])
 
     useEffect(() => {
         let last_profiles = JSON.parse(localStorage.getItem('last_profiles')) ?? [];
@@ -295,23 +296,12 @@ export default function ChatPage() {
     const [openBar, setOpenBar] = useState(false);
 
     useLayoutEffect(() => {
-        if (!mobile) {
-            let r = setTimeout(() => {
-                setOpenBar(true)
-                clearTimeout(r);
-            }, 2000)
-        }
-        else {
-            setTimeout(() => {
-                let r = setTimeout(() => {
-                    setOpenBar(() => {
-                        setOpenBar(true);
-                        clearTimeout(r)
-                    })
-                })
-            })
-        }
-    }, [mobile])
+        const timer = setTimeout(() => {
+            setOpenBar(true);
+        }, 300);
+
+        return () => clearTimeout(timer);
+    }, []);
 
 
     return (

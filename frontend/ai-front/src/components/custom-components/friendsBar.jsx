@@ -27,7 +27,6 @@ function FriendsBar({ open, setOpen, children, friendsData,
         if (!open) return;
         setRequests(friendRequests)
         setFriends(friendsData);
-
     }, [friendRequests, friendsData]);
 
     const getItemToPop = useCallback((id) => {

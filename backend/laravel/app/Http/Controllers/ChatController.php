@@ -73,9 +73,9 @@ public function sendFrientRequest(Request $request)
         //prevent existing friendships to redeclare
 
         $profile = Profile::find($user_id);
-        if(!$profle)
+        if(!$profile)
         {
-            return response()->json(["message"=>"no-profile"])
+            return response()->json(["message"=>"no-profile"]);
         }
 
         $existingFriends = ChatFriends::where(function($query) use($user_id,$invite_id)

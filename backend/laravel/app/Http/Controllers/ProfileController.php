@@ -110,7 +110,7 @@ public function update(Request $request)
         $profile->age=$request->input("age");
         $profile->country=$request->input("country");
         $profile->image_profile=$image;
-        $profile->$user_id = $user_id;
+        $profile->user_id = $user_id;
         $profile->status_activity = $profile->status_activity;
         $profile->settings = $profile->settings ?? null;
         $profile->save();

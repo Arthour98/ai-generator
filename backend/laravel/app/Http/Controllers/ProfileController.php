@@ -29,6 +29,8 @@ public function create(Request $request)
 {
     $user_id = $request -> input("user_id");
     $image=null;
+    try
+    {
     if(str_starts_with($request->input("image_profile"),"/storage/"))
     {
         $image = $request->input("image_profile");
@@ -67,6 +69,15 @@ public function create(Request $request)
     {
         return response(404);
     }
+    }
+    catch (\Throwable $e) {
+            Log::error('upload err', ['error' => $e->getMessage()]);
+                return response()->json([
+            'error' => $e->getMessage(),
+            'file' => $e->getFile(),
+            'line' => $e->getLine(),
+        ], 500);
+        }
 
 }
 

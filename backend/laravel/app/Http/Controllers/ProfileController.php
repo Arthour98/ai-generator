@@ -64,11 +64,11 @@ public function create(Request $request)
 
     if($profile)
     {
-        return response(200);
+        return response()->json(["message"=>"success"]);
     }
     else
     {
-        return response(404);
+        return response()->json(["message"=>"failed"]);
     }
     }
     catch (\Throwable $e) {
@@ -114,11 +114,11 @@ public function update(Request $request)
         $profile->status_activity = $profile->status_activity;
         $profile->settings = $profile->settings ?? null;
         $profile->save();
-        return response(200)->json(["status"=>"success","profile"=>$profile]);
+        return response()->json(["status"=>"success","profile"=>$profile]);
     }
     else
     {
-        return response(404)->json(["error"=>"Profile was not found"]);
+        return response()->json(["error"=>"Profile was not found"]);
     }
     }
         catch (\Throwable $e) {

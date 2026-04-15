@@ -1,5 +1,5 @@
 
-export const nameShortener = (str, length = "9") => {
+export const nameShortener = (str, length = 12) => {
     let newStr;
     if (str?.length >= 12) {
         let newStr = str?.slice(1, length - 1) + "...";

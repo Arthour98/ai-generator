@@ -155,7 +155,7 @@ export default function ImageGeneratorPage() {
                 alignItems={"flex-start"} gap={{ base: 2, lg: 20 }} height={{ base: "auto", lg: "100vh" }}
             >
                 <Sidebar userId={user?.id} />
-                <Flex direction={"column"} alignItems={"center"} width={{ base: "100%", lg: "60%" }} p={2}
+                <Flex direction={"column"} userSelect={"none"} alignItems={"center"} width={{ base: "100%", lg: "60%" }} p={2}
                     rowGap={{ base: "20px", lg: "20px" }}>
                     <SettingsBar ProfileImage={imageRender(image)} />
                     <Box w={{ base: "90%", lg: "100%" }}

@@ -10,6 +10,7 @@ import CustomSelect from "@/components/custom-components/CustomSelect";
 import RadioElement from "@/components/custom-components/RadioElement";
 import Motion from "@/components/custom-components/motion";
 import { imageRender } from "@/utils/imageRender";
+import { useCustomToast } from "@/hooks/CustomToast";
 
 
 export default function RadioPageClient({ initialCountries, initialTags }) {
@@ -17,6 +18,7 @@ export default function RadioPageClient({ initialCountries, initialTags }) {
     const { user } = useAuth();
     const [image, setImage] = useState("");
     const [isLoading, setIsLoading] = useState(false);
+    const showToast = useCustomToast();
 
     const [countries, setCountries] = useState(initialCountries);
     const [tags, setTags] = useState(initialTags);
@@ -71,6 +73,10 @@ export default function RadioPageClient({ initialCountries, initialTags }) {
 
     const submitQuery = async () => {
         setIsLoading(true)
+        if (selCountry !== "" && selTag !== "") {
+            setIsLoading(false);
+            showToast({ status: "error", content: "You have to disselect one of searching options" });
+        }
         if (selCountry !== "" && selTag === "") {
             const data = {
                 country: selCountry

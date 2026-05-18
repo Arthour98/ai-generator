@@ -43,7 +43,17 @@ export default function CustomSelect({
     };
 
     return (
-        <Menu lazyBehavior="keepMounted" isLazy onOpen={() => { document.body.style.overflow = 'hidden'; }} onClose={() => { document.body.style.overflow = 'auto'; }}>
+        <Menu lazyBehavior="keepMounted" isLazy onOpen={() => { document.body.style.overflow = 'hidden'; }}
+            onClose={() => { document.body.style.overflow = 'auto'; }}
+            placement="bottom-start"
+            preventOverflow
+            modifiers={[
+                {
+                    name: "flip",
+                    enabled: false,
+                },
+            ]}
+        >
             <Box
                 minW={w}
                 maxW={w}
@@ -67,14 +77,14 @@ export default function CustomSelect({
                     {selected || placeholder}
                 </MenuButton>
                 <MenuList bg="blackAlpha.900" border="3px solid pink"
-                    w={w}
-                    maxW={w}
                     minWidth={"300px"}
+                    maxWidth={w}
                     px={"1rem"}
-                    maxH="400px"
+                    maxH="200px"
                     overflowY="auto"
                     overflowX="hidden"
                     position="fixed"
+                    top={"100%"}
                     zIndex={9999}
                 >
                     {search && (

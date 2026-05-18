@@ -134,7 +134,7 @@ export default function RadioPageClient({ initialCountries, initialTags }) {
                 <Sidebar userId={user?.id} />
                 <Flex direction={"column"} alignItems={"center"} width={{ base: "100%", lg: "60%" }}
                     rowGap={{ base: "20px", lg: "20px" }}>
-                    <Flex direction={"column"} alignItems={"center"} h="100%" width={{ base: "100%", lg: "100%" }}>
+                    <Flex direction={"column"} top={0} alignItems={"center"} h="100%" width={{ base: "100%", lg: "100%" }}>
                         <SettingsBar ProfileImage={imageRender(image)} />
                         <Box w="100%"
                             position

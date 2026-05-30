@@ -7,7 +7,9 @@ import { imageRender } from "@/utils/imageRender";
 
 export default function LastChatsCol({ setFriendId, last_profiles, mobile }) {
     const limitedProfiles = useMemo(() => { return last_profiles }, [last_profiles])// the state that gonna hold the profiles fetched from local storage
-
+    useEffect(() => {
+        console.log("profiles", limitedProfiles)
+    }, [limitedProfiles])
 
     const getFriendId = (friend_id) => {
         setFriendId(friend_id)
@@ -21,8 +23,9 @@ export default function LastChatsCol({ setFriendId, last_profiles, mobile }) {
             {
                 limitedProfiles.map(prof =>
                 (
-                    <Box cursor="pointer" key={prof.id} display="flex" borderRadius={"7px"}
-                        onClick={() => getFriendId(prof.friend_id)} bgColor={"whiteAlpha.500"}
+
+                    <Box cursor="pointer" key={prof?.id} display="flex" borderRadius={"7px"}
+                        onClick={() => getFriendId(prof?.friend_id)} bgColor={"whiteAlpha.500"}
                         h="2rem" flexShrink={{ base: "0", md: "1" }} w={{ base: "30%", md: "90%", lg: "100%" }}
                     >
                         <Box w="30%" display="flex" alignItems="center" justifyContent="center">

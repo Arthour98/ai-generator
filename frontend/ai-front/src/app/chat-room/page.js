@@ -168,12 +168,15 @@ export default function ChatPage() {
     ////////////// openChat state
     const [openChat, setOpenChat] = useState(false);
 
+
+
     const selFriend = useMemo(() => {
 
         let selectedFriend = friendsData?.filter(f => f.friend_id == friendActiveId)
         if (friendActiveId == null) {
             return {}
         }
+
         else if (selectedFriend && Object.keys(selectedFriend[0])?.length != 0) {
             return selectedFriend[0];
         }
@@ -221,6 +224,7 @@ export default function ChatPage() {
 
 
     useEffect(() => {
+
         if (!friendActiveId) return;
         let lastFriend = selFriend;
         let last_friend_list = Array.from(limitedProfiles) ?? [];
@@ -245,18 +249,38 @@ export default function ChatPage() {
             last_friend_list.pop();
             last_friend_list.unshift(lastFriend);
         }
+        let profile_id = localStorage?.getItem("profile_id");
+        if (profile_id != profile?.id) {
+            setLimitedProfiles([]);
+            localStorage.setItem("profile_id", JSON.stringify(profile?.id));
+            return;
+        }
         localStorage.setItem("last_profiles", JSON.stringify(last_friend_list))
         setLimitedProfiles(last_friend_list);
     }, [friendActiveId, friendsData])
 
     useEffect(() => {
+        if (!profile) {
+            return;
+        }
         let last_profiles = JSON.parse(localStorage.getItem('last_profiles')) ?? [];
-        setLimitedProfiles(last_profiles);
-    }, []);
+        let last_profiles_id = localStorage.getItem("profile_id");
+        if (last_profiles_id != profile?.id) {
+            setLimitedProfiles([]);
+            localStorage.removeItem("profile_id");
+            localStorage.removeItem("last_profiles");
+            return;
+        }
+        else {
+            setLimitedProfiles(last_profiles);
+        }
+
+    }, [profile]);
 
     useEffect(() => { // an updater effect to update the local storage when it detectects changes in
         // friendsData so profiles from friendsData match with the profiles in local Storage
-        if (friendsData?.length == 0 || !friendsData || !limitedProfiles?.length) return;
+
+        if (friendsData?.length == 0 || !friendsData || !limitedProfiles?.length || !profile) return;
         let last_friend_list = [...limitedProfiles];
         let obj = {};
         let ref_obj = {};
@@ -276,7 +300,8 @@ export default function ChatPage() {
             ref_obj = null;
         }
         localStorage.setItem("last_profiles", JSON.stringify(last_friend_list))
-    }, [limitedProfiles, friendsData])
+        localStorage.setItem("prodile_id", JSON.stringify(profile?.id))
+    }, [limitedProfiles, friendsData, profile])
 
     const [openMobile, setOpenMobile] = useState(false); // state that works on mobiles 
     // and responsible for rendering the friendsBar
@@ -339,7 +364,7 @@ export default function ChatPage() {
 
                         {/* main-chat-div */}
                         <Box width={"100%"} borderRadius="12px" minH={{ base: "90%", md: "90%", lg: "90%" }} overflow="hidden"
-                            display="flex" flexDirection={{ base: "column", md: "row", lg: "row" }} borderBottomRadius={"12px"} >
+                            display="flex" flexDirection={{ base: "column", md: "column", lg: "row" }} borderBottomRadius={"12px"} >
                             <Box flexBasis={{ base: "10%", md: "30%", lg: "20%" }}
                                 paddingTop={"1rem"} height={{ base: "auto", lg: "100%" }}
                                 backgroundColor={"blackAlpha.600"}
@@ -363,7 +388,7 @@ export default function ChatPage() {
                     friendRequests={friendRequests} setFriendId={getFriendId}
                     isMobile={mobile} openInMobile={openMobile} setOpen={getOpen}
                 >
-                    <p>Hello world</p>
+
                 </FriendsBar>
             </Flex>
         </>

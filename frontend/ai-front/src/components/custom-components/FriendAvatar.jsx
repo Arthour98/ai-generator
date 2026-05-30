@@ -122,7 +122,6 @@ export default function FriendAvatar({ id, user_id, friend_id, imgSrc, nickName,
     }
 
     useEffect(() => {
-        console.log("YOOOOOOOO")
         if (typeof window != "undefined") {
             window.addEventListener("click", hideBins)
         }

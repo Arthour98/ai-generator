@@ -10,120 +10,111 @@ use App\Models\Profile;
 
 class ChatController extends Controller
 {
-public function getFriends($id)
-{
-    $friends = ChatFriends::with(["friends.profile","user.profile"])
-    ->where("user_id", $id)
-    ->orWhere("friend_id", $id)
-    ->get()
-    ->map(function ($friend) use ($id) {
+    public function getFriends($id)
+    {
+        $friends = ChatFriends::with(["friends.profile", "user.profile"])
+            ->where("user_id", $id)
+            ->orWhere("friend_id", $id)
+            ->get()
+            ->map(function ($friend) use ($id) {
 
-        // opposite user
-        $profile = $friend->user_id == $id
-            ? $friend->friends->profile
-            : $friend->user->profile;
+                // opposite user
+                $profile = $friend->user_id == $id
+                    ? $friend->friends->profile
+                    : $friend->user->profile;
 
-        $friend_id = $friend->user_id == $id
-            ? $friend->friend_id
-            : $friend->user_id;
+                $friend_id = $friend->user_id == $id
+                    ? $friend->friend_id
+                    : $friend->user_id;
 
-        return [
-            "id" => $friend->id,
-            "friend_id" => $friend_id,
-            "status" => $friend->status,
-            "profile" => $profile,
-            "inviter_id" => $friend->user_id
-        ];
-    });
+                return [
+                    "id" => $friend->id,
+                    "friend_id" => $friend_id,
+                    "status" => $friend->status,
+                    "profile" => $profile,
+                    "inviter_id" => $friend->user_id
+                ];
+            });
 
 
-        if($friends->count()==0)
-        {
-            return response()->json(["data"=>[]]);
+        if ($friends->count() == 0) {
+            return response()->json(["data" => []]);
         }
-        return response()->json(["data"=>$friends],200);
-}
+        return response()->json(["data" => $friends], 200);
+    }
     public function getMessages($id)
     {
         $user_id = $id;
         $messages = ChatFriends::with(["messages"])
-        ->where("user_id",$user_id)
-        ->orWhere("friend_id",$user_id)
-        ->get()
-        ->map(function($conversation)
-        {
-            return
-            [
-            "messages"=>$conversation->messages
-            ];
-        });
+            ->where("user_id", $user_id)
+            ->orWhere("friend_id", $user_id)
+            ->get()
+            ->map(function ($conversation) {
+                return
+                    [
+                        "messages" => $conversation->messages
+                    ];
+            });
 
-        
 
-   
 
-        return response()->json(["data"=>$messages]);
+
+
+        return response()->json(["data" => $messages]);
     }
 
-public function sendFrientRequest(Request $request)
-{
+    public function sendFrientRequest(Request $request)
+    {
         $user_id = $request->input("user_id");
         $invite_id = $request->input("invite_id"); //the guy getting invited :p
 
         //prevent existing friendships to redeclare
 
-        $profile = Profile::find($user_id);
-        if(!$profile)
-        {
-            return response()->json(["message"=>"no-profile"]);
+        $profile = Profile::where("user_id", $user_id)->get();
+
+        if (!$profile) {
+
+            return response()->json(["message" => "no-profile"]);
         }
 
-        $existingFriends = ChatFriends::where(function($query) use($user_id,$invite_id)
-        {
-            $query->where("user_id",$user_id)->where("friend_id",$invite_id);
-        })->orWhere(function($query) use($user_id,$invite_id)
-        {
-            $query->where("friend_id",$user_id)->where("user_id",$invite_id);
+        $existingFriends = ChatFriends::where(function ($query) use ($user_id, $invite_id) {
+            $query->where("user_id", $user_id)->where("friend_id", $invite_id);
+        })->orWhere(function ($query) use ($user_id, $invite_id) {
+            $query->where("friend_id", $user_id)->where("user_id", $invite_id);
         })->get();
 
 
 
-        if($existingFriends->isNotEmpty())
-        {
-            return response()->json(["message"=>"failed"],200);
+        if ($existingFriends->isNotEmpty()) {
+            return response()->json(["message" => "failed"], 200);
         }
 
         ChatFriends::create([
-            "user_id"=>$user_id,
-            "friend_id"=>$invite_id,
-            "status"=>"pending",
+            "user_id" => $user_id,
+            "friend_id" => $invite_id,
+            "status" => "pending",
             'created_at' => now()
         ]);
 
-        return response()->json(["message"=>"sent"],200);
-}
+        return response()->json(["message" => "sent"], 200);
+    }
 
     public function acceptFriendRequest(Request $request)
     {
         $user_id = $request->input("user_id");
         $invitation_id = $request->input("friendship_id");
-        $choice = $request->input("accept") ==true ? "accepted" : "rejected";
+        $choice = $request->input("accept") == true ? "accepted" : "rejected";
 
         $invitationHandler = ChatFriends::find($invitation_id);
-        if($invitationHandler)
-            {
-                if($choice == "rejected")
-                {
-                    $invitation_handler -> delete();
-                }
-                else
-                {
-                    $invitationHandler->status=$choice;
-                    $invitationHandler->save();
-                }
-
+        if ($invitationHandler) {
+            if ($choice == "rejected") {
+                $invitationHandler->delete();
+            } else {
+                $invitationHandler->status = $choice;
+                $invitationHandler->save();
             }
-        return response()->json(["message"=>"Invitation handled"]);
+        }
+        return response()->json(["message" => "Invitation handled"]);
     }
 
 
@@ -134,32 +125,30 @@ public function sendFrientRequest(Request $request)
         $conversation_id = $request->input("conversation_id");
 
         $newMessage = ChatMessages::create([
-            "sender_id"=>$user_id,
-            "friends_conversation"=>$conversation_id,
-            "messages"=>$message,
-            "created_at"=>now(),
-            "updated_at"=>now()
+            "sender_id" => $user_id,
+            "friends_conversation" => $conversation_id,
+            "messages" => $message,
+            "created_at" => now(),
+            "updated_at" => now()
         ]);
 
 
-        if($newMessage)
-        {
-            $newMessages = ChatMessages::where("friends_conversation",$conversation_id)->get();
-            return response()->json(["success"=>true,"messages"=>$newMessages],200);
+        if ($newMessage) {
+            $newMessages = ChatMessages::where("friends_conversation", $conversation_id)->get();
+            return response()->json(["success" => true, "messages" => $newMessages], 200);
         }
-    
     }
 
     public function deleteFriend(Request $request)
     {
         $user_id = $request->input("user_id");
-        $friendship_id= $request->input("friendship_id");
-        if(!$user_id) return;
+        $friendship_id = $request->input("friendship_id");
+        if (!$user_id) return;
 
         $friend = ChatFriends::find($friendship_id);
-        $friend ->delete();
+        $friend->delete();
 
-        return response()->json(["message"=>"success"]);
+        return response()->json(["message" => "success"]);
     }
 
     public function switchStatus(Request $request)
@@ -168,13 +157,11 @@ public function sendFrientRequest(Request $request)
         $profile_id = $request->input("profile_id");
         $status = $request->input("status");
 
-        $profile_status=Profile::find($profile_id);
-        if($profile_status)
-            {
-                $profile_status->status_activity = $status;
-                $profile_status->save();
-            }
-            return response()->json(["success"=>true]);
+        $profile_status = Profile::find($profile_id);
+        if ($profile_status) {
+            $profile_status->status_activity = $status;
+            $profile_status->save();
+        }
+        return response()->json(["success" => true]);
     }
-
 }

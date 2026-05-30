@@ -71,13 +71,13 @@ export default function RadioPageClient({ initialCountries, initialTags }) {
         getProfile();
     }, [user])
 
-    const submitQuery = async () => {
+    const submitQuery = useCallback(async () => {
         setIsLoading(true)
-        if (selCountry !== "" && selTag !== "") {
+        if ((selCountry !== "None" && selCountry !== "") && (selTag !== "" && selTag !== "None")) {
             setIsLoading(false);
             showToast({ status: "error", content: "You have to disselect one of searching options" });
         }
-        if (selCountry !== "" && selTag === "") {
+        if (selCountry !== "" && (selTag === "" || selTag == "None")) {
             const data = {
                 country: selCountry
             }
@@ -101,7 +101,7 @@ export default function RadioPageClient({ initialCountries, initialTags }) {
                 }, 7000)
             }
         }
-        else if (selCountry === "" && selTag !== "") {
+        else if ((selCountry === "" || selCountry == "None") && selTag !== "") {
             const data =
             {
                 tag: selTag
@@ -125,7 +125,7 @@ export default function RadioPageClient({ initialCountries, initialTags }) {
             }
         }
 
-    }
+    }, [selCountry, selTag]);
 
     return (
         <>
@@ -189,7 +189,7 @@ export default function RadioPageClient({ initialCountries, initialTags }) {
                                             open={hasStations}>
                                             <Text>Choose station</Text>
                                             <CustomSelect
-                                                w="50%"
+                                                w="400px"
                                                 data={stations}
                                                 name="name"
                                                 setValue={(station) => setSelStation({ url: station.url_resolved, name: station.name })}

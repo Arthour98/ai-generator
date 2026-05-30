@@ -61,6 +61,7 @@ export default function CustomSelect({
                 boxSizing="border-box"
                 position="relative"
                 overflow="visible"
+
             >
                 <MenuButton
                     as={Button}
@@ -73,6 +74,7 @@ export default function CustomSelect({
                     w={"100%"}
                     textAlign="left"
                     overflowX={"hidden"}
+                    paddingRight="2rem"
                 >
                     {selected || placeholder}
                 </MenuButton>

@@ -3,7 +3,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { Box, Button, Image, Text } from "@chakra-ui/react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlay, faPause, faCircleArrowLeft, faCircleArrowRight, } from '@fortawesome/free-solid-svg-icons';
-
+import { nameShortener } from "@/utils/nameShortener";
 
 export default function RadioElement({
     url,
@@ -15,6 +15,8 @@ export default function RadioElement({
     const audioRef = useRef(null);
     const [playing, setPlaying] = useState(false);
     const [error, setError] = useState(false);
+
+
 
     const togglePlay = () => {
         if (!audioRef.current) return;
@@ -62,7 +64,7 @@ export default function RadioElement({
                 top="10px"
                 left="50%"
                 transform={"translate(-50%,0)"}
-            >{name}</Text>
+            >{nameShortener(name, 15)}</Text>
             <audio ref={audioRef} src={url} style={{ width: "100%" }} />
             <Box height={"80%"}
                 borderBottom={"1px solid white"}

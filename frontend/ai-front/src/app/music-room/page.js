@@ -15,13 +15,13 @@ async function getRadioData() {
         const countries = countriesData.countries?.slice(0, 400).map(m => m.name) || [];
         const tags = tagsData.tags?.slice(0, 400).map(t => t.name) || [];
 
-        countries.unshift("No country");
-        tags.unshift("No tag");
+        countries.unshift("None");
+        tags.unshift("None");
 
         return { countries, tags };
     } catch (error) {
         console.error("Failed to fetch radio data:", error);
-        return { countries: ["No country"], tags: ["No tag"] };
+        return { countries: ["None"], tags: ["None"] };
     }
 }
 

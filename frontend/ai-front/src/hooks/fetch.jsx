@@ -17,7 +17,11 @@ export const setAccessToken = (token, expiresInSec) => {
 const getValidAccessToken = async () => {
   // If no token or expired → refresh
   if (!accessToken || Date.now() >= accessTokenExpiry) {
-    const res = await axios.post(`${API_BASE_URL}/api/refresh`, {}, { withCredentials: true });
+    const res = await axios.post(
+      `${API_BASE_URL}/api/refresh`,
+      {},
+      { withCredentials: true }
+    );
     setAccessToken(res.data.access_token, res.data.expires_in);
   }
   return accessToken;
@@ -37,8 +41,7 @@ export const query = async (url, options = {}) => {
       withCredentials: true, // send cookies (refresh token)
     });
     return response.data;
-  }
-  catch (e) {
-    console.error("[DEBUG]:Error in request")
+  } catch (e) {
+    console.error("[DEBUG]:Error in request");
   }
 };

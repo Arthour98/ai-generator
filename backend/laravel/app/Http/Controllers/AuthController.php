@@ -1,30 +1,29 @@
 <?php
 
 namespace App\Http\Controllers;
+
+use App\Models\Profile;
+use App\Models\RefreshToken;
+use App\Models\User;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 
-use Illuminate\Http\Request;
-use App\Models\User;
-use App\Models\RefreshToken;
-use Illuminate\Support\Facades\Hash;
-use App\Models\Profile;
-
-class  AuthController extends Controller
+class AuthController extends Controller
 {
-
     public function login(Request $request)
     {
         try {
             // Validate request
             $request->validate([
                 'name' => 'required|string',
-                'password' => 'required|string'
+                'password' => 'required|string',
             ]);
 
             // Find user
             $user = User::where('name', $request->input('name'))->first();
 
-            if (!$user || !Hash::check($request->input('password'), $user->password)) {
+            if (! $user || ! Hash::check($request->input('password'), $user->password)) {
                 return response()->json(['message' => 'Invalid credentials'], 401);
             }
 
@@ -46,45 +45,43 @@ class  AuthController extends Controller
                 Log::error('Refresh token creation failed', ['error' => $e->getMessage()]);
                 $refreshToken = null;
             }
-            
-            
-            $profile = Profile::where("user_id",$user->id)->first();
-            if($profile)
-                {
-                    $profile->status_activity = "online";
-                    $profile->save();
-                }
+
+            $profile = Profile::where('user_id', $user->id)->first();
+            if ($profile) {
+                $profile->status_activity = 'online';
+                $profile->save();
+            }
 
             // Prepare JSON response
             $response = response()->json([
-                "user" => [
+                'user' => [
                     'id' => $user->id,
                     'name' => $user->name,
-                    'email' => $user->email
+                    'email' => $user->email,
                 ],
                 'access_token' => $accessToken,
-                'expires_in' => 900
+                'expires_in' => 900,
             ])->cookie(
-    'refresh_token', $refreshToken, 60*24,'/', null, true, true, false,"None");
+                'refresh_token', $refreshToken, 60 * 24, '/', null, true, true, false, 'None');
 
-    return $response;
-    
+            return $response;
+
         } catch (\Throwable $e) {
             Log::error('Login error', ['error' => $e->getMessage()]);
+
             return response()->json([
-        'error' => $e->getMessage(),
-        'file' => $e->getFile(),
-        'line' => $e->getLine(),
-    ], 500);
+                'error' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+            ], 500);
         }
     }
-
 
     public function refresh(Request $request)
     {
         $refreshToken = $request->cookie('refresh_token');
 
-        if (!$refreshToken) {
+        if (! $refreshToken) {
             return response()->json(['error' => 'No refresh token'], 401);
         }
 
@@ -92,7 +89,7 @@ class  AuthController extends Controller
             ->where('expires_at', '>', now())
             ->first();
 
-        if (!$tokenData) {
+        if (! $tokenData) {
             return response()->json(['error' => 'Invalid or expired refresh token'], 401);
         }
 
@@ -102,35 +99,33 @@ class  AuthController extends Controller
 
         return response()->json([
             'access_token' => $accessToken,
-            'expires_in' => 900
+            'expires_in' => 900,
         ]);
     }
 
-public function user(Request $request)
-{
-    $refreshToken = $request->cookie('refresh_token');
-    if (!$refreshToken) {
-        return response()->json(['message' => 'Unauthenticated'], 401);
+    public function user(Request $request)
+    {
+        $refreshToken = $request->cookie('refresh_token');
+        if (! $refreshToken) {
+            return response()->json(['message' => 'Unauthenticated'], 401);
+        }
+
+        $tokenData = RefreshToken::where('token', $refreshToken)
+            ->where('expires_at', '>', now())
+            ->first();
+
+        if (! $tokenData) {
+            return response()->json(['message' => 'Invalid or expired refresh token'], 401);
+        }
+
+        $user = $tokenData->user;
+
+        return response()->json([
+            'id' => $user->id,
+            'name' => $user->name,
+            'email' => $user->email,
+        ]);
     }
-
-    $tokenData = RefreshToken::where('token', $refreshToken)
-        ->where('expires_at', '>', now())
-        ->first();
-
-    if (!$tokenData) {
-        return response()->json(['message' => 'Invalid or expired refresh token'], 401);
-    }
-
-    $user = $tokenData->user;
-
-
-    return response()->json([
-        'id'    => $user->id,
-        'name'  => $user->name,
-        'email' => $user->email,
-    ]);
-}
-
 
     // Logout user
     public function logout(Request $request)
@@ -139,11 +134,10 @@ public function user(Request $request)
 
         $session = RefreshToken::where('token', $refreshToken)->first();
         $session->delete();
-        
 
-        Profile::updateOrCreate(["user_id"=>$session->user_id],
+        Profile::updateOrCreate(['user_id' => $session->user_id],
             [
-                "status_activity"=>"offline"
+                'status_activity' => 'offline',
             ]);
 
         return response()->json(['message' => 'Logged out'])
@@ -152,7 +146,7 @@ public function user(Request $request)
 
     public function register(Request $request)
     {
-       $refreshToken = null;
+        $refreshToken = null;
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
@@ -164,24 +158,24 @@ public function user(Request $request)
             'email' => $request->input('email'),
             'password' => Hash::make($request->input('password')),
         ]);
-        
-        if($user)
-        {
-        $refreshToken = bin2hex(random_bytes(64));
-        $user->refresh_tokens()->create([
-                        'token' => $refreshToken,
-                        'expires_at' => now()->addDays(30),
-                    ]);
+
+        if ($user) {
+            $refreshToken = bin2hex(random_bytes(64));
+            $user->refresh_tokens()->create([
+                'token' => $refreshToken,
+                'expires_at' => now()->addDays(30),
+            ]);
         }
 
-        if(!$user) {
+        if (! $user) {
             return response()->json(['message' => 'Registration failed'], 500);
         }
+
         return response()->json([
             'message' => 'User registered successfully',
-            'user' => $user
+            'user' => $user,
         ], 201)->cookie(
-        'refresh_token', $refreshToken, 60*24,'/', null, true, true, false,"None"
+            'refresh_token', $refreshToken, 60 * 24, '/', null, true, true, false, 'None'
         );
     }
 }

@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::table('profile', function (Blueprint $table) {
             //
-            $table->enum("status_activity",["online","offline"]);
+            $table->enum('status_activity', ['online', 'offline']);
         });
     }
 
@@ -24,7 +24,7 @@ return new class extends Migration
     {
         Schema::table('profile', function (Blueprint $table) {
             //
-            $table->enum("status_activity",["online","offline"]);
+            $table->enum('status_activity', ['online', 'offline']);
         });
     }
 };

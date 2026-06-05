@@ -8,7 +8,6 @@ import "@fortawesome/fontawesome-svg-core/styles.css";
 import { config } from "@fortawesome/fontawesome-svg-core";
 config.autoAddCss = false;
 
-
 import "./globals.css";
 
 const geistSans = Geist({
@@ -21,20 +20,23 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-
-
 export default function RootLayout({ children }) {
-
-
-
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+      >
         <AuthProvider>
           <ChakraWrapper>
-            <Container maxW="container.xxl" py={0} px={0} bg={"gray.50"}
-              minH="100vh" bgGradient={"linear(to-t, pink.400, teal.900)"} position="relative">
+            <Container
+              maxW="container.xxl"
+              py={0}
+              px={0}
+              bg={"gray.50"}
+              minH="100vh"
+              bgGradient={"linear(to-t, pink.400, teal.900)"}
+              position="relative"
+            >
               {children}
             </Container>
           </ChakraWrapper>

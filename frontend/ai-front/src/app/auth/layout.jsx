@@ -4,7 +4,6 @@ import { useState, useRef, useEffect } from "react";
 import { Box } from "@chakra-ui/react";
 import { useTheme } from "@chakra-ui/react";
 
-
 export default function Layout({ children }) {
   const theme = useTheme();
   const boxRef = useRef(null);
@@ -34,7 +33,7 @@ export default function Layout({ children }) {
     setLinearGradient(
       `linear-gradient(to bottom right, ${theme.colors.teal[500]} 30%, ${theme.colors.blue[500]} 100%)`
     );
-  }
+  };
 
   return (
     <Box

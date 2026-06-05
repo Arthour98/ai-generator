@@ -1,29 +1,25 @@
 "use server";
-import ViewClient from "../viewClient"
+import ViewClient from "../viewClient";
 
 async function getData(id) {
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:8000";
 
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:8000";
+  const res = await fetch(`${baseUrl}/api/profile-view/${id}`, {
+    cache: "no-store",
+  });
 
-    const res = await fetch(`${baseUrl}/api/profile-view/${id}`, {
-        cache: "no-store"
-    });
+  const data = await res.json();
 
-    const data = await res.json();
+  if (data?.profile) {
+    const profile = data?.profile;
+    const settings = data?.profile?.settings;
+    return { profile, settings };
+  }
 
-    if (data?.profile) {
-        const profile = data?.profile;
-        const settings = data?.profile?.settings;
-        return { profile, settings };
-    }
-
-    return null;
+  return null;
 }
 
 export default async function ViewProfile({ params }) {
-
-    const { profile, settings } = await getData(params.id);
-    return (
-        <ViewClient profile={profile} profSettings={settings} />
-    )
+  const { profile, settings } = await getData(params.id);
+  return <ViewClient profile={profile} profSettings={settings} />;
 }

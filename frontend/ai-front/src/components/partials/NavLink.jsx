@@ -15,8 +15,7 @@ const NavLink = ({ href, children, disabled = false }) => {
           e.preventDefault(); // reason behind this is because this route works on userId
           // userId come with polling so , we have to prevent early navigation there
         }
-      }
-      }
+      }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       style={{

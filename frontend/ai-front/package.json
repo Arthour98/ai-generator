@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "next dev -H 0.0.0.0 -p 3000",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "format": "prettier . --write"
   },
   "dependencies": {
     "@chakra-ui/icons": "^2.2.4",
@@ -30,6 +31,7 @@
     "@tailwindcss/postcss": "^4",
     "eslint": "^9",
     "eslint-config-next": "15.5.2",
+    "prettier": "^3.8.3",
     "tailwindcss": "^4"
   }
 }

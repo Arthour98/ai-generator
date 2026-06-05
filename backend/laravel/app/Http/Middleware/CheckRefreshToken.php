@@ -2,23 +2,23 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\RefreshToken;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
-use App\Models\RefreshToken;
 
 class CheckRefreshToken
 {
     /**
      * Handle an incoming request.
      *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
+     * @param  Closure(Request): (Response)  $next
      */
     public function handle(Request $request, Closure $next): Response
     {
         $refreshToken = $request->cookie('refresh_token');
 
-        if (!$refreshToken) {
+        if (! $refreshToken) {
             return response()->json(['message' => 'Unauthenticated'], 401);
         }
 
@@ -26,7 +26,7 @@ class CheckRefreshToken
             ->where('expires_at', '>', now())
             ->first();
 
-        if (!$tokenData) {
+        if (! $tokenData) {
             return response()->json(['message' => 'Invalid or expired refresh token'], 401);
         }
 

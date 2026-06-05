@@ -12,29 +12,28 @@ return new class extends Migration
     public function up(): void
     {
         //
-        Schema::create("chat_messages",function(Blueprint $table)
-        {
+        Schema::create('chat_messages', function (Blueprint $table) {
             $table->id();
-            $table->integer("sender_id");
-            $table->foreignId("friends_conversation")->consrained("chat_friends")->cascadeOnDelete();
-            $table->string("messsage");
-            $table->timestamps();  
+            $table->integer('sender_id');
+            $table->foreignId('friends_conversation')->consrained('chat_friends')->cascadeOnDelete();
+            $table->string('messsage');
+            $table->timestamps();
         });
 
     }
+
     /**
      * Reverse the migrations.
      */
     public function down(): void
     {
         //
-        Schema::table("chat_messages",function(Blueprint $table)
-        {
+        Schema::table('chat_messages', function (Blueprint $table) {
             $table->id();
-            $table->integer("sender_id");
-            $table->foreignId("friends_conversation")->consrained("chat_friends")->cascadeOnDelete();
-            $table->string("messsage");
-            $table->timestamps();  
+            $table->integer('sender_id');
+            $table->foreignId('friends_conversation')->consrained('chat_friends')->cascadeOnDelete();
+            $table->string('messsage');
+            $table->timestamps();
         });
     }
 };

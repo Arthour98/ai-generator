@@ -14,7 +14,7 @@ class PixabayController extends Controller
         $response = Http::get('https://pixabay.com/api/', [
             'key' => env('PIXABAY_API_KEY'),
             'q' => $query,
-            'image_type' => 'photo'
+            'image_type' => 'photo',
         ]);
 
         if ($response->successful()) {
@@ -23,23 +23,20 @@ class PixabayController extends Controller
             return response()->json(['error' => 'Failed to fetch images'], 500);
         }
     }
-    
+
     public function searchVideo(Request $request)
     {
-        $query = $request->query("videoQuery");
-        $response =Http::get("https://pixabay.com/api/videos/",
-        [
-            'key'=>env('PIXABAY_API_KEY'),
-            'q'=>$query,
-            'video_type'=>"all"
-        ]);
-        if($response->successful())
-            {
-                return response()->json($response->json());
-            }
-            else
-                {
-                    return response()->json(["error"=>"Faild to fetch videos"],500);
-                }
+        $query = $request->query('videoQuery');
+        $response = Http::get('https://pixabay.com/api/videos/',
+            [
+                'key' => env('PIXABAY_API_KEY'),
+                'q' => $query,
+                'video_type' => 'all',
+            ]);
+        if ($response->successful()) {
+            return response()->json($response->json());
+        } else {
+            return response()->json(['error' => 'Faild to fetch videos'], 500);
+        }
     }
 }

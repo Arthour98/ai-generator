@@ -3,17 +3,17 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Models\User;
-use App\Models\ChatFriends;
 
 class Profile extends Model
 {
     protected $table = 'profile';
-    public $timestamps = false;
-    protected $fillable = ['user_id', 'nickname', 'age', 'country','settings','image_profile','status_activity'];
-    protected $casts=["settings"=>"array"];
 
-    
+    public $timestamps = false;
+
+    protected $fillable = ['user_id', 'nickname', 'age', 'country', 'settings', 'image_profile', 'status_activity'];
+
+    protected $casts = ['settings' => 'array'];
+
     // Link back to the user
     public function user()
     {

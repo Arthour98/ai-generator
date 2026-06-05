@@ -8,7 +8,6 @@ import { query } from "@/hooks/fetch";
 // backend URL inside Docker
 const API_BASE_URL = "http://localhost:8000";
 
-
 export default function HomePage() {
   const [profile, setProfile] = useState();
   const [image, setImage] = useState();
@@ -17,21 +16,21 @@ export default function HomePage() {
 
   async function getProfile() {
     const data = {
-      user_id: userId
-    }
+      user_id: userId,
+    };
     try {
-      const res = await query('http://localhost:8000/api/profile/', { params: data });
+      const res = await query("http://localhost:8000/api/profile/", {
+        params: data,
+      });
       if (res) {
-        const profile = res.profile
+        const profile = res.profile;
         setProfile(profile);
         setImage(profile.image_profile);
+      } else {
+        console.log("no profile");
       }
-      else {
-        console.log("no profile")
-      }
-    }
-    catch (e) {
-      console.error('[profile]=>', e)
+    } catch (e) {
+      console.error("[profile]=>", e);
     }
   }
 
@@ -45,25 +44,38 @@ export default function HomePage() {
   const imageRender = (src) => {
     if (src?.startsWith("/storage")) {
       return `http://localhost:8000${src}`;
-    }
-    else {
+    } else {
       return src;
     }
-  }
+  };
 
   return (
     <>
-      <Flex direction={{ base: "column", lg: "row" }} justifyContent={"flex-start"} overflowY="hidden" alignItems={"flex-start"} gap={{ base: 2, lg: 20 }} height={{ base: "auto", lg: "100vh" }}>
+      <Flex
+        direction={{ base: "column", lg: "row" }}
+        justifyContent={"flex-start"}
+        overflowY="hidden"
+        alignItems={"flex-start"}
+        gap={{ base: 2, lg: 20 }}
+        height={{ base: "auto", lg: "100vh" }}
+      >
         <Sidebar userId={userId} />
-        <Flex direction={"column"} alignItems={"center"} width={{ base: "100%", lg: "60%" }}>
+        <Flex
+          direction={"column"}
+          alignItems={"center"}
+          width={{ base: "100%", lg: "60%" }}
+        >
           <SettingsBar ProfileImage={imageRender(image)} />
-          <Box w="100%" position padding={{ base: 2, lg: 4 }} border={"1px solid black"} shadow={"md"} minH={{ base: "auto", lg: "80vh" }}>
-
-          </Box>
-
+          <Box
+            w="100%"
+            position
+            padding={{ base: 2, lg: 4 }}
+            border={"1px solid black"}
+            shadow={"md"}
+            minH={{ base: "auto", lg: "80vh" }}
+          ></Box>
         </Flex>
       </Flex>
     </>
   );
 }
-

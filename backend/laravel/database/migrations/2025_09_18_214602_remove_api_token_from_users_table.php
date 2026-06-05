@@ -9,16 +9,12 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
             $table->dropColumn('api_token');
         });
     }
-
-
-
 
     /**
      * Reverse the migrations.

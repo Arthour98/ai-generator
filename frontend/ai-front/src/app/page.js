@@ -9,10 +9,10 @@ export default function Home() {
   const router = useRouter();
   const [loader, setLoader] = useState(true);
 
-  // Redirect on landing if not authenticated
+  
   useEffect(() => {
     if (!user && !isLogged) {
-      router.push("/auth"); // redirect to login page
+      router.push("/auth"); 
     }
   }, [user, router, isLogged]);
 

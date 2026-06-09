@@ -62,10 +62,18 @@ class AuthController extends Controller
                 'access_token' => $accessToken,
                 'expires_in' => 900,
             ])->cookie(
-                'refresh_token', $refreshToken, 60 * 24, '/', null, true, true, false, 'None');
+                'refresh_token',
+                $refreshToken,
+                60 * 24,
+                '/',
+                null,
+                true,
+                true,
+                false,
+                'None'
+            );
 
             return $response;
-
         } catch (\Throwable $e) {
             Log::error('Login error', ['error' => $e->getMessage()]);
 
@@ -135,10 +143,11 @@ class AuthController extends Controller
         $session = RefreshToken::where('token', $refreshToken)->first();
         $session->delete();
 
-        Profile::updateOrCreate(['user_id' => $session->user_id],
-            [
-                'status_activity' => 'offline',
-            ]);
+
+        $profile = Profile::where('user_id', $session->user_id)->get();
+        if ($profile) {
+            $profile->status_activity = "offline";
+        }
 
         return response()->json(['message' => 'Logged out'])
             ->cookie('refresh_token', '', -1, '/');
@@ -175,7 +184,15 @@ class AuthController extends Controller
             'message' => 'User registered successfully',
             'user' => $user,
         ], 201)->cookie(
-            'refresh_token', $refreshToken, 60 * 24, '/', null, true, true, false, 'None'
+            'refresh_token',
+            $refreshToken,
+            60 * 24,
+            '/',
+            null,
+            true,
+            true,
+            false,
+            'None'
         );
     }
 }

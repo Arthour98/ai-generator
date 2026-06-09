@@ -14,7 +14,7 @@ export const setAccessToken = (token, expiresInSec) => {
 };
 
 // Ensure valid token before request
-const getValidAccessToken = async () => {
+export const getValidAccessToken = async () => {
   // If no token or expired → refresh
   if (!accessToken || Date.now() >= accessTokenExpiry) {
     const res = await axios.post(

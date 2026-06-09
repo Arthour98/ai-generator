@@ -167,6 +167,7 @@ export default function AccountSettingsPage() {
         alignItems={"flex-start"}
         gap={{ base: 2, lg: 20 }}
         height={{ base: "auto", lg: "100vh" }}
+
       >
         <Sidebar userId={userId} />
         <Flex
@@ -174,10 +175,11 @@ export default function AccountSettingsPage() {
           alignItems={"center"}
           width={{ base: "100%", lg: "60%" }}
           rowGap={{ base: "20px", lg: "20px" }}
+          p={4}
         >
           <SettingsBar ProfileImage={imageRender(image)} />
           <Box
-            w={{ base: "90%", lg: "100%" }}
+            w={{ base: "100%", lg: "100%" }}
             borderRadius={12}
             padding={{ base: 2, lg: 4 }}
             color={"white"}

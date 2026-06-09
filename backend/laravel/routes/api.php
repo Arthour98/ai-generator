@@ -15,7 +15,7 @@ Route::post('/user/edit', [UserController::class, 'EditUser']);
 Route::post('/register', [AuthController::class, 'register'])->middleware('throttle:3,1');
 Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:5,1');
 Route::post('/logout', [AuthController::class, 'logout']);
-Route::post('/refresh', [AuthController::class, 'refresh'])->middleware('throttle:7,1');
+Route::post('/refresh', [AuthController::class, 'refresh'])->middleware('throttle:15,1');
 Route::get('/user', [AuthController::class, 'user']);
 
 // profiles calls

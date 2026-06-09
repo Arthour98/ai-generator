@@ -228,7 +228,7 @@ export default function RadioPageClient({ initialCountries, initialTags }) {
                     <Motion open={hasStations}>
                       <Text>Choose station</Text>
                       <CustomSelect
-                        w="400px"
+                        w={{ base: "300px", lg: "400px" }}
                         data={stations}
                         name="name"
                         setValue={(station) =>

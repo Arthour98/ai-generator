@@ -166,10 +166,11 @@ export default function ProfileSettingsPage() {
           alignItems={"center"}
           width={{ base: "100%", lg: "60%" }}
           rowGap={{ base: "20px", lg: "20px" }}
+          p={4}
         >
           <SettingsBar ProfileImage={imageRender(image)} />
           <Box
-            w={{ base: "90%", lg: "100%" }}
+            w={{ base: "100%", lg: "100%" }}
             position
             padding={{ base: 6, lg: 4 }}
             rowGap={{ base: "20px" }}

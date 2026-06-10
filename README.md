@@ -179,10 +179,10 @@ echo "NEXT_PUBLIC_API_URL=http://localhost:8000/api" > .env.local
 
 ```bash
 # Terminal 1: Start backend
-npm run start_back
+composer run start_back --timeout=0
 
 # Terminal 2: Start frontend
-npm run start_front
+composer run start_front --timeout=0
 ```
 
 ### Option 2: Manual Start
@@ -384,5 +384,6 @@ For issues and questions:
 3. Include your environment information (OS, PHP version, Node version)
 
 ---
+
 
 
